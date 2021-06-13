@@ -18,7 +18,7 @@ public class PayloadsConverter {
                 .username(customerPayload.getUsername())
                 .password(passwordEncoderConfig.encoder().encode(customerPayload.getPassword()))
                 .email(customerPayload.getEmail())
-                .isActive(customerPayload.getIsActive())
+                .isActive(customerPayload.isActive())
                 .isCompany(customerPayload.isCompany())
                 .build();
     }

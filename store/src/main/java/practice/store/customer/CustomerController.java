@@ -51,7 +51,7 @@ public class CustomerController {
     @ApiOperation(value = "This method is used to set false in 'isActive' field belong to specific customer.")
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public ResponseEntity remove(@PathVariable("id") long id) {
-        customerService.setIsActiveToFalse(id);
+        customerService.deleteCustomer(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

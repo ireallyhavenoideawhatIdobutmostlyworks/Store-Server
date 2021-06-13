@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import practice.store.exceptions.common.EntityNotFoundException;
 import practice.store.exceptions.customer.CustomerEmailExistException;
+import practice.store.exceptions.customer.CustomerEmailIncorrectException;
 import practice.store.utils.converter.EntitiesConverter;
 import practice.store.utils.converter.PayloadsConverter;
 
@@ -41,7 +42,6 @@ public class CustomerService {
         checkIfCustomerEmailExist(customerPayload.getEmail());
 
         customerPayload.setId(null);
-        customerPayload.setIsActive(false);
 
         CustomerEntity customerEntity = payloadsConverter.convertCustomer(customerPayload);
         customerRepository.save(customerEntity);
@@ -59,11 +59,11 @@ public class CustomerService {
         customerRepository.save(existingCustomer);
     }
 
-    public void setIsActiveToFalse(long id) {
+    public void deleteCustomer(long id) {
         checkIfEntityExist(id);
 
         CustomerEntity existingCustomer = customerRepository.getById(id);
-        existingCustomer.setIsActive(false);
+        existingCustomer.setActive(false);
 
         customerRepository.save(existingCustomer);
     }
@@ -80,7 +80,7 @@ public class CustomerService {
     }
 
     private void checkIfCustomerEmailExist(String email, long id) {
-        if (customerRepository.existsByEmail(email) && !customerRepository.existsByEmailAndId(email, id))
-            throw new CustomerEmailExistException(email);
+        if (!customerRepository.existsByEmailAndId(email, id))
+            throw new CustomerEmailIncorrectException(email, id);
     }
 }

@@ -11,6 +11,6 @@ public class CustomerPayload {
     private String username;
     private String password;
     private String email;
-    private Boolean isActive;
+    private boolean isActive;
     private boolean isCompany;
 }

@@ -13,7 +13,7 @@ public class EntitiesConverter {
                 .username(customerEntity.getUsername())
                 .password(customerEntity.getPassword())
                 .email(customerEntity.getEmail())
-                .isActive(customerEntity.getIsActive())
+                .isActive(customerEntity.isActive())
                 .isCompany(customerEntity.isCompany())
                 .build();
     }

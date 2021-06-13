@@ -21,7 +21,7 @@ public class CustomerEntity {
     @Id
     private Long id;
 
-    @NotBlank(message = "'First name' parameter may not be blank.")
+    @NotBlank(message = "'Username' parameter may not be blank.")
     @Column
     private String username;
 
@@ -34,11 +34,11 @@ public class CustomerEntity {
     @Email
     private String email;
 
-    @NotNull(message = "'Is active' parameter may not be null.")
+    @NotNull(message = "'IsActive' parameter may not be null.")
     @Column
-    private Boolean isActive;
+    private boolean isActive;
 
-    @NotNull(message = "'Is company' parameter may not be null.")
+    @NotNull(message = "'IsCompany' parameter may not be null.")
     @Column
     private boolean isCompany;
 }
