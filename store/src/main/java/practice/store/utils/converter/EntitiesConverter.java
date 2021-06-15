@@ -11,7 +11,6 @@ public class EntitiesConverter {
         return CustomerPayload.builder()
                 .id(customerEntity.getId())
                 .username(customerEntity.getUsername())
-                .password(customerEntity.getPassword())
                 .email(customerEntity.getEmail())
                 .isActive(customerEntity.isActive())
                 .isCompany(customerEntity.isCompany())

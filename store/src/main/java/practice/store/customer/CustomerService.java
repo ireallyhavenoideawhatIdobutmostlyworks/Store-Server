@@ -53,9 +53,7 @@ public class CustomerService {
 
         customerPayload.setId(id);
 
-        CustomerEntity existingCustomer = customerRepository.getById(id);
-        existingCustomer = payloadsConverter.convertCustomer(customerPayload);
-
+        CustomerEntity existingCustomer = payloadsConverter.convertCustomer(customerPayload);
         customerRepository.save(existingCustomer);
     }
 
