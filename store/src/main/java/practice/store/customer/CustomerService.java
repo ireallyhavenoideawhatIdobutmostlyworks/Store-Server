@@ -3,8 +3,6 @@ package practice.store.customer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import practice.store.exceptions.common.EntityNotFoundException;
 import practice.store.exceptions.customer.CustomerEmailExistException;
 import practice.store.exceptions.customer.CustomerEmailIncorrectException;
 import practice.store.utils.converter.EntitiesConverter;
@@ -25,8 +23,6 @@ public class CustomerService {
 
 
     public CustomerPayload getById(long id) {
-        checkIfEntityExist(id);
-
         return entitiesConverter.convertCustomer(customerRepository.getById(id));
     }
 
@@ -48,7 +44,6 @@ public class CustomerService {
     }
 
     public void edit(CustomerPayload customerPayload, long id) {
-        checkIfEntityExist(id);
         checkIfCustomerEmailExist(customerPayload.getEmail(), id);
 
         customerPayload.setId(id);
@@ -58,19 +53,12 @@ public class CustomerService {
     }
 
     public void deleteCustomer(long id) {
-        checkIfEntityExist(id);
-
         CustomerEntity existingCustomer = customerRepository.getById(id);
         existingCustomer.setActive(false);
 
         customerRepository.save(existingCustomer);
     }
 
-
-    private void checkIfEntityExist(long id) {
-        if (!customerRepository.existsById(id))
-            throw new EntityNotFoundException(getClass().getSimpleName(), id);
-    }
 
     private void checkIfCustomerEmailExist(String email) {
         if (customerRepository.existsByEmail(email))
