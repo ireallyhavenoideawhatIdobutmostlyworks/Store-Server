@@ -1,5 +1,6 @@
 package practice.store.exceptions;
 
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -10,8 +11,12 @@ import practice.store.utils.values.RandomStringGenerator;
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 
+@AllArgsConstructor
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+
+    private final RandomStringGenerator randomStringGenerator;
+
 
     @ExceptionHandler(value = Exception.class)
     protected ResponseEntity<Object> handleGlobalException() {
@@ -29,6 +34,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     private String createErrorID() {
-        return RandomStringGenerator.generateRandomUuid() + ". Timestamp: " + LocalDateTime.now();
+        return String.format("%s. Timestamp: %s", randomStringGenerator.generateRandomUuid(), LocalDateTime.now());
     }
 }
