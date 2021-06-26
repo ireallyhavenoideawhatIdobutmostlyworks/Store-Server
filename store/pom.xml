@@ -28,6 +28,7 @@
 		<spring-security-core.version>5.3.2.RELEASE</spring-security-core.version>
 		<iban4j.version>3.2.3-RELEASE</iban4j.version>
 		<junit-jupiter.version>5.7.0</junit-jupiter.version>
+		<mockito-junit-jupiter.version>3.11.2</mockito-junit-jupiter.version>
 	</properties>
 
 	<dependencies>
@@ -140,6 +141,20 @@
 			<version>${junit-jupiter.version}</version>
 			<scope>test</scope>
 		</dependency>
+
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-junit-jupiter</artifactId>
+			<version>${mockito-junit-jupiter.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
 
 	</dependencies>
 
