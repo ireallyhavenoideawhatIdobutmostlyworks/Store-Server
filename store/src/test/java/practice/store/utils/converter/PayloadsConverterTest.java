@@ -16,29 +16,25 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class PayloadsConverterTest {
 
-    private PayloadsConverter payloadsConverter;
-
     @Mock
     private PasswordEncoder passwordEncoder;
 
     private final String PASSWORD = "test password";
 
 
-    @BeforeEach
-    void setUp() {
-        payloadsConverter = new PayloadsConverter(passwordEncoder);
-    }
-
     @DisplayName("Convert payload object to entity object and return it")
     @Test
     void testShouldConvertPayloadObjectToEntityObject() {
         // given
-        String PASSWORD_RETURNED = "returned test password";
+        PayloadsConverter payloadsConverter = new PayloadsConverter(passwordEncoder);
         CustomerPayload customerPayload = createCustomerPayload();
+        String passwordReturned = "returned test password";
+
 
         // when
-        when(passwordEncoder.encode(PASSWORD)).thenReturn(PASSWORD_RETURNED);
+        when(passwordEncoder.encode(PASSWORD)).thenReturn(passwordReturned);
         CustomerEntity customerEntity = payloadsConverter.convertCustomer(customerPayload);
+
 
         // then
         assertThat(customerPayload)
@@ -46,7 +42,7 @@ class PayloadsConverterTest {
                 .ignoringFields("password")
                 .isEqualTo(customerEntity);
 
-        assertThat(customerEntity.getPassword()).isEqualTo(PASSWORD_RETURNED);
+        assertThat(customerEntity.getPassword()).isEqualTo(passwordReturned);
     }
 
 
