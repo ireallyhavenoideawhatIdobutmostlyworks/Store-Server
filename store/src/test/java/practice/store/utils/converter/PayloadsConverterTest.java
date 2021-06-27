@@ -1,6 +1,5 @@
 package practice.store.utils.converter;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,9 +10,11 @@ import practice.store.customer.CustomerEntity;
 import practice.store.customer.CustomerPayload;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
+@DisplayName("Test converter object from payload to entity")
 class PayloadsConverterTest {
 
     @Mock
@@ -22,9 +23,9 @@ class PayloadsConverterTest {
     private final String PASSWORD = "test password";
 
 
-    @DisplayName("Convert payload object to entity object and return it")
+    @DisplayName("Return converted entity from payload")
     @Test
-    void testShouldConvertPayloadObjectToEntityObject() {
+    void should_convert_payload_to_entity_test() {
         // given
         PayloadsConverter payloadsConverter = new PayloadsConverter(passwordEncoder);
         CustomerPayload customerPayload = createCustomerPayload();
@@ -42,7 +43,9 @@ class PayloadsConverterTest {
                 .ignoringFields("password")
                 .isEqualTo(customerEntity);
 
-        assertThat(customerEntity.getPassword()).isEqualTo(passwordReturned);
+        assertEquals(
+                customerEntity.getPassword(),
+                passwordReturned);
     }
 
 
