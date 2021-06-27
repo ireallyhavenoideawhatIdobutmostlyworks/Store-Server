@@ -64,6 +64,7 @@ public class JwtTokenUtil {
         return false;
     }
 
+
     private String doGenerateToken(Map<String, Object> claims, String subject) {
         return Jwts
                 .builder()
