@@ -27,7 +27,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = EntityNotFoundException.class)
     protected ResponseEntity<Object> entityNotFoundGlobalException() {
-        return new ResponseEntity<>("dupa dupa dupa", HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(createCommonExceptionBody(), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(value = InternalAuthenticationServiceException.class)
