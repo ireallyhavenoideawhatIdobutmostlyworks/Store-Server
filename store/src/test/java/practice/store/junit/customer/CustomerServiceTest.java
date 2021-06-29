@@ -1,6 +1,5 @@
 package practice.store.junit.customer;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -57,15 +56,9 @@ class CustomerServiceTest {
         customerPayload = DataFactory.createCustomerPayload(1L, "test name", "test password", "test@email.store", true, true);
     }
 
-    @AfterEach
-    public void tearDown() {
-        reset(customerRepository);
-        reset(passwordEncoder);
-    }
-
     @DisplayName("Return customer by ID")
     @Test
-    void should_return_customer_when_id_is_valid_test() {
+    void should_return_customer_when_id_is_exist_test() {
         // given
         long id = customerEntity.getId();
 
@@ -91,22 +84,22 @@ class CustomerServiceTest {
     void should_throw_exception_when_id_is_not_exist_test() {
         // given
         String exceptionMessage = "Unable to find practice.store.junit.customer.CustomerEntity with id %d";
-        long idWhichNotExist = 11L;
+        long idNotExist = 11L;
 
-        when(customerRepository.getById(idWhichNotExist))
-                .thenThrow(new EntityNotFoundException(String.format(exceptionMessage, idWhichNotExist)));
+        when(customerRepository.getById(idNotExist))
+                .thenThrow(new EntityNotFoundException(String.format(exceptionMessage, idNotExist)));
 
 
         // when
-        Throwable exception = catchThrowable(() -> customerService.getById(idWhichNotExist));
+        Throwable exception = catchThrowable(() -> customerService.getById(idNotExist));
 
 
         // then
         assertThat(exception)
                 .isInstanceOf(javax.persistence.EntityNotFoundException.class)
-                .hasMessageContaining(String.format(exceptionMessage, idWhichNotExist));
+                .hasMessageContaining(String.format(exceptionMessage, idNotExist));
 
-        verify(customerRepository, times(1)).getById(idWhichNotExist);
+        verify(customerRepository, times(1)).getById(idNotExist);
     }
 
     @DisplayName("Return not empty customers list")
@@ -126,8 +119,6 @@ class CustomerServiceTest {
         assertThat(customerPayloadList)
                 .usingRecursiveComparison()
                 .isEqualTo(customerPayloadListReturnedFromService);
-
-        assertEquals(customerPayloadListReturnedFromService.size(), customerEntityList.size());
 
         verify(customerRepository, times(1)).findAll();
     }
@@ -172,10 +163,10 @@ class CustomerServiceTest {
     @Test
     void should_throw_exception_when_email_is_exist_during_save_test() {
         // given
-        String emailWhichIsExist = customerEntity.getEmail();
+        String emailIsExist = customerEntity.getEmail();
         String exceptionMessage = "Customer with email:%s is exist.";
 
-        when(customerRepository.existsByEmail(emailWhichIsExist)).thenReturn(true);
+        when(customerRepository.existsByEmail(emailIsExist)).thenReturn(true);
 
 
         // when
@@ -185,9 +176,9 @@ class CustomerServiceTest {
         // then
         assertThat(exception)
                 .isInstanceOf(CustomerEmailExistException.class)
-                .hasMessageContaining(String.format(exceptionMessage, emailWhichIsExist));
+                .hasMessageContaining(String.format(exceptionMessage, emailIsExist));
 
-        verify(customerRepository, times(1)).existsByEmail(emailWhichIsExist);
+        verify(customerRepository, times(1)).existsByEmail(emailIsExist);
         verify(customerRepository, times(0)).save(customerEntity);
     }
 
@@ -195,19 +186,19 @@ class CustomerServiceTest {
     @Test
     void should_edit_customer_when_payload_is_correct_test() {
         // given
-        String emailWhichIsExist = customerPayload.getEmail();
-        long idWhichIsExist = customerPayload.getId();
+        String emailExist = customerPayload.getEmail();
+        long idExist = customerPayload.getId();
 
-        when(customerRepository.existsByEmailAndId(emailWhichIsExist, idWhichIsExist)).thenReturn(true);
+        when(customerRepository.existsByEmailAndId(emailExist, idExist)).thenReturn(true);
         CustomerEntity existingCustomer = payloadsConverter.convertCustomer(customerPayload);
 
 
         // when
-        customerService.edit(customerPayload, idWhichIsExist);
+        customerService.edit(customerPayload, idExist);
 
 
         // then
-        verify(customerRepository, times(1)).existsByEmailAndId(emailWhichIsExist, idWhichIsExist);
+        verify(customerRepository, times(1)).existsByEmailAndId(emailExist, idExist);
         verify(customerRepository, times(1)).save(existingCustomer);
     }
 
@@ -215,21 +206,21 @@ class CustomerServiceTest {
     @Test
     void should_throw_exception_when_email_and_id_not_belong_to_same_customer_test() {
         // given
-        String emailWhichIsExist = customerEntity.getEmail();
-        long idWhichIsNotExist = 11L;
+        String emailExist = customerEntity.getEmail();
+        long idNotExist = 11L;
         String exceptionMessage = "Email:%s and id:%d not belong to same customer.";
 
 
         // when
-        Throwable exception = catchThrowable(() -> customerService.edit(customerPayload, idWhichIsNotExist));
+        Throwable exception = catchThrowable(() -> customerService.edit(customerPayload, idNotExist));
 
 
         // then
         assertThat(exception)
                 .isInstanceOf(CustomerEmailWithIdIncorrectException.class)
-                .hasMessageContaining(String.format(exceptionMessage, emailWhichIsExist, idWhichIsNotExist));
+                .hasMessageContaining(String.format(exceptionMessage, emailExist, idNotExist));
 
-        verify(customerRepository, times(1)).existsByEmailAndId(emailWhichIsExist, idWhichIsNotExist);
+        verify(customerRepository, times(1)).existsByEmailAndId(emailExist, idNotExist);
         verify(customerRepository, times(0)).save(customerEntity);
     }
 
@@ -255,22 +246,22 @@ class CustomerServiceTest {
     void should_throw_exception_when_id_is_not_exist_during_delete_test() {
         // given
         String exceptionMessage = "Unable to find practice.store.junit.customer.CustomerEntity with id %d";
-        long idWhichNotExist = 11L;
+        long idNotExist = 11L;
 
-        when(customerRepository.getById(idWhichNotExist))
-                .thenThrow(new EntityNotFoundException(String.format(exceptionMessage, idWhichNotExist)));
+        when(customerRepository.getById(idNotExist))
+                .thenThrow(new EntityNotFoundException(String.format(exceptionMessage, idNotExist)));
 
 
         // when
-        Throwable exception = catchThrowable(() -> customerService.deleteCustomer(idWhichNotExist));
+        Throwable exception = catchThrowable(() -> customerService.deleteCustomer(idNotExist));
 
 
         // then
         assertThat(exception)
                 .isInstanceOf(javax.persistence.EntityNotFoundException.class)
-                .hasMessageContaining(String.format(exceptionMessage, idWhichNotExist));
+                .hasMessageContaining(String.format(exceptionMessage, idNotExist));
 
-        verify(customerRepository, times(1)).getById(idWhichNotExist);
+        verify(customerRepository, times(1)).getById(idNotExist);
         verify(customerRepository, times(0)).save(customerEntity);
     }
 }
