@@ -6,7 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import practice.store.customer.CustomerEntity;
 import practice.store.customer.CustomerPayload;
-import practice.store.junit.DataFactor;
+import practice.store.junit.DataFactory;
 import practice.store.utils.converter.EntitiesConverter;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -21,7 +21,7 @@ class EntitiesConverterTest {
     void should_convert_entity_to_payload_test() {
         // given
         EntitiesConverter entitiesConverter = new EntitiesConverter();
-        CustomerEntity customerEntity = DataFactor.createCustomerEntity(
+        CustomerEntity customerEntity = DataFactory.createCustomerEntity(
                 1L,
                 "test name",
                 "test@email.store",

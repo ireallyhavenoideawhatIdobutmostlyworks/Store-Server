@@ -14,7 +14,7 @@ import practice.store.customer.CustomerRepository;
 import practice.store.customer.CustomerService;
 import practice.store.exceptions.customer.CustomerEmailExistException;
 import practice.store.exceptions.customer.CustomerEmailWithIdIncorrectException;
-import practice.store.junit.DataFactor;
+import practice.store.junit.DataFactory;
 import practice.store.utils.converter.EntitiesConverter;
 import practice.store.utils.converter.PayloadsConverter;
 
@@ -52,8 +52,8 @@ class CustomerServiceTest {
 
         customerService = new CustomerService(customerRepository, entitiesConverter, payloadsConverter);
 
-        customerEntity = DataFactor.createCustomerEntity(1L, "test name", "test password", "test@email.store", true, true);
-        customerPayload = DataFactor.createCustomerPayload(1L, "test name", "test password", "test@email.store", true, true);
+        customerEntity = DataFactory.createCustomerEntity(1L, "test name", "test password", "test@email.store", true, true);
+        customerPayload = DataFactory.createCustomerPayload(1L, "test name", "test password", "test@email.store", true, true);
     }
 
     @AfterEach
