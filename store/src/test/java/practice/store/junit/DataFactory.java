@@ -3,7 +3,7 @@ package practice.store.junit;
 import practice.store.customer.CustomerEntity;
 import practice.store.customer.CustomerPayload;
 
-public class DataFactor {
+public class DataFactory {
 
     public static CustomerEntity createCustomerEntity(long id, String username, String password, String email, boolean isActive, boolean isCompany) {
         return CustomerEntity
@@ -28,7 +28,7 @@ public class DataFactor {
                 .build();
     }
 
-    public static  CustomerPayload createCustomerPayload(long id, String username, String password, String email, boolean isActive, boolean isCompany) {
+    public static CustomerPayload createCustomerPayload(long id, String username, String password, String email, boolean isActive, boolean isCompany) {
         return CustomerPayload
                 .builder()
                 .id(id)

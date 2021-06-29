@@ -35,7 +35,7 @@ public class CustomerService {
     }
 
     public void save(CustomerPayload customerPayload) {
-        checkIfCustomerEmailWithIdExist(customerPayload.getEmail());
+        checkIfCustomerExistByEmail(customerPayload.getEmail());
 
         customerPayload.setId(null);
 
@@ -44,7 +44,7 @@ public class CustomerService {
     }
 
     public void edit(CustomerPayload customerPayload, long id) {
-        checkIfCustomerEmailWithIdExist(customerPayload.getEmail(), id);
+        checkIfCustomerExistByEmailAndId(customerPayload.getEmail(), id);
 
         customerPayload.setId(id);
 
@@ -60,12 +60,12 @@ public class CustomerService {
     }
 
 
-    private void checkIfCustomerEmailWithIdExist(String email) {
+    private void checkIfCustomerExistByEmail(String email) {
         if (customerRepository.existsByEmail(email))
             throw new CustomerEmailExistException(email);
     }
 
-    private void checkIfCustomerEmailWithIdExist(String email, long id) {
+    private void checkIfCustomerExistByEmailAndId(String email, long id) {
         if (!customerRepository.existsByEmailAndId(email, id))
             throw new CustomerEmailWithIdIncorrectException(email, id);
     }
