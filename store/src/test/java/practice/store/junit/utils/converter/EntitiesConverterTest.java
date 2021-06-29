@@ -1,4 +1,4 @@
-package practice.store.utils.converter;
+package practice.store.junit.utils.converter;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -6,6 +6,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import practice.store.customer.CustomerEntity;
 import practice.store.customer.CustomerPayload;
+import practice.store.junit.DataFactor;
+import practice.store.utils.converter.EntitiesConverter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -19,7 +21,12 @@ class EntitiesConverterTest {
     void should_convert_entity_to_payload_test() {
         // given
         EntitiesConverter entitiesConverter = new EntitiesConverter();
-        CustomerEntity customerEntity = createCustomerEntity();
+        CustomerEntity customerEntity = DataFactor.createCustomerEntity(
+                1L,
+                "test name",
+                "test@email.store",
+                true,
+                true);
 
 
         // when
@@ -30,17 +37,5 @@ class EntitiesConverterTest {
         assertThat(customerPayload)
                 .usingRecursiveComparison()
                 .isEqualTo(customerEntity);
-    }
-
-
-    private CustomerEntity createCustomerEntity() {
-        return CustomerEntity
-                .builder()
-                .id(1L)
-                .username("test name")
-                .email("test@email.test")
-                .isActive(true)
-                .isCompany(true)
-                .build();
     }
 }

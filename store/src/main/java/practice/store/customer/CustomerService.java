@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import practice.store.exceptions.customer.CustomerEmailExistException;
-import practice.store.exceptions.customer.CustomerEmailIncorrectException;
+import practice.store.exceptions.customer.CustomerEmailWithIdIncorrectException;
 import practice.store.utils.converter.EntitiesConverter;
 import practice.store.utils.converter.PayloadsConverter;
 
@@ -35,7 +35,7 @@ public class CustomerService {
     }
 
     public void save(CustomerPayload customerPayload) {
-        checkIfCustomerEmailExist(customerPayload.getEmail());
+        checkIfCustomerEmailWithIdExist(customerPayload.getEmail());
 
         customerPayload.setId(null);
 
@@ -44,7 +44,7 @@ public class CustomerService {
     }
 
     public void edit(CustomerPayload customerPayload, long id) {
-        checkIfCustomerEmailExist(customerPayload.getEmail(), id);
+        checkIfCustomerEmailWithIdExist(customerPayload.getEmail(), id);
 
         customerPayload.setId(id);
 
@@ -60,13 +60,13 @@ public class CustomerService {
     }
 
 
-    private void checkIfCustomerEmailExist(String email) {
+    private void checkIfCustomerEmailWithIdExist(String email) {
         if (customerRepository.existsByEmail(email))
             throw new CustomerEmailExistException(email);
     }
 
-    private void checkIfCustomerEmailExist(String email, long id) {
+    private void checkIfCustomerEmailWithIdExist(String email, long id) {
         if (!customerRepository.existsByEmailAndId(email, id))
-            throw new CustomerEmailIncorrectException(email, id);
+            throw new CustomerEmailWithIdIncorrectException(email, id);
     }
 }
