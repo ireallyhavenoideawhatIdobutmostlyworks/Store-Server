@@ -34,15 +34,16 @@ import static org.mockito.Mockito.*;
 class CustomerServiceTest {
 
     @Mock
-    private CustomerRepository customerRepository;
-    @Mock
     private PasswordEncoder passwordEncoder;
+
+    @Mock
+    private CustomerRepository customerRepository;
+    private CustomerService customerService;
+    private CustomerEntity customerEntity;
+    private CustomerPayload customerPayload;
 
     private EntitiesConverter entitiesConverter;
     private PayloadsConverter payloadsConverter;
-    private CustomerEntity customerEntity;
-    private CustomerPayload customerPayload;
-    private CustomerService customerService;
 
 
     @BeforeEach
