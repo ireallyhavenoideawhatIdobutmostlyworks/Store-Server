@@ -22,8 +22,6 @@ class PayloadsConverterTest {
     @Mock
     private PasswordEncoder passwordEncoder;
 
-    private final String PASSWORD = "test password";
-
 
     @DisplayName("Return converted entity from payload")
     @Test
@@ -38,8 +36,9 @@ class PayloadsConverterTest {
                 true,
                 true);
 
-        String passwordReturned = "returned test password";
-        when(passwordEncoder.encode(PASSWORD)).thenReturn(passwordReturned);
+        String password = "test password";
+        String encodedPassword = "encoded test password";
+        when(passwordEncoder.encode(password)).thenReturn(encodedPassword);
 
 
         // when
@@ -52,8 +51,6 @@ class PayloadsConverterTest {
                 .ignoringFields("password")
                 .isEqualTo(customerEntity);
 
-        assertEquals(
-                customerEntity.getPassword(),
-                passwordReturned);
+        assertEquals(customerEntity.getPassword(), encodedPassword);
     }
 }

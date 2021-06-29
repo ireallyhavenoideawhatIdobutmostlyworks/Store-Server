@@ -10,6 +10,7 @@ import practice.store.junit.DataFactory;
 import practice.store.utils.converter.EntitiesConverter;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Test converter object from entity to payload")
@@ -37,5 +38,7 @@ class EntitiesConverterTest {
         assertThat(customerPayload)
                 .usingRecursiveComparison()
                 .isEqualTo(customerEntity);
+
+        assertNull(customerPayload.getPassword());
     }
 }
