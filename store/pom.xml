@@ -187,10 +187,10 @@
 				</dependencies>
 				<configuration>
 					<targetClasses>
-						<param>practice.store.*</param>
+						<param>practice.store.customer.*</param>
 					</targetClasses>
 					<targetTests>
-						<param>practice.store.*</param>
+						<param>practice.store.junit.*</param>
 					</targetTests>
 					<mutators>
 						<mutator>ALL</mutator>

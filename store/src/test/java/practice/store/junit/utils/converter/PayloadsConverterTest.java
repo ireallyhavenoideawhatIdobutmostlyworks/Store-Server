@@ -1,4 +1,4 @@
-package practice.store.utils.converter;
+package practice.store.junit.utils.converter;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -8,6 +8,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import practice.store.customer.CustomerEntity;
 import practice.store.customer.CustomerPayload;
+import practice.store.junit.DataFactor;
+import practice.store.utils.converter.PayloadsConverter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -28,12 +30,19 @@ class PayloadsConverterTest {
     void should_convert_payload_to_entity_test() {
         // given
         PayloadsConverter payloadsConverter = new PayloadsConverter(passwordEncoder);
-        CustomerPayload customerPayload = createCustomerPayload();
+        CustomerPayload customerPayload = DataFactor.createCustomerPayload(
+                1L,
+                "test name",
+                "test password",
+                "test@email.store",
+                true,
+                true);
+
         String passwordReturned = "returned test password";
+        when(passwordEncoder.encode(PASSWORD)).thenReturn(passwordReturned);
 
 
         // when
-        when(passwordEncoder.encode(PASSWORD)).thenReturn(passwordReturned);
         CustomerEntity customerEntity = payloadsConverter.convertCustomer(customerPayload);
 
 
@@ -46,18 +55,5 @@ class PayloadsConverterTest {
         assertEquals(
                 customerEntity.getPassword(),
                 passwordReturned);
-    }
-
-
-    private CustomerPayload createCustomerPayload() {
-        return CustomerPayload
-                .builder()
-                .id(1L)
-                .username("test name")
-                .password(PASSWORD)
-                .email("test@email.test")
-                .isActive(true)
-                .isCompany(true)
-                .build();
     }
 }
