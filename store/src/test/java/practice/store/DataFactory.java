@@ -1,4 +1,4 @@
-package practice.store.junit;
+package practice.store;
 
 import practice.store.customer.CustomerEntity;
 import practice.store.customer.CustomerPayload;
