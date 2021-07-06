@@ -1,4 +1,4 @@
-package practice.store.junit.utils.converter;
+package practice.store.utils.converter;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -6,8 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import practice.store.customer.CustomerEntity;
 import practice.store.customer.CustomerPayload;
-import practice.store.junit.DataFactory;
-import practice.store.utils.converter.EntitiesConverter;
+import practice.store.DataFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNull;

@@ -1,4 +1,4 @@
-package practice.store.junit.customer;
+package practice.store.customer;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -7,13 +7,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import practice.store.customer.CustomerEntity;
-import practice.store.customer.CustomerPayload;
-import practice.store.customer.CustomerRepository;
-import practice.store.customer.CustomerService;
 import practice.store.exceptions.customer.CustomerEmailExistException;
 import practice.store.exceptions.customer.CustomerEmailWithIdIncorrectException;
-import practice.store.junit.DataFactory;
+import practice.store.DataFactory;
 import practice.store.utils.converter.EntitiesConverter;
 import practice.store.utils.converter.PayloadsConverter;
 
@@ -83,7 +79,7 @@ class CustomerServiceTest {
     @Test
     void should_throw_exception_when_id_is_not_exist_test() {
         // given
-        String exceptionMessage = "Unable to find practice.store.junit.customer.CustomerEntity with id %d";
+        String exceptionMessage = "Unable to find practice.store.customer.CustomerEntity with id %d";
         long idNotExist = 11L;
 
         when(customerRepository.getById(idNotExist))
@@ -245,7 +241,7 @@ class CustomerServiceTest {
     @Test
     void should_throw_exception_when_id_is_not_exist_during_delete_test() {
         // given
-        String exceptionMessage = "Unable to find practice.store.junit.customer.CustomerEntity with id %d";
+        String exceptionMessage = "Unable to find practice.store.customer.CustomerEntity with id %d";
         long idNotExist = 11L;
 
         when(customerRepository.getById(idNotExist))
