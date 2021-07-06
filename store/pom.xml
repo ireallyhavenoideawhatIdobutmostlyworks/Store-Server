@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project
-        xmlns="http://maven.apache.org/POM/4.0.0"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+		xmlns="http://maven.apache.org/POM/4.0.0"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-    <modelVersion>4.0.0</modelVersion>
+	<modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.5.0-SNAPSHOT</version>
-        <relativePath/>
-    </parent>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.5.0-SNAPSHOT</version>
+		<relativePath/>
+	</parent>
 
-    <groupId>practice</groupId>
-    <artifactId>store</artifactId>
-    <version>1</version>
-    <name>store</name>
-    <packaging>war</packaging>
+	<groupId>practice</groupId>
+	<artifactId>store</artifactId>
+	<version>1</version>
+	<name>store</name>
+	<packaging>war</packaging>
 
     <properties>
         <!-- VERSIONS FOR SOURCE DEPENDENCIES -->
@@ -188,7 +188,6 @@
         </dependency>
     </dependencies>
 
-
     <build>
         <pluginManagement>
             <plugins>
@@ -253,7 +252,6 @@
         </pluginManagement>
     </build>
 
-
     <repositories>
         <repository>
             <id>spring-milestones</id>
@@ -270,7 +268,6 @@
             </snapshots>
         </repository>
     </repositories>
-
 
     <pluginRepositories>
         <pluginRepository>
