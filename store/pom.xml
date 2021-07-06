@@ -229,9 +229,7 @@
                         </includes>
 
                         <systemPropertyVariables>
-                            <propertyName>propertyValue</propertyName>
-<!--                            <buildDirectory>${project.build.directory}</buildDirectory>-->
-                            <allure.results.directory>target/allure-results</allure.results.directory>
+                            <allure.results.directory>${project.build.directory}\allure-results</allure.results.directory>
                         </systemPropertyVariables>
                     </configuration>
                 </plugin>
