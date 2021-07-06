@@ -15,8 +15,8 @@ class PayloadsConverterSpec extends Specification {
         def payloadConverter = new PayloadsConverter(passwordEncoder)
         def customerPayload = DataFactory.createCustomerPayload(1L, "test name", "test password", "test@email.store", true, true)
 
-        String password = "test password";
-        String encodedPassword = "encoded test password";
+        String password = "test password"
+        String encodedPassword = "encoded test password"
         passwordEncoder.encode(password) >> encodedPassword
 
 
