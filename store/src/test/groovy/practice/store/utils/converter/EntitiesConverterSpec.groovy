@@ -18,7 +18,10 @@ class EntitiesConverterSpec extends Specification {
 
 
         then:
-        assert new JsonOutput().toJson(customerPayload) == new JsonOutput().toJson(customerEntity)
+        assert new JsonOutput().toJson(customerPayload)
+                ==
+                new JsonOutput().toJson(customerEntity)
+
         assert customerPayload.getPassword() == null
     }
 }

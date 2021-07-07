@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <project
 		xmlns="http://maven.apache.org/POM/4.0.0"
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -145,12 +146,12 @@
 
 
         <!-- DEPENDENCIES FOR TESTS -->
-<!--        <dependency>-->
-<!--            <groupId>org.junit.jupiter</groupId>-->
-<!--            <artifactId>junit-jupiter</artifactId>-->
-<!--            <version>${junit-jupiter.version}</version>-->
-<!--            <scope>test</scope>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${junit-jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
@@ -193,21 +194,40 @@
             <plugins>
 
                 <plugin>
-<!--                    $ mvn clean gplus:compileTests test   -->
+<!--                    $ mvn clean compile gplus:compileTests test   -->
                     <groupId>org.codehaus.gmavenplus</groupId>
                     <artifactId>gmavenplus-plugin</artifactId>
                     <version>${gmavenplus-plugin.version}</version>
                     <executions>
                         <execution>
                             <goals>
+                                <goal>addSources</goal>
                                 <goal>addTestSources</goal>
-                                <goal>generateTestStubs</goal>
+                                <goal>compile</goal>
                                 <goal>compileTests</goal>
-                                <goal>removeTestStubs</goal>
-                                <goal>removeStubs</goal>
                             </goals>
                         </execution>
                     </executions>
+
+                    <configuration>
+                        <testSources>
+                            <testSource>
+                                <directory>${project.basedir}/src/test/groovy</directory>
+                                <includes>
+                                    <include>**/*Spec.*</include>
+                                    <include>**/*.groovy</include>
+                                </includes>
+                            </testSource>
+
+                            <testSource>
+                                <directory>${project.basedir}/src/test/java</directory>
+                                <includes>
+                                    <include>practice.store.DataFactory.java</include>
+                                    <include>**/*.java</include>
+                                </includes>
+                            </testSource>
+                        </testSources>
+                    </configuration>
                 </plugin>
 
                 <plugin>
@@ -223,14 +243,8 @@
                     <configuration>
                         <includes>
                             <include>**/*Test.*</include>
-                            <include>**/*Spec.java</include>
-                            <include>**/*Spec.class</include>
                             <include>**/*Spec.*</include>
                         </includes>
-
-                        <systemPropertyVariables>
-                            <allure.results.directory>${project.build.directory}\allure-results</allure.results.directory>
-                        </systemPropertyVariables>
                     </configuration>
                 </plugin>
 
