@@ -1,8 +1,9 @@
-package practice.store.utils.converter
+package practice.store.unit.utils.converter
 
 import groovy.json.JsonOutput
 import org.springframework.security.crypto.password.PasswordEncoder
 import practice.store.DataFactory
+import practice.store.utils.converter.PayloadsConverter
 import spock.lang.Specification
 
 

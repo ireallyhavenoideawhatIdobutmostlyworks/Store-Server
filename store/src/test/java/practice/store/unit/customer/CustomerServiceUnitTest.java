@@ -1,4 +1,4 @@
-package practice.store.customer;
+package practice.store.unit.customer;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -7,9 +7,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import practice.store.DataFactory;
+import practice.store.customer.CustomerEntity;
+import practice.store.customer.CustomerPayload;
+import practice.store.customer.CustomerRepository;
+import practice.store.customer.CustomerService;
 import practice.store.exceptions.customer.CustomerEmailExistException;
 import practice.store.exceptions.customer.CustomerEmailWithIdIncorrectException;
-import practice.store.DataFactory;
 import practice.store.utils.converter.EntitiesConverter;
 import practice.store.utils.converter.PayloadsConverter;
 
@@ -26,7 +30,7 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Tests for customer service")
-class CustomerServiceTest {
+class CustomerServiceUnitTest {
 
     @Mock
     private PasswordEncoder passwordEncoder;
@@ -92,7 +96,7 @@ class CustomerServiceTest {
 
         // then
         assertThat(exception)
-                .isInstanceOf(javax.persistence.EntityNotFoundException.class)
+                .isInstanceOf(EntityNotFoundException.class)
                 .hasMessageContaining(String.format(exceptionMessage, idNotExist));
 
         verify(customerRepository, times(1)).getById(idNotExist);
@@ -254,7 +258,7 @@ class CustomerServiceTest {
 
         // then
         assertThat(exception)
-                .isInstanceOf(javax.persistence.EntityNotFoundException.class)
+                .isInstanceOf(EntityNotFoundException.class)
                 .hasMessageContaining(String.format(exceptionMessage, idNotExist));
 
         verify(customerRepository, times(1)).getById(idNotExist);

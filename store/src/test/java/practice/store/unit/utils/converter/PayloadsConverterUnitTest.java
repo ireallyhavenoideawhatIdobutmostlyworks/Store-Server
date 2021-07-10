@@ -1,4 +1,4 @@
-package practice.store.utils.converter;
+package practice.store.unit.utils.converter;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -6,17 +6,18 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import practice.store.DataFactory;
 import practice.store.customer.CustomerEntity;
 import practice.store.customer.CustomerPayload;
-import practice.store.DataFactory;
+import practice.store.utils.converter.PayloadsConverter;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Test converter object from payload to entity")
-class PayloadsConverterTest {
+class PayloadsConverterUnitTest {
 
     @Mock
     private PasswordEncoder passwordEncoder;

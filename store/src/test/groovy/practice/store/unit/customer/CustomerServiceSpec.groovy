@@ -1,8 +1,10 @@
-package practice.store.customer
+package practice.store.unit.customer
 
 
 import org.springframework.security.crypto.password.PasswordEncoder
 import practice.store.DataFactory
+import practice.store.customer.CustomerRepository
+import practice.store.customer.CustomerService
 import practice.store.exceptions.customer.CustomerEmailExistException
 import practice.store.exceptions.customer.CustomerEmailWithIdIncorrectException
 import practice.store.utils.converter.EntitiesConverter
