@@ -5,7 +5,7 @@ import practice.store.DataFactory
 import practice.store.utils.converter.EntitiesConverter
 import spock.lang.Specification
 
-class EntitiesConverterSpec extends Specification {
+class EntitiesConverterUnitSpec extends Specification {
 
 
     def "should return converted payload from entity"() {

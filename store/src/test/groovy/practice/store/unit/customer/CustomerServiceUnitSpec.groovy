@@ -14,7 +14,7 @@ import spock.lang.Specification
 
 import javax.persistence.EntityNotFoundException
 
-class CustomerServiceSpec extends Specification {
+class CustomerServiceUnitSpec extends Specification {
 
     @Shared passwordEncoder
     @Shared customerRepository

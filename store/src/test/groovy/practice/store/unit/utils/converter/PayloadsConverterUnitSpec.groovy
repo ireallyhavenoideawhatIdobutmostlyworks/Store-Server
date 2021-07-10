@@ -7,7 +7,7 @@ import practice.store.utils.converter.PayloadsConverter
 import spock.lang.Specification
 
 
-class PayloadsConverterSpec extends Specification {
+class PayloadsConverterUnitSpec extends Specification {
 
 
     def "should return converted entity from payload"() {
