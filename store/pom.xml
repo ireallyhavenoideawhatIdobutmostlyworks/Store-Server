@@ -33,8 +33,8 @@
         <!-- VERSIONS FOR TEST DEPENDENCIES -->
         <junit-jupiter.version>5.7.0</junit-jupiter.version>
         <mockito-junit-jupiter.version>3.11.2</mockito-junit-jupiter.version>
-        <pitest-maven.version>1.6.7</pitest-maven.version>
-        <pitest-junit5-plugin.version>0.14</pitest-junit5-plugin.version>
+<!--        <pitest-maven.version>1.6.7</pitest-maven.version>-->
+<!--        <pitest-junit5-plugin.version>0.14</pitest-junit5-plugin.version>-->
         <spock-core.version>2.0-groovy-3.0</spock-core.version>
         <spock-spring.version>2.0-groovy-3.0</spock-spring.version>
         <groovy-all.version>3.0.8</groovy-all.version>
@@ -199,7 +199,6 @@
     <build>
         <pluginManagement>
             <plugins>
-
                 <plugin>
                     <groupId>org.codehaus.gmavenplus</groupId>
                     <artifactId>gmavenplus-plugin</artifactId>
@@ -225,14 +224,6 @@
                                     <include>**/*Spec.*</include>
                                 </includes>
                             </testSource>
-
-<!--                            <testSource>-->
-<!--                                <directory>${project.basedir}/src/test/java/practice/store/integration</directory>-->
-<!--                                <excludes>-->
-<!--                                    <exclude>**/CustomerControllerIntegrationTest.*</exclude>-->
-<!--                                </excludes>-->
-<!--                            </testSource>-->
-
                             <testSource>
                                 <directory>${project.basedir}/src/test/java</directory>
                                 <includes>
@@ -245,12 +236,6 @@
 
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <version>${maven-compiler-plugin.version}</version>
-                </plugin>
-
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>${maven-surefire-plugin.version}</version>
                     <configuration>
@@ -258,33 +243,7 @@
                             <include>**/*Test*.*</include>
                             <include>**/*Spec*.*</include>
                         </includes>
-<!--                        <excludes>-->
-<!--                            <exclude>**/*IntegrationTest*.*</exclude>-->
-<!--                        </excludes>-->
                     </configuration>
-                </plugin>
-
-<!--                <plugin>-->
-<!--                    <groupId>org.codehaus.mojo</groupId>-->
-<!--                    <artifactId>build-helper-maven-plugin</artifactId>-->
-<!--                    <dependencies>-->
-<!--                        <dependency>-->
-<!--                            <groupId>org.codehaus.groovy</groupId>-->
-<!--                            <artifactId>groovy-all</artifactId>-->
-<!--                            <version>${groovy-all.version}</version>-->
-<!--                            <type>pom</type> &lt;!&ndash; required JUST since Groovy 2.5.0 &ndash;&gt;-->
-<!--                        </dependency>-->
-<!--                    </dependencies>-->
-<!--                </plugin>-->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-site-plugin</artifactId>
-                    <version>3.9.1</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-project-info-reports-plugin</artifactId>
-                    <version>3.1.2</version>
                 </plugin>
 
                 <plugin>
