@@ -1,12 +1,11 @@
-package practice.store;
+package practice;
 
 import practice.store.customer.CustomerEntity;
-import practice.store.customer.CustomerPayload;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class DataFactory {
+public class DataFactoryEntities {
 
     public static CustomerEntity createCustomerEntity(long id, String username, String password, String email, boolean isActive, boolean isCompany) {
         return CustomerEntity
@@ -25,18 +24,6 @@ public class DataFactory {
                 .builder()
                 .id(id)
                 .username(username)
-                .email(email)
-                .isActive(isActive)
-                .isCompany(isCompany)
-                .build();
-    }
-
-    public static CustomerPayload createCustomerPayload(long id, String username, String password, String email, boolean isActive, boolean isCompany) {
-        return CustomerPayload
-                .builder()
-                .id(id)
-                .username(username)
-                .password(password)
                 .email(email)
                 .isActive(isActive)
                 .isCompany(isCompany)
@@ -80,9 +67,37 @@ public class DataFactory {
     }
 
     public static List<CustomerEntity> creteCustomerList() {
-        CustomerEntity existingCustomerEntityFirst = DataFactory.createCustomerEntity(1L, "test name1", "test password1", "test@email.test1", true, true);
-        CustomerEntity existingCustomerEntitySecond = DataFactory.createCustomerEntity(2L, "test name2", "test password2", "test@email.test2", true, true);
-        CustomerEntity existingCustomerEntityThird = DataFactory.createCustomerEntity(3L, "test name3", "test password3", "test@email.test3", true, true);
+        CustomerEntity existingCustomerEntityFirst = CustomerEntity
+                .builder()
+                .id(1L)
+                .username("test name1")
+                .password("test password1")
+                .email("test@email.test1")
+                .isActive(true)
+                .isCompany(true)
+                .build();
+
+        CustomerEntity existingCustomerEntitySecond = CustomerEntity
+                .builder()
+                .id(2L)
+                .username("test name2")
+                .password("test password2")
+                .email("test@email.test2")
+                .isActive(true)
+                .isCompany(true)
+                .build();
+
+
+        CustomerEntity existingCustomerEntityThird = CustomerEntity
+                .builder()
+                .id(3L)
+                .username("test name3")
+                .password("test password3")
+                .email("test@email.test3")
+                .isActive(true)
+                .isCompany(true)
+                .build();
+
         return Arrays.asList(existingCustomerEntityFirst, existingCustomerEntitySecond, existingCustomerEntityThird);
     }
 }

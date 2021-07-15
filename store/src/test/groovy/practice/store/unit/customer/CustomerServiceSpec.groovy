@@ -2,7 +2,8 @@ package practice.store.unit.customer
 
 
 import org.springframework.security.crypto.password.PasswordEncoder
-import practice.store.DataFactory
+import practice.DataFactoryEntities
+import practice.DataFactoryPayloads
 import practice.store.customer.CustomerRepository
 import practice.store.customer.CustomerService
 import practice.store.exceptions.customer.CustomerEmailExistException
@@ -14,7 +15,7 @@ import spock.lang.Specification
 
 import javax.persistence.EntityNotFoundException
 
-class CustomerServiceUnitSpec extends Specification {
+class CustomerServiceSpec extends Specification {
 
     @Shared passwordEncoder
     @Shared customerRepository
@@ -36,8 +37,8 @@ class CustomerServiceUnitSpec extends Specification {
 
         customerService = new CustomerService(customerRepository, entitiesConverter, payloadsConverter)
 
-        customerEntity = DataFactory.createCustomerEntity(1L, "test name", "test password", "test@email.store", true, true)
-        customerPayload = DataFactory.createCustomerPayload(1L, "test name", "test password", "test@email.store", true, true)
+        customerEntity = DataFactoryEntities.createCustomerEntity(1L, "test name", "test password", "test@email.store", true, true)
+        customerPayload = DataFactoryPayloads.createCustomerPayload(1L, "test name", "test password", "test@email.store", true, true)
     }
 
 

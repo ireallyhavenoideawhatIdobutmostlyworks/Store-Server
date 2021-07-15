@@ -4,7 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import practice.store.DataFactory;
+import practice.DataFactoryEntities;
 import practice.store.customer.CustomerEntity;
 import practice.store.customer.CustomerPayload;
 import practice.store.utils.converter.EntitiesConverter;
@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Test converter object from entity to payload")
-class EntitiesConverterUnitTest {
+class EntitiesConverterTest {
 
 
     @DisplayName("Return converted payload from entity")
@@ -22,7 +22,7 @@ class EntitiesConverterUnitTest {
     void should_convert_entity_to_payload_test() {
         // given
         EntitiesConverter entitiesConverter = new EntitiesConverter();
-        CustomerEntity customerEntity = DataFactory.createCustomerEntity(
+        CustomerEntity customerEntity = DataFactoryEntities.createCustomerEntity(
                 1L,
                 "test name",
                 "test@email.store",

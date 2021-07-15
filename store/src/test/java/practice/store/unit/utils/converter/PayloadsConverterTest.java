@@ -6,7 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import practice.store.DataFactory;
+import practice.DataFactoryPayloads;
 import practice.store.customer.CustomerEntity;
 import practice.store.customer.CustomerPayload;
 import practice.store.utils.converter.PayloadsConverter;
@@ -17,7 +17,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Test converter object from payload to entity")
-class PayloadsConverterUnitTest {
+class PayloadsConverterTest {
 
     @Mock
     private PasswordEncoder passwordEncoder;
@@ -28,7 +28,7 @@ class PayloadsConverterUnitTest {
     void should_convert_payload_to_entity_test() {
         // given
         PayloadsConverter payloadsConverter = new PayloadsConverter(passwordEncoder);
-        CustomerPayload customerPayload = DataFactory.createCustomerPayload(
+        CustomerPayload customerPayload = DataFactoryPayloads.createCustomerPayload(
                 1L,
                 "test name",
                 "test password",

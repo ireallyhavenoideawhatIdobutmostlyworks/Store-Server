@@ -7,7 +7,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import practice.store.DataFactory;
+import practice.DataFactoryEntities;
+import practice.DataFactoryPayloads;
 import practice.store.customer.CustomerEntity;
 import practice.store.customer.CustomerPayload;
 import practice.store.customer.CustomerRepository;
@@ -30,7 +31,7 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Tests for customer service")
-class CustomerServiceUnitTest {
+class CustomerServiceTest {
 
     @Mock
     private PasswordEncoder passwordEncoder;
@@ -52,8 +53,8 @@ class CustomerServiceUnitTest {
 
         customerService = new CustomerService(customerRepository, entitiesConverter, payloadsConverter);
 
-        customerEntity = DataFactory.createCustomerEntity(1L, "test name", "test password", "test@email.store", true, true);
-        customerPayload = DataFactory.createCustomerPayload(1L, "test name", "test password", "test@email.store", true, true);
+        customerEntity = DataFactoryEntities.createCustomerEntity(1L, "test name", "test password", "test@email.store", true, true);
+        customerPayload = DataFactoryPayloads.createCustomerPayload(1L, "test name", "test password", "test@email.store", true, true);
     }
 
     @DisplayName("Return customer by ID")
