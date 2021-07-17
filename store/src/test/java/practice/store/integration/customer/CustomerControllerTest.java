@@ -23,9 +23,11 @@ import practice.DataFactoryPayloads;
 import practice.store.customer.CustomerEntity;
 import practice.store.customer.CustomerPayload;
 import practice.store.customer.CustomerRepository;
+import practice.store.utils.converter.EntitiesConverter;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -44,6 +46,8 @@ class CustomerControllerTest {
 
     @Autowired
     private CustomerRepository customerRepository;
+    @Autowired
+    private EntitiesConverter converter;
 
     private final String EXCEPTION_MESSAGE_FIRST_PART = "Something went wrong. Contact administrator with code";
     private final String EXCEPTION_MESSAGE_SECOND_PART = String.format("Timestamp: %s", LocalDate.now());
@@ -66,17 +70,18 @@ class CustomerControllerTest {
         CustomerEntity customerBeforeSave = DataFactoryEntities.createCustomerEntity("some@test.email");
         customerRepository.save(customerBeforeSave);
         CustomerEntity customerAfterSave = customerRepository.findByEmail(customerBeforeSave.getEmail());
+        CustomerPayload payload = converter.convertCustomer(customerAfterSave);
 
 
         // when
         MvcResult mvcResult = mvc
                 .perform(MockMvcRequestBuilders
-                        .get(MAIN_ENDPOINT + customerAfterSave.getId())
+                        .get(MAIN_ENDPOINT + payload.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().is(200))
-                .andExpect(jsonPath("$.id", Matchers.is(customerAfterSave.getId().intValue())))
+                .andExpect(jsonPath("$.id", Matchers.is(payload.getId().intValue())))
                 .andReturn();
 
 
@@ -84,7 +89,7 @@ class CustomerControllerTest {
         CustomerPayload customerAsResponse =
                 objectMapper.readValue(mvcResult.getResponse().getContentAsString(), CustomerPayload.class);
 
-        assertThat(customerAfterSave)
+        assertThat(payload)
                 .usingRecursiveComparison()
                 .ignoringFields("password")
                 .isEqualTo(customerAsResponse);
@@ -120,6 +125,7 @@ class CustomerControllerTest {
         List<CustomerEntity> customers = DataFactoryEntities.creteCustomerList();
         customerRepository.saveAll(customers);
         List<CustomerEntity> existingCustomerEntityList = customerRepository.findAll();
+        List<CustomerPayload> payloads = existingCustomerEntityList.stream().map(converter::convertCustomer).collect(Collectors.toList());
 
 
         // when
@@ -130,9 +136,9 @@ class CustomerControllerTest {
                 )
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().is(200))
-                .andExpect(jsonPath("$[0].id", Matchers.is(existingCustomerEntityList.get(0).getId().intValue())))
-                .andExpect(jsonPath("$[1].id", Matchers.is(existingCustomerEntityList.get(1).getId().intValue())))
-                .andExpect(jsonPath("$[2].id", Matchers.is(existingCustomerEntityList.get(2).getId().intValue())))
+                .andExpect(jsonPath("$[0].id", Matchers.is(payloads.get(0).getId().intValue())))
+                .andExpect(jsonPath("$[1].id", Matchers.is(payloads.get(1).getId().intValue())))
+                .andExpect(jsonPath("$[2].id", Matchers.is(payloads.get(2).getId().intValue())))
                 .andReturn();
 
 
@@ -141,12 +147,12 @@ class CustomerControllerTest {
                 objectMapper.readValue(mvcResult.getResponse().getContentAsString(), new TypeReference<>() {
                 });
 
-        assertThat(meetingsAsResponse).hasSize(existingCustomerEntityList.size());
+        assertThat(meetingsAsResponse).hasSize(payloads.size());
 
         assertThat(meetingsAsResponse)
                 .usingRecursiveComparison()
                 .ignoringFields("password")
-                .isEqualTo(existingCustomerEntityList);
+                .isEqualTo(payloads);
     }
 
     @WithMockUser(username = "username")
@@ -172,7 +178,7 @@ class CustomerControllerTest {
                 objectMapper.readValue(mvcResult.getResponse().getContentAsString(), new TypeReference<>() {
                 });
 
-        assertThat(meetingsAsResponse).hasSize(customerRepository.findAll().size());
+        assertThat(meetingsAsResponse).isEmpty();
     }
 
     @WithMockUser(username = "username")
@@ -375,7 +381,7 @@ class CustomerControllerTest {
     @WithMockUser(username = "username")
     @Transactional
     @Test
-    void change_isActive_field_when_id_exist() throws Exception {
+    void deleting_customer_sets_active_flag_to_false() throws Exception {
         // given
         customerRepository.saveAll(DataFactoryEntities.creteCustomerList());
         int customersListSizeBeforePerformDeleteRequest = customerRepository.findAll().size();
