@@ -1,5 +1,6 @@
 package practice.store.utils.converter;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -8,7 +9,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import practice.store.customer.CustomerEntity;
 import practice.store.customer.CustomerPayload;
-import practice.store.DataFactory;
+import practice.store.data.factory.DataFactoryCustomer;
+import practice.store.data.factory.DataFactoryProduct;
+import practice.store.product.Availability;
+import practice.store.product.Categories;
+import practice.store.product.ProductEntity;
+import practice.store.product.ProductPayload;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -20,14 +26,20 @@ class PayloadsConverterTest {
 
     @Mock
     private PasswordEncoder passwordEncoder;
+    private PayloadsConverter payloadsConverter;
 
 
-    @DisplayName("Return converted entity from payload")
+    @BeforeEach
+    void setUp() {
+        payloadsConverter = new PayloadsConverter(passwordEncoder);
+    }
+
+
+    @DisplayName("Return converted customer entity from payload")
     @Test
-    void should_convert_payload_to_entity_test() {
+    void should_convert_customer_payload_to_entity_test() {
         // given
-        PayloadsConverter payloadsConverter = new PayloadsConverter(passwordEncoder);
-        CustomerPayload customerPayload = DataFactory.createCustomerPayload(
+        CustomerPayload customerPayload = DataFactoryCustomer.createCustomerPayload(
                 1L,
                 "test name",
                 "test password",
@@ -51,5 +63,36 @@ class PayloadsConverterTest {
                 .isEqualTo(customerEntity);
 
         assertEquals(customerEntity.getPassword(), encodedPassword);
+    }
+
+    @DisplayName("Return converted product entity from payload")
+    @Test
+    void should_convert_product_payload_to_entity_test() {
+        // given
+        ProductPayload productPayload = DataFactoryProduct.createProductPayload(
+                1L,
+                "test name",
+                "test uuid",
+                "test description",
+                500,
+                100,
+                90,
+                10,
+                true,
+                5,
+                Categories.PHONES,
+                Availability.AVAILABLE,
+                true
+        );
+
+
+        // when
+        ProductEntity productEntity = payloadsConverter.convertProduct(productPayload);
+
+
+        // then
+        assertThat(productPayload)
+                .usingRecursiveComparison()
+                .isEqualTo(productEntity);
     }
 }

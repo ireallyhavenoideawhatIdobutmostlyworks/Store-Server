@@ -2,7 +2,7 @@ package practice.store.customer
 
 
 import org.springframework.security.crypto.password.PasswordEncoder
-import practice.store.DataFactory
+import practice.store.data.factory.DataFactoryCustomer
 import practice.store.exceptions.customer.CustomerEmailExistException
 import practice.store.exceptions.customer.CustomerEmailWithIdIncorrectException
 import practice.store.utils.converter.EntitiesConverter
@@ -34,8 +34,8 @@ class CustomerServiceSpec extends Specification {
 
         customerService = new CustomerService(customerRepository, entitiesConverter, payloadsConverter)
 
-        customerEntity = DataFactory.createCustomerEntity(1L, "test name", "test password", "test@email.store", true, true)
-        customerPayload = DataFactory.createCustomerPayload(1L, "test name", "test password", "test@email.store", true, true)
+        customerEntity = DataFactoryCustomer.createCustomerEntity(1L, "test name", "test password", "test@email.store", true, true)
+        customerPayload = DataFactoryCustomer.createCustomerPayload(1L, "test name", "test password", "test@email.store", true, true)
     }
 
 

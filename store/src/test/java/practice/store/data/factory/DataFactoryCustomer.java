@@ -1,9 +1,9 @@
-package practice.store;
+package practice.store.data.factory;
 
 import practice.store.customer.CustomerEntity;
 import practice.store.customer.CustomerPayload;
 
-public class DataFactory {
+public class DataFactoryCustomer {
 
     public static CustomerEntity createCustomerEntity(long id, String username, String password, String email, boolean isActive, boolean isCompany) {
         return CustomerEntity

@@ -9,7 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import practice.store.exceptions.customer.CustomerEmailExistException;
 import practice.store.exceptions.customer.CustomerEmailWithIdIncorrectException;
-import practice.store.DataFactory;
+import practice.store.data.factory.DataFactoryCustomer;
 import practice.store.utils.converter.EntitiesConverter;
 import practice.store.utils.converter.PayloadsConverter;
 
@@ -48,8 +48,8 @@ class CustomerServiceTest {
 
         customerService = new CustomerService(customerRepository, entitiesConverter, payloadsConverter);
 
-        customerEntity = DataFactory.createCustomerEntity(1L, "test name", "test password", "test@email.store", true, true);
-        customerPayload = DataFactory.createCustomerPayload(1L, "test name", "test password", "test@email.store", true, true);
+        customerEntity = DataFactoryCustomer.createCustomerEntity(1L, "test name", "test password", "test@email.store", true, true);
+        customerPayload = DataFactoryCustomer.createCustomerPayload(1L, "test name", "test password", "test@email.store", true, true);
     }
 
     @DisplayName("Return customer by ID")
@@ -73,7 +73,6 @@ class CustomerServiceTest {
 
         verify(customerRepository, times(1)).getById(id);
     }
-
 
     @DisplayName("Throw exception when ID is not exist")
     @Test

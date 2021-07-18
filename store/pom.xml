@@ -222,7 +222,7 @@
                             <testSource>
                                 <directory>${project.basedir}/src/test/java</directory>
                                 <includes>
-                                    <include>practice.store.DataFactory.java</include>
+                                    <include>practice.store.data.factory.DataFactoryCustomer.java</include>
                                     <include>**/*.java</include>
                                 </includes>
                             </testSource>
