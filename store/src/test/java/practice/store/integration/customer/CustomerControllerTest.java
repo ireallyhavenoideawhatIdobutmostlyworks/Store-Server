@@ -143,13 +143,13 @@ class CustomerControllerTest {
 
 
         // then
-        List<CustomerPayload> meetingsAsResponse =
+        List<CustomerPayload> customerAsResponse =
                 objectMapper.readValue(mvcResult.getResponse().getContentAsString(), new TypeReference<>() {
                 });
 
-        assertThat(meetingsAsResponse).hasSize(payloads.size());
+        assertThat(customerAsResponse).hasSize(payloads.size());
 
-        assertThat(meetingsAsResponse)
+        assertThat(customerAsResponse)
                 .usingRecursiveComparison()
                 .ignoringFields("password")
                 .isEqualTo(payloads);
@@ -174,11 +174,11 @@ class CustomerControllerTest {
 
 
         // then
-        List<CustomerPayload> meetingsAsResponse =
+        List<CustomerPayload> customerAsResponse =
                 objectMapper.readValue(mvcResult.getResponse().getContentAsString(), new TypeReference<>() {
                 });
 
-        assertThat(meetingsAsResponse).isEmpty();
+        assertThat(customerAsResponse).isEmpty();
     }
 
     @WithMockUser(username = "username")
