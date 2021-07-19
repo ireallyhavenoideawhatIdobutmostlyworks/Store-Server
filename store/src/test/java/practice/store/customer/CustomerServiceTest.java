@@ -1,4 +1,4 @@
-package practice.store.unit.customer;
+package practice.store.customer;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

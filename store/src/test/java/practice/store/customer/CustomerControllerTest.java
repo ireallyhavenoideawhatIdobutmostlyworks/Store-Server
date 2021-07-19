@@ -1,4 +1,4 @@
-package practice.store.integration.customer;
+package practice.store.customer;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -270,7 +270,9 @@ class CustomerControllerTest {
         assertThat(customerRepository.findAll()).hasSize(customersListSizeBeforePerformPutRequest);
 
         CustomerEntity customerAfterEditFromDatabase = customerRepository.getById(idExist);
-        assertThat(customerAfterEditFromDatabase)
+        CustomerPayload payload = converter.convertCustomer(customerAfterEditFromDatabase);
+
+        assertThat(payload)
                 .usingRecursiveComparison()
                 .ignoringFields("password")
                 .isEqualTo(entityForPutRequest);
