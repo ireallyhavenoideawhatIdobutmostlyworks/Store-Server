@@ -6,11 +6,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import practice.DataFactoryPayloads;
 import practice.store.customer.CustomerEntity;
 import practice.store.customer.CustomerPayload;
-import practice.store.DataFactory;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
@@ -27,7 +27,7 @@ class PayloadsConverterTest {
     void should_convert_payload_to_entity_test() {
         // given
         PayloadsConverter payloadsConverter = new PayloadsConverter(passwordEncoder);
-        CustomerPayload customerPayload = DataFactory.createCustomerPayload(
+        CustomerPayload customerPayload = DataFactoryPayloads.createCustomerPayload(
                 1L,
                 "test name",
                 "test password",
