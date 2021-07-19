@@ -2,13 +2,13 @@ package practice.store.customer
 
 
 import org.springframework.security.crypto.password.PasswordEncoder
-import practice.store.data.factory.DataFactoryCustomer
 import practice.store.exceptions.customer.CustomerEmailExistException
 import practice.store.exceptions.customer.CustomerEmailWithIdIncorrectException
 import practice.store.utils.converter.EntitiesConverter
 import practice.store.utils.converter.PayloadsConverter
 import spock.lang.Shared
 import spock.lang.Specification
+import testdata.DataFactoryCustomer
 
 import javax.persistence.EntityNotFoundException
 

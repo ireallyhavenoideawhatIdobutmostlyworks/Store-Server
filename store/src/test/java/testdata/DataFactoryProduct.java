@@ -1,4 +1,4 @@
-package practice.store.data.factory;
+package testdata;
 
 import practice.store.product.Availability;
 import practice.store.product.Categories;

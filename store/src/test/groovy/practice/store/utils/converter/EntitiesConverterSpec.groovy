@@ -1,8 +1,8 @@
 package practice.store.utils.converter
 
 import groovy.json.JsonOutput
-import practice.store.data.factory.DataFactoryCustomer
 import spock.lang.Specification
+import testdata.DataFactoryCustomer
 
 class EntitiesConverterSpec extends Specification {
 

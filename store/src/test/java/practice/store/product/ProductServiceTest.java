@@ -6,17 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import practice.store.customer.CustomerEntity;
-import practice.store.customer.CustomerPayload;
-import practice.store.customer.CustomerRepository;
-import practice.store.customer.CustomerService;
-import practice.store.data.factory.DataFactoryProduct;
+import testdata.DataFactoryProduct;
 import practice.store.utils.converter.EntitiesConverter;
-import practice.store.utils.converter.PayloadsConverter;
-import practice.store.utils.numbers.GenerateRandomNumber;
-import practice.store.utils.numbers.PriceProductCalculate;
-import practice.store.utils.values.RandomStringGenerator;
 
 import javax.persistence.EntityNotFoundException;
 

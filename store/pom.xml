@@ -33,9 +33,10 @@
         <!-- VERSIONS FOR TEST DEPENDENCIES -->
         <junit-jupiter.version>5.7.0</junit-jupiter.version>
         <mockito-junit-jupiter.version>3.11.2</mockito-junit-jupiter.version>
-        <pitest-maven.version>1.6.7</pitest-maven.version>
-        <pitest-junit5-plugin.version>0.14</pitest-junit5-plugin.version>
+<!--        <pitest-maven.version>1.6.7</pitest-maven.version>-->
+<!--        <pitest-junit5-plugin.version>0.14</pitest-junit5-plugin.version>-->
         <spock-core.version>2.0-groovy-3.0</spock-core.version>
+        <spock-spring.version>2.0-groovy-3.0</spock-spring.version>
         <groovy-all.version>3.0.8</groovy-all.version>
         <gmavenplus-plugin.version>1.12.1</gmavenplus-plugin.version>
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
@@ -70,11 +71,6 @@
             <artifactId>spring-boot-devtools</artifactId>
             <scope>runtime</scope>
             <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
         </dependency>
 
         <!-- SWAGGER -->
@@ -147,6 +143,11 @@
 
         <!-- DEPENDENCIES FOR TESTS -->
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
             <version>${junit-jupiter.version}</version>
@@ -177,6 +178,12 @@
         </dependency>
         <dependency>
             <groupId>org.spockframework</groupId>
+            <artifactId>spock-spring</artifactId>
+            <version>${spock-spring.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.spockframework</groupId>
             <artifactId>spock-core</artifactId>
             <version>${spock-core.version}</version>
             <scope>test</scope>
@@ -192,9 +199,7 @@
     <build>
         <pluginManagement>
             <plugins>
-
                 <plugin>
-<!--                    $ mvn clean compile gplus:compileTests test   -->
                     <groupId>org.codehaus.gmavenplus</groupId>
                     <artifactId>gmavenplus-plugin</artifactId>
                     <version>${gmavenplus-plugin.version}</version>
@@ -214,15 +219,14 @@
                             <testSource>
                                 <directory>${project.basedir}/src/test/groovy</directory>
                                 <includes>
+                                    <include>**/*Spec.java</include>
+                                    <include>**/*Spec.class</include>
                                     <include>**/*Spec.*</include>
-                                    <include>**/*.groovy</include>
                                 </includes>
                             </testSource>
-
                             <testSource>
                                 <directory>${project.basedir}/src/test/java</directory>
                                 <includes>
-                                    <include>practice.store.data.factory.DataFactoryCustomer.java</include>
                                     <include>**/*.java</include>
                                 </includes>
                             </testSource>
@@ -232,18 +236,12 @@
 
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <version>${maven-compiler-plugin.version}</version>
-                </plugin>
-
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>${maven-surefire-plugin.version}</version>
                     <configuration>
                         <includes>
-                            <include>**/*Test.*</include>
-                            <include>**/*Spec.*</include>
+                            <include>**/*Test*.*</include>
+                            <include>**/*Spec*.*</include>
                         </includes>
                     </configuration>
                 </plugin>

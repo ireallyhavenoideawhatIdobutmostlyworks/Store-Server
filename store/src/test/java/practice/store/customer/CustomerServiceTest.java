@@ -9,7 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import practice.store.exceptions.customer.CustomerEmailExistException;
 import practice.store.exceptions.customer.CustomerEmailWithIdIncorrectException;
-import practice.store.data.factory.DataFactoryCustomer;
+import testdata.DataFactoryCustomer;
 import practice.store.utils.converter.EntitiesConverter;
 import practice.store.utils.converter.PayloadsConverter;
 

@@ -17,7 +17,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import practice.store.data.factory.DataFactoryProduct;
+import testdata.DataFactoryProduct;
 import practice.store.utils.converter.EntitiesConverter;
 
 import java.time.LocalDate;
