@@ -99,7 +99,7 @@ class ProductServiceTest {
 
 
         // when
-        List<ProductPayload> productPayloadListReturnedFromService = productService.getList();
+        List<ProductPayload> productPayloadListReturnedFromService = productService.getProducts();
 
 
         // then
@@ -119,7 +119,7 @@ class ProductServiceTest {
 
 
         // when
-        List<ProductPayload> productPayloadListReturnedFromService = productService.getList();
+        List<ProductPayload> productPayloadListReturnedFromService = productService.getProducts();
 
 
         // then

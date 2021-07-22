@@ -30,7 +30,7 @@ public class ProductController {
     @ApiOperation(value = "This method is used to get the products.")
     @RequestMapping(value = "", method = RequestMethod.GET)
     public ResponseEntity<List<ProductPayload>> getProductsList() {
-        List<ProductPayload> products = productService.getList();
+        List<ProductPayload> products = productService.getProducts();
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 }
