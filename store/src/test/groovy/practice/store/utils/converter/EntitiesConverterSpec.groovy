@@ -1,9 +1,8 @@
-package practice.store.unit.utils.converter
+package practice.store.utils.converter
 
 import groovy.json.JsonOutput
-import practice.DataFactoryEntities
-import practice.store.utils.converter.EntitiesConverter
 import spock.lang.Specification
+import testdata.DataFactoryCustomer
 
 class EntitiesConverterSpec extends Specification {
 
@@ -11,7 +10,7 @@ class EntitiesConverterSpec extends Specification {
     def "should return converted payload from entity"() {
         given:
         def entitiesConverter = new EntitiesConverter()
-        def customerEntity = DataFactoryEntities.createCustomerEntity(1L, "test name", "test@email.store", true, true)
+        def customerEntity = DataFactoryCustomer.createCustomerEntity(1L, "test name", "test@email.store", true, true)
 
 
         when:

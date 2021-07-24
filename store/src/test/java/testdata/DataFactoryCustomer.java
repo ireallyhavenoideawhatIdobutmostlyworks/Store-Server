@@ -1,4 +1,4 @@
-package practice;
+package testdata;
 
 import practice.store.customer.CustomerEntity;
 import practice.store.customer.CustomerPayload;
@@ -6,10 +6,10 @@ import practice.store.customer.CustomerPayload;
 import java.util.Arrays;
 import java.util.List;
 
-public class DataFactoryPayloads {
+public class DataFactoryCustomer {
 
-    public static CustomerPayload createCustomerPayload(long id, String username, String password, String email, boolean isActive, boolean isCompany) {
-        return CustomerPayload
+    public static CustomerEntity createCustomerEntity(long id, String username, String password, String email, boolean isActive, boolean isCompany) {
+        return CustomerEntity
                 .builder()
                 .id(id)
                 .username(username)
@@ -20,11 +20,35 @@ public class DataFactoryPayloads {
                 .build();
     }
 
-    public static CustomerPayload createCustomerPayload(long id, String username, String email, boolean isActive, boolean isCompany) {
+    public static CustomerEntity createCustomerEntity(long id, String username, String email, boolean isActive, boolean isCompany) {
+        return CustomerEntity
+                .builder()
+                .id(id)
+                .username(username)
+                .email(email)
+                .isActive(isActive)
+                .isCompany(isCompany)
+                .build();
+    }
+
+    public static CustomerEntity createCustomerEntity(String email) {
+        return CustomerEntity
+                .builder()
+                .id(1L)
+                .username("name")
+                .password("password")
+                .email(email)
+                .isActive(true)
+                .isCompany(true)
+                .build();
+    }
+
+    public static CustomerPayload createCustomerPayload(long id, String username, String password, String email, boolean isActive, boolean isCompany) {
         return CustomerPayload
                 .builder()
                 .id(id)
                 .username(username)
+                .password(password)
                 .email(email)
                 .isActive(isActive)
                 .isCompany(isCompany)
@@ -67,8 +91,8 @@ public class DataFactoryPayloads {
                 .build();
     }
 
-    public static List<CustomerPayload> creteCustomerList() {
-        CustomerPayload existingCustomerEntityFirst = CustomerPayload
+    public static List<CustomerEntity> creteCustomerEntitiesList() {
+        CustomerEntity existingCustomerEntityFirst = CustomerEntity
                 .builder()
                 .id(1L)
                 .username("test name1")
@@ -78,7 +102,7 @@ public class DataFactoryPayloads {
                 .isCompany(true)
                 .build();
 
-        CustomerPayload existingCustomerEntitySecond = CustomerPayload
+        CustomerEntity existingCustomerEntitySecond = CustomerEntity
                 .builder()
                 .id(2L)
                 .username("test name2")
@@ -89,7 +113,7 @@ public class DataFactoryPayloads {
                 .build();
 
 
-        CustomerPayload existingCustomerEntityThird = CustomerPayload
+        CustomerEntity existingCustomerEntityThird = CustomerEntity
                 .builder()
                 .id(3L)
                 .username("test name3")

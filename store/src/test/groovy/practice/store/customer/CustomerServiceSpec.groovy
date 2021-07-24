@@ -1,17 +1,14 @@
-package practice.store.unit.customer
+package practice.store.customer
 
 
 import org.springframework.security.crypto.password.PasswordEncoder
-import practice.DataFactoryEntities
-import practice.DataFactoryPayloads
-import practice.store.customer.CustomerRepository
-import practice.store.customer.CustomerService
 import practice.store.exceptions.customer.CustomerEmailExistException
 import practice.store.exceptions.customer.CustomerEmailWithIdIncorrectException
 import practice.store.utils.converter.EntitiesConverter
 import practice.store.utils.converter.PayloadsConverter
 import spock.lang.Shared
 import spock.lang.Specification
+import testdata.DataFactoryCustomer
 
 import javax.persistence.EntityNotFoundException
 
@@ -37,8 +34,8 @@ class CustomerServiceSpec extends Specification {
 
         customerService = new CustomerService(customerRepository, entitiesConverter, payloadsConverter)
 
-        customerEntity = DataFactoryEntities.createCustomerEntity(1L, "test name", "test password", "test@email.store", true, true)
-        customerPayload = DataFactoryPayloads.createCustomerPayload(1L, "test name", "test password", "test@email.store", true, true)
+        customerEntity = DataFactoryCustomer.createCustomerEntity(1L, "test name", "test password", "test@email.store", true, true)
+        customerPayload = DataFactoryCustomer.createCustomerPayload(1L, "test name", "test password", "test@email.store", true, true)
     }
 
 

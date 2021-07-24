@@ -18,11 +18,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
-import practice.DataFactoryEntities;
-import practice.DataFactoryPayloads;
-import practice.store.customer.CustomerEntity;
-import practice.store.customer.CustomerPayload;
-import practice.store.customer.CustomerRepository;
+
+import testdata.DataFactoryCustomer;
 import practice.store.utils.converter.EntitiesConverter;
 
 import java.time.LocalDate;
@@ -67,7 +64,7 @@ class CustomerControllerTest {
     @Test
     void get_by_id_when_id_exist() throws Exception {
         // given
-        CustomerEntity customerBeforeSave = DataFactoryEntities.createCustomerEntity("some@test.email");
+        CustomerEntity customerBeforeSave = DataFactoryCustomer.createCustomerEntity("some@test.email");
         customerRepository.save(customerBeforeSave);
         CustomerEntity customerAfterSave = customerRepository.findByEmail(customerBeforeSave.getEmail());
         CustomerPayload payload = converter.convertCustomer(customerAfterSave);
@@ -122,7 +119,7 @@ class CustomerControllerTest {
     @Test
     void get_customers_list_when_list_is_not_empty() throws Exception {
         // given
-        List<CustomerEntity> customers = DataFactoryEntities.creteCustomerList();
+        List<CustomerEntity> customers = DataFactoryCustomer.creteCustomerEntitiesList();
         customerRepository.saveAll(customers);
         List<CustomerEntity> existingCustomerEntityList = customerRepository.findAll();
         List<CustomerPayload> payloads = existingCustomerEntityList.stream().map(converter::convertCustomer).collect(Collectors.toList());
@@ -186,9 +183,9 @@ class CustomerControllerTest {
     void add_customer_when_data_are_correct() throws Exception {
         // given
         customerRepository.deleteAll();
-        List<CustomerEntity> existingCustomerEntityList = DataFactoryEntities.creteCustomerList();
+        List<CustomerEntity> existingCustomerEntityList = DataFactoryCustomer.creteCustomerEntitiesList();
         customerRepository.saveAll(existingCustomerEntityList);
-        CustomerPayload entityToSave = DataFactoryPayloads.createCustomerPayload();
+        CustomerPayload entityToSave = DataFactoryCustomer.createCustomerPayload();
 
 
         // when
@@ -215,10 +212,10 @@ class CustomerControllerTest {
     @Test
     void not_add_customer_when_email_is_exist() throws Exception {
         // given
-        customerRepository.saveAll(DataFactoryEntities.creteCustomerList());
+        customerRepository.saveAll(DataFactoryCustomer.creteCustomerEntitiesList());
 
         String emailExist = customerRepository.findAll().get(0).getEmail();
-        CustomerPayload entityToSave = DataFactoryPayloads.createCustomerPayload(emailExist);
+        CustomerPayload entityToSave = DataFactoryCustomer.createCustomerPayload(emailExist);
 
         int customersListSizeBeforePerformPostRequest = customerRepository.findAll().size();
 
@@ -247,12 +244,12 @@ class CustomerControllerTest {
     @Test
     void edit_customer_when_data_are_correct() throws Exception {
         // given
-        customerRepository.saveAll(DataFactoryEntities.creteCustomerList());
+        customerRepository.saveAll(DataFactoryCustomer.creteCustomerEntitiesList());
         int customersListSizeBeforePerformPutRequest = customerRepository.findAll().size();
 
         long idExist = customerRepository.findAll().get(0).getId();
         String emailExist = customerRepository.findAll().get(0).getEmail();
-        CustomerPayload entityForPutRequest = DataFactoryPayloads.createCustomerPayload(idExist, emailExist);
+        CustomerPayload entityForPutRequest = DataFactoryCustomer.createCustomerPayload(idExist, emailExist);
 
 
         // when
@@ -283,13 +280,13 @@ class CustomerControllerTest {
     @Test
     void not_edit_customer_when_id_email_not_exist() throws Exception {
         // given
-        customerRepository.saveAll(DataFactoryEntities.creteCustomerList());
+        customerRepository.saveAll(DataFactoryCustomer.creteCustomerEntitiesList());
         int customersListSizeBeforePerformPutRequest = customerRepository.findAll().size();
 
         long idBelongToFirstCustomer = customerRepository.findAll().get(0).getId();
         String emailNotExist = "email@not.exist";
 
-        CustomerPayload entityForPutRequestWithIncorrectData = DataFactoryPayloads.createCustomerPayload(idBelongToFirstCustomer, emailNotExist);
+        CustomerPayload entityForPutRequestWithIncorrectData = DataFactoryCustomer.createCustomerPayload(idBelongToFirstCustomer, emailNotExist);
 
 
         // when
@@ -321,13 +318,13 @@ class CustomerControllerTest {
     @Test
     void not_edit_customer_when_id_and_email_not_belong_to_the_same_customer() throws Exception {
         // given
-        customerRepository.saveAll(DataFactoryEntities.creteCustomerList());
+        customerRepository.saveAll(DataFactoryCustomer.creteCustomerEntitiesList());
         int customersListSizeBeforePerformPutRequest = customerRepository.findAll().size();
 
         long idBelongToFirstCustomer = customerRepository.findAll().get(0).getId();
         String emailBelongToSecondCustomer = customerRepository.findAll().get(1).getEmail();
 
-        CustomerPayload entityForPutRequestWithIncorrectData = DataFactoryPayloads.createCustomerPayload(idBelongToFirstCustomer, emailBelongToSecondCustomer);
+        CustomerPayload entityForPutRequestWithIncorrectData = DataFactoryCustomer.createCustomerPayload(idBelongToFirstCustomer, emailBelongToSecondCustomer);
 
 
         // when
@@ -358,7 +355,7 @@ class CustomerControllerTest {
     @Test
     void delete_entity_when_id_not_exist() throws Exception {
         // given
-        customerRepository.saveAll(DataFactoryEntities.creteCustomerList());
+        customerRepository.saveAll(DataFactoryCustomer.creteCustomerEntitiesList());
         int customersListSizeBeforePerformDeleteRequest = customerRepository.findAll().size();
         long idNotExist = customersListSizeBeforePerformDeleteRequest + 10;
 
@@ -385,7 +382,7 @@ class CustomerControllerTest {
     @Test
     void deleting_customer_sets_active_flag_to_false() throws Exception {
         // given
-        customerRepository.saveAll(DataFactoryEntities.creteCustomerList());
+        customerRepository.saveAll(DataFactoryCustomer.creteCustomerEntitiesList());
         int customersListSizeBeforePerformDeleteRequest = customerRepository.findAll().size();
         long idExist = customerRepository.findAll().get(0).getId();
 

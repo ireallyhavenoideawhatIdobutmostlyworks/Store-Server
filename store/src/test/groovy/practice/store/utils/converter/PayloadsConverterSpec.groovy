@@ -1,10 +1,9 @@
-package practice.store.unit.utils.converter
+package practice.store.utils.converter
 
 import groovy.json.JsonOutput
 import org.springframework.security.crypto.password.PasswordEncoder
-import practice.DataFactoryPayloads
-import practice.store.utils.converter.PayloadsConverter
 import spock.lang.Specification
+import testdata.DataFactoryCustomer
 
 
 class PayloadsConverterSpec extends Specification {
@@ -14,7 +13,7 @@ class PayloadsConverterSpec extends Specification {
         given:
         def passwordEncoder = Mock(PasswordEncoder.class)
         def payloadConverter = new PayloadsConverter(passwordEncoder)
-        def customerPayload = DataFactoryPayloads.createCustomerPayload(1L, "test name", "test password", "test@email.store", true, true)
+        def customerPayload = DataFactoryCustomer.createCustomerPayload(1L, "test name", "test password", "test@email.store", true, true)
 
         String password = "test password"
         String encodedPassword = "encoded test password"
