@@ -8,7 +8,6 @@ import java.util.Random;
 @Component
 public class GenerateRandomNumber {
 
-
     public Integer generateRandomIndexFromListSize(int listSize) {
         if (listSize == 0)
             throw new ListIsEmptyException();

@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import practice.store.customer.CustomerPayload;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -32,5 +33,12 @@ public class ProductController {
     public ResponseEntity<List<ProductPayload>> getProductsList() {
         List<ProductPayload> products = productService.getProducts();
         return new ResponseEntity<>(products, HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "This method is used to save the product.")
+    @RequestMapping(value = "", method = RequestMethod.POST)
+    public ResponseEntity save(@Valid @RequestBody ProductPayload product) {
+        productService.save(product);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }
