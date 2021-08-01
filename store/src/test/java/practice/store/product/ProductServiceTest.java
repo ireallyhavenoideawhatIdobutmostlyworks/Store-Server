@@ -7,17 +7,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import practice.store.customer.CustomerEntity;
-import practice.store.exceptions.customer.CustomerEmailExistException;
 import practice.store.exceptions.product.*;
+import practice.store.utils.converter.EntitiesConverter;
 import practice.store.utils.converter.PayloadsConverter;
 import practice.store.utils.numbers.CalculatePriceProduct;
 import practice.store.utils.values.GenerateRandomString;
 import testdata.DataFactoryProduct;
-import practice.store.utils.converter.EntitiesConverter;
 
 import javax.persistence.EntityNotFoundException;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -32,8 +29,6 @@ import static org.mockito.Mockito.*;
 @DisplayName("Tests for product service")
 class ProductServiceTest {
 
-    @Mock
-    private PasswordEncoder passwordEncoder;
 
     @Mock
     private ProductRepository productRepository;
@@ -43,31 +38,25 @@ class ProductServiceTest {
     private PayloadsConverter payloadsConverter;
 
     private ProductEntity productEntity;
-    private ProductEntity productEntityWithDiscount;
-    private ProductEntity productEntityWithoutDiscount;
-
-
+    private ProductPayload productPayloadWithDiscount;
     private ProductPayload productPayloadWithoutDiscount;
 
-    private GenerateRandomString generateRandomString;
     private CalculatePriceProduct calculateFinalPrice;
 
 
     @BeforeEach
     void setUp() {
         entitiesConverter = new EntitiesConverter();
-        payloadsConverter = new PayloadsConverter(passwordEncoder);
+        payloadsConverter = new PayloadsConverter(mock(PasswordEncoder.class));
 
-        generateRandomString = new GenerateRandomString();
         calculateFinalPrice = new CalculatePriceProduct();
 
-        productService = new ProductService(productRepository, entitiesConverter, payloadsConverter, generateRandomString, calculateFinalPrice);
+        productService = new ProductService(productRepository, entitiesConverter, payloadsConverter, new GenerateRandomString(), calculateFinalPrice);
 
-        productEntity = DataFactoryProduct.createProductEntity(1L, "test name", "testUUID", "test description", 100, 10, 90, 10, true, 5, Categories.PHONES, Availability.AVAILABLE, true);
-        productEntityWithDiscount = DataFactoryProduct.createProductEntity(1L, "test name", "testUUID", "test description", 100, 10, 90, 10, true, 5, Categories.PHONES, Availability.AVAILABLE, true);
-        productEntityWithoutDiscount = DataFactoryProduct.createProductEntity(1L, "test name", "testUUID", "test description", 100, 0, 100, 0, false, 5, Categories.PHONES, Availability.AVAILABLE, true);
+        productEntity = DataFactoryProduct.createProductEntity();
 
-        productPayloadWithoutDiscount = DataFactoryProduct.createProductPayload(1L, "test name", "testUUID", "test description", 100, 0, 100, 0, false, 5, Categories.PHONES, Availability.AVAILABLE, true);
+        productPayloadWithDiscount = DataFactoryProduct.createProductPayloadWithDiscount();
+        productPayloadWithoutDiscount = DataFactoryProduct.createProductPayloadWithoutDiscount();
     }
 
 
@@ -159,8 +148,6 @@ class ProductServiceTest {
     @Test
     void should_save_product_with_discount() {
         // given
-        ProductPayload productPayloadWithDiscount = DataFactoryProduct.createProductPayload(1L, "test name", "testUUID", "test description", 100, 10, 90, 10, true, 5, Categories.PHONES, Availability.AVAILABLE, true);
-
         productPayloadWithDiscount.setId(null);
         productPayloadWithDiscount.setActive(true);
 
@@ -179,8 +166,6 @@ class ProductServiceTest {
     @Test
     void should_save_product_without_discount() {
         // given
-        ProductPayload productPayloadWithDiscount = DataFactoryProduct.createProductPayload(1L, "test name", "testUUID", "test description", 100, 0, 100, 0, false, 5, Categories.PHONES, Availability.AVAILABLE, true);
-
         productPayloadWithDiscount.setId(null);
         productPayloadWithDiscount.setActive(true);
 
@@ -199,8 +184,7 @@ class ProductServiceTest {
     @Test
     void should_throw_exception_when_product_is_withdraw_from_sale_during_save_test() {
         // given
-        ProductPayload productPayloadWithDiscount = DataFactoryProduct.createProductPayload(1L, "test name", "testUUID", "test description", 100, 0, 100, 0, false, 5, Categories.PHONES, Availability.WITHDRAW_FROM_SALE, true);
-        String exceptionMessage = "A product withdrawn from sale cannot be added.";
+        productPayloadWithDiscount.setAvailability(Availability.WITHDRAW_FROM_SALE);
 
 
         // when
@@ -210,7 +194,7 @@ class ProductServiceTest {
         // then
         assertThat(exception)
                 .isInstanceOf(ProductWithdrawFromSaleException.class)
-                .hasMessageContaining(exceptionMessage);
+                .hasMessageContaining("A product withdrawn from sale cannot be added.");
 
         verify(productRepository, times(0)).save(productEntity);
     }
@@ -219,10 +203,7 @@ class ProductServiceTest {
     @Test
     void should_throw_exception_when_product_uuid_is_exist_during_save_test() {
         // given
-        String uuid = "test uuid";
-        ProductPayload productPayloadWithDiscount = DataFactoryProduct.createProductPayload(1L, "test name", uuid, "test description", 100, 0, 100, 0, false, 5, Categories.PHONES, Availability.AVAILABLE, true);
-        String exceptionMessage = "Product with UUID:%s is exist.";
-
+        String uuid = productPayloadWithDiscount.getProductUUID();
         when(productRepository.existsByProductUUID(uuid)).thenReturn(true);
 
 
@@ -233,7 +214,7 @@ class ProductServiceTest {
         // then
         assertThat(exception)
                 .isInstanceOf(ProductUuidExistException.class)
-                .hasMessageContaining(String.format(exceptionMessage, uuid));
+                .hasMessageContaining(String.format("Product with UUID:%s is exist.", uuid));
 
         verify(productRepository, times(1)).existsByProductUUID(uuid);
         verify(productRepository, times(0)).save(productEntity);
@@ -243,8 +224,7 @@ class ProductServiceTest {
     @Test
     void should_throw_exception_when_product_discount_percentage_is_to_high_during_save_test() {
         // given
-        ProductPayload productPayloadWithDiscount = DataFactoryProduct.createProductPayload(1L, "test name", "testUUID", "test description", 100, 96, 4, 96, true, 5, Categories.PHONES, Availability.AVAILABLE, true);
-        String exceptionMessage = "The percentage discount may not be higher than 95%.";
+        productPayloadWithDiscount.setDiscountPercentage(96);
 
 
         // when
@@ -254,7 +234,7 @@ class ProductServiceTest {
         // then
         assertThat(exception)
                 .isInstanceOf(ProductDiscountPercentageHighException.class)
-                .hasMessageContaining(exceptionMessage);
+                .hasMessageContaining("The percentage discount may not be higher than 95%.");
 
         verify(productRepository, times(0)).save(productEntity);
     }
@@ -263,8 +243,7 @@ class ProductServiceTest {
     @Test
     void should_throw_exception_when_product_discount_percentage_is_to_low_during_save_test() {
         // given
-        ProductPayload productPayloadWithDiscount = DataFactoryProduct.createProductPayload(1L, "test name", "testUUID", "test description", 100, 4, 96, 4, true, 5, Categories.PHONES, Availability.AVAILABLE, true);
-        String exceptionMessage = "The percentage discount may not be lower than 5%.";
+        productPayloadWithDiscount.setDiscountPercentage(4);
 
 
         // when
@@ -274,7 +253,7 @@ class ProductServiceTest {
         // then
         assertThat(exception)
                 .isInstanceOf(ProductDiscountPercentageLowException.class)
-                .hasMessageContaining(exceptionMessage);
+                .hasMessageContaining("The percentage discount may not be lower than 5%.");
 
         verify(productRepository, times(0)).save(productEntity);
     }
@@ -286,9 +265,11 @@ class ProductServiceTest {
         double basePrice = 100;
         int discountPercentage = 10;
         double incorrectFinalPrice = 88;
-        ProductPayload productPayloadWithDiscount = DataFactoryProduct.createProductPayload(1L, "test name", "testUUID", "test description", basePrice, 10, incorrectFinalPrice, discountPercentage, true, 5, Categories.PHONES, Availability.AVAILABLE, true);
 
-        String exceptionMessage = "Incorrect final price. Final price from payload:%f. Correct final price:%f.";
+        productPayloadWithDiscount.setBasePrice(basePrice);
+        productPayloadWithDiscount.setDiscountPercentage(discountPercentage);
+        productPayloadWithDiscount.setFinalPrice(incorrectFinalPrice);
+
         double finalPriceCalculate = calculateFinalPrice.calculateFinalPrice(basePrice, discountPercentage);
 
 
@@ -299,7 +280,7 @@ class ProductServiceTest {
         // then
         assertThat(exception)
                 .isInstanceOf(ProductFinalPriceException.class)
-                .hasMessageContaining(String.format(exceptionMessage, incorrectFinalPrice, finalPriceCalculate));
+                .hasMessageContaining(String.format("Incorrect final price. Final price from payload:%f. Correct final price:%f.", incorrectFinalPrice, finalPriceCalculate));
 
         verify(productRepository, times(0)).save(productEntity);
     }
@@ -311,9 +292,11 @@ class ProductServiceTest {
         double basePrice = 100;
         int discountPercentage = 10;
         double amountPriceReduction = 11;
-        ProductPayload productPayloadWithDiscount = DataFactoryProduct.createProductPayload(1L, "test name", "testUUID", "test description", basePrice, amountPriceReduction, 90, discountPercentage, true, 5, Categories.PHONES, Availability.AVAILABLE, true);
 
-        String exceptionMessage = "Incorrect price reduction. Price reduction from payload:%f. Correct price reduction:%f.";
+        productPayloadWithDiscount.setBasePrice(basePrice);
+        productPayloadWithDiscount.setDiscountPercentage(discountPercentage);
+        productPayloadWithDiscount.setAmountPriceReduction(amountPriceReduction);
+
         double finalPriceCalculate = calculateFinalPrice.calculateFinalPrice(basePrice, discountPercentage);
         double amountPriceReductionCalculate = basePrice - finalPriceCalculate;
 
@@ -325,7 +308,7 @@ class ProductServiceTest {
         // then
         assertThat(exception)
                 .isInstanceOf(ProductPriceReductionException.class)
-                .hasMessageContaining(String.format(exceptionMessage, amountPriceReduction, amountPriceReductionCalculate));
+                .hasMessageContaining(String.format("Incorrect price reduction. Price reduction from payload:%f. Correct price reduction:%f.", amountPriceReduction, amountPriceReductionCalculate));
 
         verify(productRepository, times(0)).save(productEntity);
     }
@@ -334,43 +317,57 @@ class ProductServiceTest {
     @Test
     void should_throw_exception_when_discount_percentage_is_not_zero_during_save_test() {
         // given
-
+        productPayloadWithoutDiscount.setDiscountPercentage(10);
 
 
         // when
+        Throwable exception = catchThrowable(() -> productService.save(productPayloadWithoutDiscount));
 
 
         // then
+        assertThat(exception)
+                .isInstanceOf(ProductDiscountPercentageException.class)
+                .hasMessageContaining("Discount percentage should equal 0.");
 
+        verify(productRepository, times(0)).save(productEntity);
     }
 
     @DisplayName("Throw exception for product without discount when price reduction is not zero during save")
     @Test
     void should_throw_exception_when_discount_price_reduction_is_not_zero_during_save_test() {
         // given
-
+        productPayloadWithoutDiscount.setAmountPriceReduction(10);
 
 
         // when
+        Throwable exception = catchThrowable(() -> productService.save(productPayloadWithoutDiscount));
 
 
         // then
+        assertThat(exception)
+                .isInstanceOf(ProductPriceReductionException.class)
+                .hasMessageContaining("Price reduction should equal 0");
 
+        verify(productRepository, times(0)).save(productEntity);
     }
 
     @DisplayName("Throw exception for product without discount when final price and base price are not equal during save")
     @Test
     void should_throw_exception_when_prices_are_not_equal_during_save_test() {
         // given
-
+        productPayloadWithoutDiscount.setBasePrice(100);
+        productPayloadWithoutDiscount.setFinalPrice(90);
 
 
         // when
+        Throwable exception = catchThrowable(() -> productService.save(productPayloadWithoutDiscount));
 
 
         // then
+        assertThat(exception)
+                .isInstanceOf(ProductFinalPriceException.class)
+                .hasMessageContaining("Final price should equal base price.");
 
+        verify(productRepository, times(0)).save(productEntity);
     }
-
-
 }
