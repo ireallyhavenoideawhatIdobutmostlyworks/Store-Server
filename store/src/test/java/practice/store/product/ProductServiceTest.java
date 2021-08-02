@@ -6,7 +6,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import practice.store.exceptions.product.*;
 import practice.store.utils.converter.EntitiesConverter;
 import practice.store.utils.converter.PayloadsConverter;
@@ -25,10 +29,18 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
+@TestPropertySource("classpath:productsDiscountValueTest.properties")
 @DisplayName("Tests for product service")
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration
 class ProductServiceTest {
 
+    @Value("${discount.percentage.zero.value}")
+    private int discountPercentageZeroValue;
+    @Value("${discount.percentage.max.higher.value}")
+    private int discountPercentageMaxHigherValue;
+    @Value("${discount.percentage.max.lower.value}")
+    private int discountPercentageMaxLowerValue;
 
     @Mock
     private ProductRepository productRepository;
@@ -51,7 +63,7 @@ class ProductServiceTest {
 
         calculateFinalPrice = new CalculatePriceProduct();
 
-        productService = new ProductService(productRepository, entitiesConverter, payloadsConverter, new GenerateRandomString(), calculateFinalPrice);
+        productService = new ProductService(productRepository, entitiesConverter, payloadsConverter, new GenerateRandomString(), calculateFinalPrice, discountPercentageZeroValue, discountPercentageMaxHigherValue, discountPercentageMaxLowerValue);
 
         productEntity = DataFactoryProduct.createProductEntity();
 
@@ -166,14 +178,14 @@ class ProductServiceTest {
     @Test
     void should_save_product_without_discount() {
         // given
-        productPayloadWithDiscount.setId(null);
-        productPayloadWithDiscount.setActive(true);
+        productPayloadWithoutDiscount.setId(null);
+        productPayloadWithoutDiscount.setActive(true);
 
-        ProductEntity productEntity = payloadsConverter.convertProduct(productPayloadWithDiscount);
+        ProductEntity productEntity = payloadsConverter.convertProduct(productPayloadWithoutDiscount);
 
 
         // when
-        productService.save(productPayloadWithDiscount);
+        productService.save(productPayloadWithoutDiscount);
 
 
         // then
@@ -234,7 +246,7 @@ class ProductServiceTest {
         // then
         assertThat(exception)
                 .isInstanceOf(ProductDiscountPercentageHighException.class)
-                .hasMessageContaining("The percentage discount may not be higher than 95%.");
+                .hasMessageContaining(String.format("The percentage discount may not be higher than %d%%.", discountPercentageMaxHigherValue));
 
         verify(productRepository, times(0)).save(productEntity);
     }
@@ -253,7 +265,7 @@ class ProductServiceTest {
         // then
         assertThat(exception)
                 .isInstanceOf(ProductDiscountPercentageLowException.class)
-                .hasMessageContaining("The percentage discount may not be lower than 5%.");
+                .hasMessageContaining(String.format("The percentage discount may not be lower than %d%%.", discountPercentageMaxLowerValue));
 
         verify(productRepository, times(0)).save(productEntity);
     }
@@ -327,7 +339,7 @@ class ProductServiceTest {
         // then
         assertThat(exception)
                 .isInstanceOf(ProductDiscountPercentageException.class)
-                .hasMessageContaining("Discount percentage should equal 0.");
+                .hasMessageContaining(String.format("Discount percentage should be equal %d%%.", discountPercentageZeroValue));
 
         verify(productRepository, times(0)).save(productEntity);
     }

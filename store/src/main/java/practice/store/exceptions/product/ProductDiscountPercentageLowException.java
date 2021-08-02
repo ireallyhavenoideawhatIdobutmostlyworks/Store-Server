@@ -2,7 +2,7 @@ package practice.store.exceptions.product;
 
 public class ProductDiscountPercentageLowException extends RuntimeException {
 
-    public ProductDiscountPercentageLowException() {
-        super("The percentage discount may not be lower than 5%.");
+    public ProductDiscountPercentageLowException(int discount) {
+        super(String.format("The percentage discount may not be lower than %d%%.", discount));
     }
 }

@@ -1,6 +1,8 @@
 package practice.store.product;
 
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import practice.store.exceptions.product.*;
@@ -12,7 +14,7 @@ import practice.store.utils.values.GenerateRandomString;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@RequiredArgsConstructor
+@PropertySource("classpath:productsDiscountValue.properties")
 @Transactional
 @Service
 public class ProductService {
@@ -25,6 +27,21 @@ public class ProductService {
     private final GenerateRandomString generateRandomString;
     private final CalculatePriceProduct calculateFinalPrice;
 
+    private final int discountPercentageZeroValue;
+    private final int discountPercentageMaxHigherValue;
+    private final int discountPercentageMaxLowerValue;
+
+    @Autowired
+    public ProductService(ProductRepository productRepository, EntitiesConverter entitiesConverter, PayloadsConverter payloadsConverter, GenerateRandomString generateRandomString, CalculatePriceProduct calculateFinalPrice, @Value("${discount.percentage.value.zero}") int discountPercentageZeroValue, @Value("${discount.percentage.max.value.higher}") int discountPercentageMaxHigherValue, @Value("${discount.percentage.max.value.lower}") int discountPercentageMaxLowerValue) {
+        this.productRepository = productRepository;
+        this.entitiesConverter = entitiesConverter;
+        this.payloadsConverter = payloadsConverter;
+        this.generateRandomString = generateRandomString;
+        this.calculateFinalPrice = calculateFinalPrice;
+        this.discountPercentageZeroValue = discountPercentageZeroValue;
+        this.discountPercentageMaxHigherValue = discountPercentageMaxHigherValue;
+        this.discountPercentageMaxLowerValue = discountPercentageMaxLowerValue;
+    }
 
     public ProductPayload getById(long id) {
         return entitiesConverter.convertProduct(productRepository.getById(id));
@@ -63,11 +80,11 @@ public class ProductService {
     }
 
 
-    private void calculateAvailabilityDependsOnProductAmounts(ProductPayload product){
-        if (product.getAmountInStock() < 5 && product.getAmountInStock() != 0)
-            product.setAvailability(Availability.AWAITING_FROM_MANUFACTURE);
+    private void calculateAvailabilityDependsOnProductAmounts(ProductPayload product) {
         if (product.getAmountInStock() == 0)
             product.setAvailability(Availability.NOT_AVAILABLE);
+        else if (product.getAmountInStock() < 5)
+            product.setAvailability(Availability.AWAITING_FROM_MANUFACTURE);
     }
 
     private void checkIfFinalPriceAndBasePriceAreEquals(double finalPrice, double basePrice) {
@@ -76,8 +93,8 @@ public class ProductService {
     }
 
     private void checkIfDiscountPercentageIsEqualZero(int discountPercentage) {
-        if (discountPercentage != 0)
-            throw new ProductDiscountPercentageException();
+        if (discountPercentage != discountPercentageZeroValue)
+            throw new ProductDiscountPercentageException(discountPercentageZeroValue);
     }
 
     private void checkIfPriceReductionIsEqualZero(double amountPriceReduction) {
@@ -86,13 +103,13 @@ public class ProductService {
     }
 
     private void checkIfDiscountPercentageIsNotToHigh(int discountPercentage) {
-        if (discountPercentage > 95)
-            throw new ProductDiscountPercentageHighException();
+        if (discountPercentage > discountPercentageMaxHigherValue)
+            throw new ProductDiscountPercentageHighException(discountPercentageMaxHigherValue);
     }
 
     private void checkIfDiscountPercentageIsNotToLow(int discountPercentage) {
-        if (discountPercentage < 5)
-            throw new ProductDiscountPercentageLowException();
+        if (discountPercentage < discountPercentageMaxLowerValue)
+            throw new ProductDiscountPercentageLowException(discountPercentageMaxLowerValue);
     }
 
     private void checkIfFinalPriceIsCorrect(double basePrice, int discountPercentage, double finalPrice) {
