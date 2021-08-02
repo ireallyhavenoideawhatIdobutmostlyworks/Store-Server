@@ -65,7 +65,6 @@ class ProductControllerTest {
 
         productPayloadWithDiscount = DataFactoryProduct.createProductPayloadWithDiscount();
         productPayloadWithoutDiscount = DataFactoryProduct.createProductPayloadWithoutDiscount();
-
     }
 
 
