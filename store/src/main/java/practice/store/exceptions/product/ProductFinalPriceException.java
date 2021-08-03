@@ -9,8 +9,4 @@ public class ProductFinalPriceException extends RuntimeException {
                 finalPriceCalculate
         ));
     }
-
-    public ProductFinalPriceException() {
-        super("Final price should equal base price.");
-    }
 }

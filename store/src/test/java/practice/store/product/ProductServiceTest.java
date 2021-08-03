@@ -5,7 +5,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ContextConfiguration;
@@ -35,8 +34,6 @@ import static org.mockito.Mockito.*;
 @ContextConfiguration
 class ProductServiceTest {
 
-    @Value("${discount.percentage.zero.value}")
-    private int discountPercentageZeroValue;
     @Value("${discount.percentage.max.higher.value}")
     private int discountPercentageMaxHigherValue;
     @Value("${discount.percentage.max.lower.value}")
@@ -63,7 +60,7 @@ class ProductServiceTest {
 
         calculateFinalPrice = new CalculatePriceProduct();
 
-        productService = new ProductService(productRepository, entitiesConverter, payloadsConverter, new GenerateRandomString(), calculateFinalPrice, discountPercentageZeroValue, discountPercentageMaxHigherValue, discountPercentageMaxLowerValue);
+        productService = new ProductService(productRepository, entitiesConverter, payloadsConverter, new GenerateRandomString(), calculateFinalPrice, discountPercentageMaxHigherValue, discountPercentageMaxLowerValue);
 
         productEntity = DataFactoryProduct.createProductEntity();
 
@@ -339,7 +336,7 @@ class ProductServiceTest {
         // then
         assertThat(exception)
                 .isInstanceOf(ProductDiscountPercentageException.class)
-                .hasMessageContaining(String.format("Discount percentage should be equal %d%%.", discountPercentageZeroValue));
+                .hasMessageContaining(String.format("Discount percentage should be equal %d%%.", 0));
 
         verify(productRepository, times(0)).save(productEntity);
     }
@@ -377,7 +374,7 @@ class ProductServiceTest {
 
         // then
         assertThat(exception)
-                .isInstanceOf(ProductFinalPriceException.class)
+                .isInstanceOf(ProductFinalAndBasePriceException.class)
                 .hasMessageContaining("Final price should equal base price.");
 
         verify(productRepository, times(0)).save(productEntity);

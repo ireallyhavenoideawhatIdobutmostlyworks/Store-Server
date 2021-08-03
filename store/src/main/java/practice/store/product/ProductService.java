@@ -27,18 +27,16 @@ public class ProductService {
     private final GenerateRandomString generateRandomString;
     private final CalculatePriceProduct calculateFinalPrice;
 
-    private final int discountPercentageZeroValue;
     private final int discountPercentageMaxHigherValue;
     private final int discountPercentageMaxLowerValue;
 
     @Autowired
-    public ProductService(ProductRepository productRepository, EntitiesConverter entitiesConverter, PayloadsConverter payloadsConverter, GenerateRandomString generateRandomString, CalculatePriceProduct calculateFinalPrice, @Value("${discount.percentage.value.zero}") int discountPercentageZeroValue, @Value("${discount.percentage.max.value.higher}") int discountPercentageMaxHigherValue, @Value("${discount.percentage.max.value.lower}") int discountPercentageMaxLowerValue) {
+    public ProductService(ProductRepository productRepository, EntitiesConverter entitiesConverter, PayloadsConverter payloadsConverter, GenerateRandomString generateRandomString, CalculatePriceProduct calculateFinalPrice, @Value("${discount.percentage.max.value.higher}") int discountPercentageMaxHigherValue, @Value("${discount.percentage.max.value.lower}") int discountPercentageMaxLowerValue) {
         this.productRepository = productRepository;
         this.entitiesConverter = entitiesConverter;
         this.payloadsConverter = payloadsConverter;
         this.generateRandomString = generateRandomString;
         this.calculateFinalPrice = calculateFinalPrice;
-        this.discountPercentageZeroValue = discountPercentageZeroValue;
         this.discountPercentageMaxHigherValue = discountPercentageMaxHigherValue;
         this.discountPercentageMaxLowerValue = discountPercentageMaxLowerValue;
     }
@@ -89,12 +87,12 @@ public class ProductService {
 
     private void checkIfFinalPriceAndBasePriceAreEquals(double finalPrice, double basePrice) {
         if (finalPrice != basePrice)
-            throw new ProductFinalPriceException();
+            throw new ProductFinalAndBasePriceException();
     }
 
     private void checkIfDiscountPercentageIsEqualZero(int discountPercentage) {
-        if (discountPercentage != discountPercentageZeroValue)
-            throw new ProductDiscountPercentageException(discountPercentageZeroValue);
+        if (discountPercentage != 0)
+            throw new ProductDiscountPercentageException(0);
     }
 
     private void checkIfPriceReductionIsEqualZero(double amountPriceReduction) {

@@ -4,6 +4,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @DisplayName("Calculate product price")
@@ -22,7 +25,7 @@ class CalculatePriceProductTest {
     @Test
     void should_calculate_final_price_product_with_discount() {
         // given
-        double basePrice = 100;
+        double basePrice = 100.11;
         int discountPercentage = 20;
         double finalPrice = calculateFinalPriceAlgorithm(basePrice, discountPercentage);
 
@@ -54,7 +57,9 @@ class CalculatePriceProductTest {
 
 
     private double calculateFinalPriceAlgorithm(double basePrice, int discountPercentage) {
-        return (basePrice * (100 - discountPercentage) / 100);
+        return BigDecimal
+                .valueOf(basePrice - discountPercentage)
+                .setScale(2, RoundingMode.HALF_UP)
+                .doubleValue();
     }
-
 }
