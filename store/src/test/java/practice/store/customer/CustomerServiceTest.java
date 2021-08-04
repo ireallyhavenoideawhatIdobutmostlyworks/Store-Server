@@ -171,7 +171,7 @@ class CustomerServiceTest {
         // then
         assertThat(exception)
                 .isInstanceOf(CustomerEmailExistException.class)
-                .hasMessageContaining(String.format(exceptionMessage, emailIsExist));
+                .hasMessage(String.format(exceptionMessage, emailIsExist));
 
         verify(customerRepository, times(1)).existsByEmail(emailIsExist);
         verify(customerRepository, times(0)).save(customerEntity);
@@ -213,7 +213,7 @@ class CustomerServiceTest {
         // then
         assertThat(exception)
                 .isInstanceOf(CustomerEmailWithIdIncorrectException.class)
-                .hasMessageContaining(String.format(exceptionMessage, emailExist, idNotExist));
+                .hasMessage(String.format(exceptionMessage, emailExist, idNotExist));
 
         verify(customerRepository, times(1)).existsByEmailAndId(emailExist, idNotExist);
         verify(customerRepository, times(0)).save(customerEntity);
@@ -254,7 +254,7 @@ class CustomerServiceTest {
         // then
         assertThat(exception)
                 .isInstanceOf(javax.persistence.EntityNotFoundException.class)
-                .hasMessageContaining(String.format(exceptionMessage, idNotExist));
+                .hasMessage(String.format(exceptionMessage, idNotExist));
 
         verify(customerRepository, times(1)).getById(idNotExist);
         verify(customerRepository, times(0)).save(customerEntity);

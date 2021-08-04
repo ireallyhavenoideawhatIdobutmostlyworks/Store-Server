@@ -11,6 +11,6 @@ public class ProductPriceReductionException extends RuntimeException {
     }
 
     public ProductPriceReductionException() {
-        super("Price reduction should equal 0.");
+        super("Price reduction should equal 0 because that product is without discount.");
     }
 }

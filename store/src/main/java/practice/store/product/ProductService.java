@@ -92,7 +92,7 @@ public class ProductService {
 
     private void checkIfDiscountPercentageIsEqualZero(int discountPercentage) {
         if (discountPercentage != 0)
-            throw new ProductDiscountPercentageException(0);
+            throw new ProductDiscountPercentageException();
     }
 
     private void checkIfPriceReductionIsEqualZero(double amountPriceReduction) {

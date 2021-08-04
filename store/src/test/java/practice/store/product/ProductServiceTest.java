@@ -109,7 +109,7 @@ class ProductServiceTest {
         // then
         assertThat(exception)
                 .isInstanceOf(javax.persistence.EntityNotFoundException.class)
-                .hasMessageContaining(String.format(exceptionMessage, idNotExist));
+                .hasMessage(String.format(exceptionMessage, idNotExist));
 
         verify(productRepository, times(1)).getById(idNotExist);
     }
@@ -203,7 +203,7 @@ class ProductServiceTest {
         // then
         assertThat(exception)
                 .isInstanceOf(ProductWithdrawFromSaleException.class)
-                .hasMessageContaining("A product withdrawn from sale cannot be added.");
+                .hasMessage("A product withdrawn from sale cannot be added.");
 
         verify(productRepository, times(0)).save(productEntity);
     }
@@ -223,7 +223,7 @@ class ProductServiceTest {
         // then
         assertThat(exception)
                 .isInstanceOf(ProductUuidExistException.class)
-                .hasMessageContaining(String.format("Product with UUID:%s is exist.", uuid));
+                .hasMessage(String.format("Product with UUID:%s is exist.", uuid));
 
         verify(productRepository, times(1)).existsByProductUUID(uuid);
         verify(productRepository, times(0)).save(productEntity);
@@ -243,7 +243,7 @@ class ProductServiceTest {
         // then
         assertThat(exception)
                 .isInstanceOf(ProductDiscountPercentageHighException.class)
-                .hasMessageContaining(String.format("The percentage discount may not be higher than %d%%.", discountPercentageMaxHigherValue));
+                .hasMessage(String.format("The percentage discount may not be higher than %d%%.", discountPercentageMaxHigherValue));
 
         verify(productRepository, times(0)).save(productEntity);
     }
@@ -262,7 +262,7 @@ class ProductServiceTest {
         // then
         assertThat(exception)
                 .isInstanceOf(ProductDiscountPercentageLowException.class)
-                .hasMessageContaining(String.format("The percentage discount may not be lower than %d%%.", discountPercentageMaxLowerValue));
+                .hasMessage(String.format("The percentage discount may not be lower than %d%%.", discountPercentageMaxLowerValue));
 
         verify(productRepository, times(0)).save(productEntity);
     }
@@ -289,7 +289,7 @@ class ProductServiceTest {
         // then
         assertThat(exception)
                 .isInstanceOf(ProductFinalPriceException.class)
-                .hasMessageContaining(String.format("Incorrect final price. Final price from payload:%f. Correct final price:%f.", incorrectFinalPrice, finalPriceCalculate));
+                .hasMessage(String.format("Incorrect final price. Final price from payload:%f. Correct final price:%f.", incorrectFinalPrice, finalPriceCalculate));
 
         verify(productRepository, times(0)).save(productEntity);
     }
@@ -317,7 +317,7 @@ class ProductServiceTest {
         // then
         assertThat(exception)
                 .isInstanceOf(ProductPriceReductionException.class)
-                .hasMessageContaining(String.format("Incorrect price reduction. Price reduction from payload:%f. Correct price reduction:%f.", amountPriceReduction, amountPriceReductionCalculate));
+                .hasMessage(String.format("Incorrect price reduction. Price reduction from payload:%f. Correct price reduction:%f.", amountPriceReduction, amountPriceReductionCalculate));
 
         verify(productRepository, times(0)).save(productEntity);
     }
@@ -336,7 +336,7 @@ class ProductServiceTest {
         // then
         assertThat(exception)
                 .isInstanceOf(ProductDiscountPercentageException.class)
-                .hasMessageContaining(String.format("Discount percentage should be equal %d%%.", 0));
+                .hasMessage("Discount percentage should be equal 0 because that product is without discount.");
 
         verify(productRepository, times(0)).save(productEntity);
     }
@@ -351,11 +351,10 @@ class ProductServiceTest {
         // when
         Throwable exception = catchThrowable(() -> productService.save(productPayloadWithoutDiscount));
 
-
         // then
         assertThat(exception)
                 .isInstanceOf(ProductPriceReductionException.class)
-                .hasMessageContaining("Price reduction should equal 0");
+                .hasMessage("Price reduction should equal 0 because that product is without discount.");
 
         verify(productRepository, times(0)).save(productEntity);
     }
@@ -375,7 +374,7 @@ class ProductServiceTest {
         // then
         assertThat(exception)
                 .isInstanceOf(ProductFinalAndBasePriceException.class)
-                .hasMessageContaining("Final price should equal base price.");
+                .hasMessage("Final price should equal base price because that product is without discount.");
 
         verify(productRepository, times(0)).save(productEntity);
     }
