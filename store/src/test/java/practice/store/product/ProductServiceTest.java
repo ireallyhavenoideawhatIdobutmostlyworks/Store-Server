@@ -109,7 +109,7 @@ class ProductServiceTest {
         // then
         assertThat(exception)
                 .isInstanceOf(javax.persistence.EntityNotFoundException.class)
-                .hasMessage(String.format(exceptionMessage, idNotExist));
+                .hasMessageContaining(String.format(exceptionMessage, idNotExist));
 
         verify(productRepository, times(1)).getById(idNotExist);
     }
@@ -350,6 +350,7 @@ class ProductServiceTest {
 
         // when
         Throwable exception = catchThrowable(() -> productService.save(productPayloadWithoutDiscount));
+
 
         // then
         assertThat(exception)
