@@ -203,7 +203,7 @@ class ProductServiceTest {
         // then
         assertThat(exception)
                 .isInstanceOf(ProductWithdrawFromSaleException.class)
-                .hasMessage("A product withdrawn from sale cannot be added.");
+                .hasMessage(String.format("A product withdrawn from sale cannot be added. Name: %s, UUID: %s", productPayloadWithDiscount.getName(), productPayloadWithDiscount.getProductUUID()));
 
         verify(productRepository, times(0)).save(productEntity);
     }

@@ -54,7 +54,7 @@ public class ProductService {
     }
 
     public void save(ProductPayload productPayload) {
-        checkIfProductIsNotWithdrawFromSale(productPayload.getAvailability());
+        checkIfProductIsNotWithdrawFromSale(productPayload.getAvailability(), productPayload.getName(), productPayload.getProductUUID());
         checkIfProductUuidExist(productPayload.getProductUUID());
 
         if (productPayload.isHasDiscount()) {
@@ -130,8 +130,8 @@ public class ProductService {
             throw new ProductUuidExistException(uuid);
     }
 
-    private void checkIfProductIsNotWithdrawFromSale(Availability availability) {
+    private void checkIfProductIsNotWithdrawFromSale(Availability availability, String name, String uuid) {
         if (availability.equals(Availability.WITHDRAW_FROM_SALE))
-            throw new ProductWithdrawFromSaleException();
+            throw new ProductWithdrawFromSaleException(name, uuid);
     }
 }
