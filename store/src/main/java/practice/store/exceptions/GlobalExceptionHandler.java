@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import practice.store.utils.values.RandomStringGenerator;
+import practice.store.utils.values.GenerateRandomString;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    private final RandomStringGenerator randomStringGenerator;
+    private final GenerateRandomString generateRandomString;
 
     private final String CONTACT_ADMINISTRATOR = "Contact administrator with code";
 
@@ -45,6 +45,6 @@ public class GlobalExceptionHandler {
     }
 
     private String createErrorID() {
-        return String.format("%s. Timestamp: %s.", randomStringGenerator.generateRandomUuid(), LocalDateTime.now());
+        return String.format("%s. Timestamp: %s.", generateRandomString.generateRandomUuid(), LocalDateTime.now());
     }
 }

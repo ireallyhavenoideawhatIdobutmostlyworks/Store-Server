@@ -12,7 +12,7 @@ import practice.store.customer.CustomerRepository;
 import practice.store.exceptions.customer.CustomerIsNotActiveException;
 import practice.store.jwt.payload.JwtLoginResponsePayload;
 import practice.store.jwt.payload.JwtLogoutResponsePayload;
-import practice.store.utils.values.RandomStringGenerator;
+import practice.store.utils.values.GenerateRandomString;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -24,7 +24,7 @@ public class JwtService implements UserDetailsService {
 
     private final CustomerRepository customerRepository;
 
-    private final RandomStringGenerator randomStringGenerator;
+    private final GenerateRandomString generateRandomString;
 
     private final JwtTokenUtil jwtTokenUtil;
     private final JwtTokenBlackListRepository jwtTokenBlackListRepository;
@@ -56,7 +56,7 @@ public class JwtService implements UserDetailsService {
                 .jwtToken(generateToken(userDetails))
                 .minutesTokenValid(jwtTokenValidityToMinutesN)
                 .timestamp(LocalDateTime.now())
-                .responseID(randomStringGenerator.generateRandomUuid())
+                .responseID(generateRandomString.generateRandomUuid())
                 .build();
     }
 
@@ -64,7 +64,7 @@ public class JwtService implements UserDetailsService {
         return JwtLogoutResponsePayload.builder()
                 .description("Logout success.")
                 .timestamp(LocalDateTime.now())
-                .responseID(randomStringGenerator.generateRandomUuid())
+                .responseID(generateRandomString.generateRandomUuid())
                 .build();
     }
 
