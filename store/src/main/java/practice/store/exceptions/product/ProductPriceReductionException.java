@@ -1,10 +1,12 @@
 package practice.store.exceptions.product;
 
+import java.math.BigDecimal;
+
 public class ProductPriceReductionException extends RuntimeException {
 
-    public ProductPriceReductionException(double amountPriceReduction, double amountPriceReductionCalculate) {
+    public ProductPriceReductionException(BigDecimal amountPriceReduction, BigDecimal amountPriceReductionCalculate) {
         super(String.format(
-                "Incorrect price reduction. Price reduction from payload:%f. Correct price reduction:%f.",
+                "Incorrect price reduction. Price reduction from payload:%.2f. Correct price reduction:%.2f.",
                 amountPriceReduction,
                 amountPriceReductionCalculate
         ));

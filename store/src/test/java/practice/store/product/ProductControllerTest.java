@@ -21,6 +21,7 @@ import practice.store.utils.converter.EntitiesConverter;
 import practice.store.utils.values.GenerateRandomString;
 import testdata.DataFactoryProduct;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -406,7 +407,7 @@ class ProductControllerTest {
     @Test
     void add_product_where_final_price_is_incorrect_test() throws Exception {
         // given
-        productPayloadWithDiscount.setFinalPrice(99999);
+        productPayloadWithDiscount.setFinalPrice(BigDecimal.valueOf(99999));
 
 
         // when
@@ -430,7 +431,7 @@ class ProductControllerTest {
     @Test
     void add_product_where_final_price_reduction_is_incorrect_test() throws Exception {
         // given
-        productPayloadWithDiscount.setFinalPrice(99999);
+        productPayloadWithDiscount.setFinalPrice(BigDecimal.valueOf(99999));
 
 
         // when
@@ -478,7 +479,7 @@ class ProductControllerTest {
     @Test
     void add_product_where_price_reduction_is_not_equal_zero_test() throws Exception {
         // given
-        productPayloadWithDiscount.setAmountPriceReduction(99999);
+        productPayloadWithDiscount.setAmountPriceReduction(BigDecimal.valueOf(99999));
 
 
         // when
@@ -502,8 +503,8 @@ class ProductControllerTest {
     @Test
     void add_product_where_final_price_and_base_price_are_not_equals_test() throws Exception {
         // given
-        productPayloadWithDiscount.setBasePrice(11111);
-        productPayloadWithDiscount.setFinalPrice(99999);
+        productPayloadWithDiscount.setBasePrice(BigDecimal.valueOf(11111));
+        productPayloadWithDiscount.setFinalPrice(BigDecimal.valueOf(99999));
 
 
         // when

@@ -8,10 +8,8 @@ import java.math.RoundingMode;
 @Component
 public class CalculatePriceProduct {
 
-    public double calculateFinalPrice(double basePrice, int discountPercentage) {
-        return BigDecimal
-                .valueOf(basePrice - discountPercentage)
-                .setScale(2, RoundingMode.HALF_UP)
-                .doubleValue();
+    public BigDecimal calculateFinalPrice(BigDecimal basePrice, int discountPercentage) {
+        BigDecimal finalPrice = basePrice.subtract(BigDecimal.valueOf(discountPercentage));
+        return finalPrice.setScale(2, RoundingMode.HALF_UP);
     }
 }

@@ -18,6 +18,7 @@ import practice.store.utils.values.GenerateRandomString;
 import testdata.DataFactoryProduct;
 
 import javax.persistence.EntityNotFoundException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -271,15 +272,15 @@ class ProductServiceTest {
     @Test
     void should_throw_exception_when_product_final_price_is_incorrect_during_save_test() {
         // given
-        double basePrice = 100;
+        BigDecimal basePrice = BigDecimal.valueOf(100);
         int discountPercentage = 10;
-        double incorrectFinalPrice = 88;
+        BigDecimal incorrectFinalPrice = BigDecimal.valueOf(88);
 
         productPayloadWithDiscount.setBasePrice(basePrice);
         productPayloadWithDiscount.setDiscountPercentage(discountPercentage);
         productPayloadWithDiscount.setFinalPrice(incorrectFinalPrice);
 
-        double finalPriceCalculate = calculateFinalPrice.calculateFinalPrice(basePrice, discountPercentage);
+        BigDecimal finalPriceCalculate = calculateFinalPrice.calculateFinalPrice(basePrice, discountPercentage);
 
 
         // when
@@ -289,7 +290,7 @@ class ProductServiceTest {
         // then
         assertThat(exception)
                 .isInstanceOf(ProductFinalPriceException.class)
-                .hasMessage(String.format("Incorrect final price. Final price from payload:%f. Correct final price:%f.", incorrectFinalPrice, finalPriceCalculate));
+                .hasMessage(String.format("Incorrect final price. Final price from payload:%.2f. Correct final price:%.2f.", incorrectFinalPrice, finalPriceCalculate));
 
         verify(productRepository, times(0)).save(productEntity);
     }
@@ -298,16 +299,16 @@ class ProductServiceTest {
     @Test
     void should_throw_exception_when_product_price_reduction_is_incorrect_during_save_test() {
         // given
-        double basePrice = 100;
+        BigDecimal basePrice = BigDecimal.valueOf(100);
         int discountPercentage = 10;
-        double amountPriceReduction = 11;
+        BigDecimal amountPriceReduction = BigDecimal.valueOf(11);
 
         productPayloadWithDiscount.setBasePrice(basePrice);
         productPayloadWithDiscount.setDiscountPercentage(discountPercentage);
         productPayloadWithDiscount.setAmountPriceReduction(amountPriceReduction);
 
-        double finalPriceCalculate = calculateFinalPrice.calculateFinalPrice(basePrice, discountPercentage);
-        double amountPriceReductionCalculate = basePrice - finalPriceCalculate;
+        BigDecimal finalPriceCalculate = calculateFinalPrice.calculateFinalPrice(basePrice, discountPercentage);
+        BigDecimal amountPriceReductionCalculate = basePrice.subtract(finalPriceCalculate);
 
 
         // when
@@ -317,7 +318,7 @@ class ProductServiceTest {
         // then
         assertThat(exception)
                 .isInstanceOf(ProductPriceReductionException.class)
-                .hasMessage(String.format("Incorrect price reduction. Price reduction from payload:%f. Correct price reduction:%f.", amountPriceReduction, amountPriceReductionCalculate));
+                .hasMessage(String.format("Incorrect price reduction. Price reduction from payload:%.2f. Correct price reduction:%.2f.", amountPriceReduction, amountPriceReductionCalculate));
 
         verify(productRepository, times(0)).save(productEntity);
     }
@@ -345,7 +346,7 @@ class ProductServiceTest {
     @Test
     void should_throw_exception_when_discount_price_reduction_is_not_zero_during_save_test() {
         // given
-        productPayloadWithoutDiscount.setAmountPriceReduction(10);
+        productPayloadWithoutDiscount.setAmountPriceReduction(BigDecimal.valueOf(10));
 
 
         // when
@@ -364,8 +365,8 @@ class ProductServiceTest {
     @Test
     void should_throw_exception_when_prices_are_not_equal_during_save_test() {
         // given
-        productPayloadWithoutDiscount.setBasePrice(100);
-        productPayloadWithoutDiscount.setFinalPrice(90);
+        productPayloadWithoutDiscount.setBasePrice(BigDecimal.valueOf(100));
+        productPayloadWithoutDiscount.setFinalPrice(BigDecimal.valueOf(90));
 
 
         // when
