@@ -6,6 +6,7 @@ import org.hibernate.annotations.SelectBeforeUpdate;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 
 @Builder(toBuilder = true)
 @AllArgsConstructor
@@ -35,15 +36,15 @@ public class ProductEntity {
 
     @NotNull(message = "'Base price' parameter may not be null")
     @Column
-    private double basePrice;
+    private BigDecimal basePrice;
 
     @NotNull(message = "'Amount of price reduction' parameter may not be null")
     @Column
-    private double amountPriceReduction;
+    private BigDecimal amountPriceReduction;
 
     @NotNull(message = "'Final price' parameter may not be null")
     @Column
-    private double finalPrice;
+    private BigDecimal finalPrice;
 
     @NotNull(message = "'Discount percentage' parameter may not be null")
     @Column

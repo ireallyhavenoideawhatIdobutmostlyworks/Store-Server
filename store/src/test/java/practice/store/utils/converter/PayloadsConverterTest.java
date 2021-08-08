@@ -16,6 +16,8 @@ import practice.store.product.Categories;
 import practice.store.product.ProductEntity;
 import practice.store.product.ProductPayload;
 
+import java.math.BigDecimal;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
@@ -74,9 +76,9 @@ class PayloadsConverterTest {
                 "test name",
                 "test uuid",
                 "test description",
-                500,
-                100,
-                90,
+                BigDecimal.valueOf(500),
+                BigDecimal.valueOf(100),
+                BigDecimal.valueOf(90),
                 10,
                 true,
                 5,

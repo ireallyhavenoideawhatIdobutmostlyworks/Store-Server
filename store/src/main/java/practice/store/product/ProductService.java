@@ -11,6 +11,7 @@ import practice.store.utils.converter.PayloadsConverter;
 import practice.store.utils.numbers.CalculatePriceProduct;
 import practice.store.utils.values.GenerateRandomString;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -85,8 +86,8 @@ public class ProductService {
             product.setAvailability(Availability.AWAITING_FROM_MANUFACTURE);
     }
 
-    private void checkIfFinalPriceAndBasePriceAreEquals(double finalPrice, double basePrice) {
-        if (finalPrice != basePrice)
+    private void checkIfFinalPriceAndBasePriceAreEquals(BigDecimal finalPrice, BigDecimal basePrice) {
+        if (finalPrice.compareTo(basePrice) != 0)
             throw new ProductFinalAndBasePriceException();
     }
 
@@ -95,8 +96,8 @@ public class ProductService {
             throw new ProductDiscountPercentageException();
     }
 
-    private void checkIfPriceReductionIsEqualZero(double amountPriceReduction) {
-        if (amountPriceReduction != 0)
+    private void checkIfPriceReductionIsEqualZero(BigDecimal amountPriceReduction) {
+        if (amountPriceReduction.compareTo(BigDecimal.ZERO) != 0)
             throw new ProductPriceReductionException();
     }
 
@@ -110,18 +111,18 @@ public class ProductService {
             throw new ProductDiscountPercentageLowException(discountPercentageMaxLowerValue);
     }
 
-    private void checkIfFinalPriceIsCorrect(double basePrice, int discountPercentage, double finalPrice) {
-        double finalPriceCalculate = calculateFinalPrice.calculateFinalPrice(basePrice, discountPercentage);
+    private void checkIfFinalPriceIsCorrect(BigDecimal basePrice, int discountPercentage, BigDecimal finalPrice) {
+        BigDecimal finalPriceCalculate = calculateFinalPrice.calculateFinalPrice(basePrice, discountPercentage);
 
-        if (finalPriceCalculate != finalPrice)
+        if (finalPriceCalculate.compareTo(finalPrice) != 0)
             throw new ProductFinalPriceException(finalPrice, finalPriceCalculate);
     }
 
-    private void checkIfPriceReductionIsCorrect(double basePrice, int discountPercentage, double amountPriceReduction) {
-        double finalPriceCalculate = calculateFinalPrice.calculateFinalPrice(basePrice, discountPercentage);
-        double amountPriceReductionCalculate = basePrice - finalPriceCalculate;
+    private void checkIfPriceReductionIsCorrect(BigDecimal basePrice, int discountPercentage, BigDecimal amountPriceReduction) {
+        BigDecimal finalPriceCalculate = calculateFinalPrice.calculateFinalPrice(basePrice, discountPercentage);
+        BigDecimal amountPriceReductionCalculate = basePrice.subtract(finalPriceCalculate);
 
-        if (amountPriceReductionCalculate != amountPriceReduction)
+        if (amountPriceReductionCalculate.compareTo(amountPriceReduction) != 0)
             throw new ProductPriceReductionException(amountPriceReduction, amountPriceReductionCalculate);
     }
 

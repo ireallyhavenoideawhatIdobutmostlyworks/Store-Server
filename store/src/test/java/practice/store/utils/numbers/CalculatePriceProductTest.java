@@ -25,13 +25,13 @@ class CalculatePriceProductTest {
     @Test
     void should_calculate_final_price_product_with_discount() {
         // given
-        double basePrice = 100.11;
+        BigDecimal basePrice = BigDecimal.valueOf(100.11);
         int discountPercentage = 20;
-        double finalPrice = calculateFinalPriceAlgorithm(basePrice, discountPercentage);
+        BigDecimal finalPrice = calculateFinalPriceAlgorithm(basePrice, discountPercentage);
 
 
         // when
-        double finalPriceCalculate = calculatePriceProduct.calculateFinalPrice(basePrice, discountPercentage);
+        BigDecimal finalPriceCalculate = calculatePriceProduct.calculateFinalPrice(basePrice, discountPercentage);
 
 
         // then
@@ -42,13 +42,13 @@ class CalculatePriceProductTest {
     @Test
     void should_calculate_final_price_product_without_discount() {
         // given
-        double basePrice = 100;
+        BigDecimal basePrice = BigDecimal.valueOf(100);
         int discountPercentage = 0;
-        double finalPrice = calculateFinalPriceAlgorithm(basePrice, discountPercentage);
+        BigDecimal finalPrice = calculateFinalPriceAlgorithm(basePrice, discountPercentage);
 
 
         // when
-        double finalPriceCalculate = calculatePriceProduct.calculateFinalPrice(basePrice, discountPercentage);
+        BigDecimal finalPriceCalculate = calculatePriceProduct.calculateFinalPrice(basePrice, discountPercentage);
 
 
         // then
@@ -56,10 +56,8 @@ class CalculatePriceProductTest {
     }
 
 
-    private double calculateFinalPriceAlgorithm(double basePrice, int discountPercentage) {
-        return BigDecimal
-                .valueOf(basePrice - discountPercentage)
-                .setScale(2, RoundingMode.HALF_UP)
-                .doubleValue();
+    private BigDecimal calculateFinalPriceAlgorithm(BigDecimal basePrice, int discountPercentage) {
+        BigDecimal finalPrice = basePrice.subtract(BigDecimal.valueOf(discountPercentage));
+        return finalPrice.setScale(2, RoundingMode.HALF_UP);
     }
 }

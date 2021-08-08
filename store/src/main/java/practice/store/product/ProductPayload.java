@@ -3,6 +3,8 @@ package practice.store.product;
 import lombok.Builder;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @Builder
 @Data
 public class ProductPayload {
@@ -11,9 +13,9 @@ public class ProductPayload {
     private String name;
     private String productUUID;
     private String description;
-    private double basePrice;
-    private double amountPriceReduction;
-    private double finalPrice;
+    private BigDecimal basePrice;
+    private BigDecimal amountPriceReduction;
+    private BigDecimal finalPrice;
     private int discountPercentage;
     private boolean hasDiscount;
     private int amountInStock;
