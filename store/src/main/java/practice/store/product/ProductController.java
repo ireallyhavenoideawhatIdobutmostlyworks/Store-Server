@@ -41,4 +41,11 @@ public class ProductController {
         productService.save(product);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
+
+    @ApiOperation(value = "This method is used to edit specific product.")
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+    public ResponseEntity edit(@Valid @RequestBody ProductPayload productPayload, @PathVariable("id") long id) {
+        productService.edit(productPayload, id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }

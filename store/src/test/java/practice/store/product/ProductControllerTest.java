@@ -523,4 +523,66 @@ class ProductControllerTest {
         assertTrue(mvcResult.getResponse().getContentAsString().contains(EXCEPTION_MESSAGE_FIRST_PART));
         assertTrue(mvcResult.getResponse().getContentAsString().contains(EXCEPTION_MESSAGE_SECOND_PART));
     }
+
+    @WithMockUser(username = "username")
+    @Test
+    void edit_product_with_discount_test() throws Exception {
+        // given
+        String uuid = "unique UUID";
+        String newProductName = "Awesome new product name";
+
+        ProductEntity existProduct = DataFactoryProduct.createProductEntity(uuid);
+        productRepository.save(existProduct);
+        long id = productRepository.findByProductUUID(uuid).getId();
+
+        ProductPayload productPayloadForEdit = DataFactoryProduct.createProductPayloadWithDiscount(id, newProductName, uuid);
+
+
+        // when
+        mvc
+                .perform(MockMvcRequestBuilders
+                        .put(MAIN_ENDPOINT + id)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(productPayloadForEdit))
+                )
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().is(204));
+
+
+        // then
+        assertThat(productRepository.findByProductUUID(uuid))
+                .usingRecursiveComparison()
+                .isEqualTo(productPayloadForEdit);
+    }
+
+    @WithMockUser(username = "username")
+    @Test
+    void edit_product_without_discount_test() throws Exception {
+        // given
+        String uuid = "unique UUID";
+        String newProductName = "Awesome new product name";
+
+        ProductEntity existProduct = DataFactoryProduct.createProductEntityWithoutDiscount(uuid);
+        productRepository.save(existProduct);
+        long id = productRepository.findByProductUUID(uuid).getId();
+
+        ProductPayload productPayloadForEdit = DataFactoryProduct.createProductPayloadWithoutDiscount(id, newProductName, uuid);
+
+
+        // when
+        mvc
+                .perform(MockMvcRequestBuilders
+                        .put(MAIN_ENDPOINT + id)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(productPayloadForEdit))
+                )
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().is(204));
+
+
+        // then
+        assertThat(productRepository.findByProductUUID(uuid))
+                .usingRecursiveComparison()
+                .isEqualTo(productPayloadForEdit);
+    }
 }

@@ -11,6 +11,7 @@ import practice.store.utils.converter.PayloadsConverter;
 import practice.store.utils.numbers.CalculatePriceProduct;
 import practice.store.utils.values.GenerateRandomString;
 
+import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -78,6 +79,49 @@ public class ProductService {
         productRepository.save(existingProduct);
     }
 
+    public void edit(ProductPayload productPayload, long id) {
+        checkIfEntityExist(id);
+        checkIfProductUuidAndEntityAreTheSame(id, productPayload.getProductUUID());
+
+        if (productPayload.isHasDiscount()) {
+            checkIfDiscountPercentageIsNotToHigh(productPayload.getDiscountPercentage());
+            checkIfDiscountPercentageIsNotToLow(productPayload.getDiscountPercentage());
+
+            setPriceAndAmount(productPayload);
+        } else {
+            setNoDiscount(productPayload);
+        }
+
+        calculateAvailabilityDependsOnProductAmounts(productPayload);
+
+        productPayload.setId(id);
+        ProductEntity existingProduct = payloadsConverter.convertProduct(productPayload);
+
+        productRepository.save(existingProduct);
+    }
+
+
+    private void setPriceAndAmount(ProductPayload productPayload) {
+        BigDecimal finalPrice = calculateFinalPrice.calculateFinalPrice(productPayload.getBasePrice(), productPayload.getDiscountPercentage());
+        productPayload.setFinalPrice(finalPrice);
+        productPayload.setAmountPriceReduction(productPayload.getBasePrice().subtract(finalPrice));
+    }
+
+    private void setNoDiscount(ProductPayload productPayload) {
+        productPayload.setDiscountPercentage(0);
+        productPayload.setAmountPriceReduction(BigDecimal.valueOf(0));
+        productPayload.setFinalPrice(productPayload.getBasePrice());
+    }
+
+    private void checkIfEntityExist(long id) {
+        if (!productRepository.existsById(id))
+            throw new EntityNotFoundException();
+    }
+
+    private void checkIfProductUuidAndEntityAreTheSame(long id, String uuid) {
+        if (!productRepository.existsByProductUUIDAndId(uuid, id) && !productRepository.existsByProductUUID(uuid))
+            throw new ProductUuidCanNotChangeException();
+    }
 
     private void calculateAvailabilityDependsOnProductAmounts(ProductPayload product) {
         if (product.getAmountInStock() == 0)
