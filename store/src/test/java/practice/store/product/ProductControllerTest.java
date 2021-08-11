@@ -27,8 +27,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -584,5 +583,128 @@ class ProductControllerTest {
         assertThat(productRepository.findByProductUUID(uuid))
                 .usingRecursiveComparison()
                 .isEqualTo(productPayloadForEdit);
+    }
+
+    @WithMockUser(username = "username")
+    @Test
+    void edit_product_from_with_to_without_discount_test() throws Exception {
+        // given
+        ProductEntity existProduct = DataFactoryProduct.createProductEntity();
+        productRepository.save(existProduct);
+
+        String uuid = existProduct.getProductUUID();
+        long idExist = productRepository.findByProductUUID(uuid).getId();
+        assertTrue(productRepository.findByProductUUID(uuid).isHasDiscount());
+
+        ProductPayload productPayloadForEdit = DataFactoryProduct.createProductPayloadWithoutDiscount(idExist, uuid);
+
+
+        // when
+        mvc
+                .perform(MockMvcRequestBuilders
+                        .put(MAIN_ENDPOINT + idExist)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(productPayloadForEdit))
+                )
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().is(204));
+
+
+        // then
+        assertThat(productRepository.findByProductUUID(uuid))
+                .usingRecursiveComparison()
+                .isEqualTo(productPayloadForEdit);
+
+        assertFalse(productRepository.findByProductUUID(uuid).isHasDiscount());
+    }
+
+    @WithMockUser(username = "username")
+    @Test
+    void edit_product_from_without_to_with_discount_test() throws Exception {
+        ProductEntity existProduct = DataFactoryProduct.createProductEntityWithoutDiscount();
+        productRepository.save(existProduct);
+
+        String uuid = existProduct.getProductUUID();
+        long idExist = productRepository.findByProductUUID(uuid).getId();
+        assertFalse(productRepository.findByProductUUID(uuid).isHasDiscount());
+
+        ProductPayload productPayloadForEdit = DataFactoryProduct.createProductPayloadWithDiscount(idExist, uuid);
+
+
+        // when
+        mvc
+                .perform(MockMvcRequestBuilders
+                        .put(MAIN_ENDPOINT + idExist)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(productPayloadForEdit))
+                )
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().is(204));
+
+
+        // then
+        assertThat(productRepository.findByProductUUID(uuid))
+                .usingRecursiveComparison()
+                .isEqualTo(productPayloadForEdit);
+
+        assertTrue(productRepository.findByProductUUID(uuid).isHasDiscount());
+    }
+
+    @WithMockUser(username = "username")
+    @Test
+    void edit_product_when_id_not_exist_test() throws Exception {
+        // given
+        ProductEntity existProduct = DataFactoryProduct.createProductEntity();
+        productRepository.save(existProduct);
+
+        long idNotExist = 111111L;
+
+
+        // when
+        MvcResult mvcResult = mvc
+                .perform(MockMvcRequestBuilders
+                        .put(MAIN_ENDPOINT + idNotExist)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(productPayloadWithDiscount))
+                )
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().is(404))
+                .andReturn();
+
+
+        // then
+        assertTrue(mvcResult.getResponse().getContentAsString().contains(EXCEPTION_MESSAGE_FIRST_PART));
+        assertTrue(mvcResult.getResponse().getContentAsString().contains(EXCEPTION_MESSAGE_SECOND_PART));
+    }
+
+    @WithMockUser(username = "username")
+    @Test
+    void edit_product_when_id_and_uuid_not_belong_to_same_product_test() throws Exception {
+        // given
+        String uuidExist = "awesome UUID";
+        ProductEntity existProduct = DataFactoryProduct.createProductEntity(uuidExist);
+        productRepository.save(existProduct);
+
+        long id = productRepository.findByProductUUID(uuidExist).getId();
+
+        String uuidIncorrect = "incorrect UUID";
+        ProductPayload productPayload = DataFactoryProduct.createProductPayloadWithDiscount(id, uuidIncorrect);
+
+
+        // when
+        MvcResult mvcResult = mvc
+                .perform(MockMvcRequestBuilders
+                        .put(MAIN_ENDPOINT + id)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(productPayload))
+                )
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().is(400))
+                .andReturn();
+
+
+        // then
+        assertTrue(mvcResult.getResponse().getContentAsString().contains(EXCEPTION_MESSAGE_FIRST_PART));
+        assertTrue(mvcResult.getResponse().getContentAsString().contains(EXCEPTION_MESSAGE_SECOND_PART));
     }
 }

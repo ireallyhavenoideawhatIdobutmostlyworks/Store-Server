@@ -67,6 +67,24 @@ public class DataFactoryProduct {
                 .build();
     }
 
+    public static ProductPayload createProductPayloadWithDiscount(long id, String uuid) {
+        return ProductPayload.builder()
+                .id(id)
+                .name("test name")
+                .productUUID(uuid)
+                .description("test description")
+                .basePrice(setBigDecimalWithScale(100))
+                .amountPriceReduction(setBigDecimalWithScale(10))
+                .finalPrice(setBigDecimalWithScale(90))
+                .discountPercentage(10)
+                .hasDiscount(true)
+                .amountInStock(5)
+                .categories(Categories.PHONES)
+                .availability(Availability.AVAILABLE)
+                .isActive(true)
+                .build();
+    }
+
     public static ProductPayload createProductPayloadWithDiscount(long id, String name, String uuid) {
         return ProductPayload.builder()
                 .id(id)
@@ -121,17 +139,53 @@ public class DataFactoryProduct {
                 .build();
     }
 
+    public static ProductPayload createProductPayloadWithoutDiscount(long id, String uuid) {
+        return ProductPayload.builder()
+                .id(id)
+                .name("test name")
+                .productUUID(uuid)
+                .description("test description")
+                .basePrice(setBigDecimalWithScale(100))
+                .amountPriceReduction(setBigDecimalWithScale(0))
+                .finalPrice(setBigDecimalWithScale(100))
+                .discountPercentage(0)
+                .hasDiscount(false)
+                .amountInStock(5)
+                .categories(Categories.PHONES)
+                .availability(Availability.AVAILABLE)
+                .isActive(true)
+                .build();
+    }
+
     public static ProductEntity createProductEntity() {
         return ProductEntity.builder()
                 .id(1L)
                 .name("test name")
-                .productUUID("test uuid")
+                .productUUID(new GenerateRandomString().generateRandomUuid())
                 .description("test description")
                 .basePrice(setBigDecimalWithScale(100))
                 .amountPriceReduction(setBigDecimalWithScale(10))
                 .finalPrice(setBigDecimalWithScale(90))
                 .discountPercentage(10)
                 .hasDiscount(true)
+                .amountInStock(5)
+                .categories(Categories.PHONES)
+                .availability(Availability.AVAILABLE)
+                .isActive(true)
+                .build();
+    }
+
+    public static ProductEntity createProductEntityWithoutDiscount() {
+        return ProductEntity.builder()
+                .id(1L)
+                .name("test name")
+                .productUUID(new GenerateRandomString().generateRandomUuid())
+                .description("test description")
+                .basePrice(setBigDecimalWithScale(100))
+                .amountPriceReduction(setBigDecimalWithScale(0))
+                .finalPrice(setBigDecimalWithScale(100))
+                .discountPercentage(0)
+                .hasDiscount(false)
                 .amountInStock(5)
                 .categories(Categories.PHONES)
                 .availability(Availability.AVAILABLE)
