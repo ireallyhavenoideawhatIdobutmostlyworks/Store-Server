@@ -9,5 +9,4 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
 
     boolean existsByProductUUID(String uuid);
     ProductEntity findByProductUUID(String uuid);
-    boolean existsByProductUUIDAndId(String uuid, long id);
 }

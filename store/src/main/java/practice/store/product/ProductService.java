@@ -11,7 +11,6 @@ import practice.store.utils.converter.PayloadsConverter;
 import practice.store.utils.numbers.CalculatePriceProduct;
 import practice.store.utils.values.GenerateRandomString;
 
-import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -79,9 +78,9 @@ public class ProductService {
         productRepository.save(existingProduct);
     }
 
-    public void edit(ProductPayload productPayload, long id) {
-        checkIfEntityExist(id);
-        checkIfProductUuidAndEntityAreTheSame(id, productPayload.getProductUUID());
+    public void edit(ProductPayload productPayload, String uuid) {
+        checkIfProductUuidNotExist(uuid);
+        checkIfProductUuidsAreTheSame(productPayload.getProductUUID(), uuid);
 
         if (productPayload.isHasDiscount()) {
             checkIfDiscountPercentageIsNotToHigh(productPayload.getDiscountPercentage());
@@ -94,9 +93,8 @@ public class ProductService {
 
         calculateAvailabilityDependsOnProductAmounts(productPayload);
 
-        productPayload.setId(id);
+        productPayload.setId(productRepository.findByProductUUID(uuid).getId());
         ProductEntity existingProduct = payloadsConverter.convertProduct(productPayload);
-
         productRepository.save(existingProduct);
     }
 
@@ -113,13 +111,8 @@ public class ProductService {
         productPayload.setFinalPrice(productPayload.getBasePrice());
     }
 
-    private void checkIfEntityExist(long id) {
-        if (!productRepository.existsById(id))
-            throw new EntityNotFoundException();
-    }
-
-    private void checkIfProductUuidAndEntityAreTheSame(long id, String uuid) {
-        if (!productRepository.existsByProductUUIDAndId(uuid, id) && !productRepository.existsByProductUUID(uuid))
+    private void checkIfProductUuidsAreTheSame(String uuidPayload, String uuidParameter) {
+        if (!uuidPayload.equals(uuidParameter))
             throw new ProductUuidCanNotChangeException();
     }
 
@@ -173,6 +166,11 @@ public class ProductService {
     private void checkIfProductUuidExist(String uuid) {
         if (productRepository.existsByProductUUID(uuid))
             throw new ProductUuidExistException(uuid);
+    }
+
+    private void checkIfProductUuidNotExist(String uuid) {
+        if (!productRepository.existsByProductUUID(uuid))
+            throw new ProductUuidNotExistException(uuid);
     }
 
     private void checkIfProductIsNotWithdrawFromSale(Availability availability, String name, String uuid) {

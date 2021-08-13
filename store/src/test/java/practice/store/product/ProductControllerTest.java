@@ -527,7 +527,7 @@ class ProductControllerTest {
     @Test
     void edit_product_with_discount_test() throws Exception {
         // given
-        String uuid = "unique UUID";
+        String uuid = new GenerateRandomString().generateRandomUuid();
         String newProductName = "Awesome new product name";
 
         ProductEntity existProduct = DataFactoryProduct.createProductEntity(uuid);
@@ -540,7 +540,7 @@ class ProductControllerTest {
         // when
         mvc
                 .perform(MockMvcRequestBuilders
-                        .put(MAIN_ENDPOINT + id)
+                        .put(MAIN_ENDPOINT + uuid)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(productPayloadForEdit))
                 )
@@ -558,7 +558,7 @@ class ProductControllerTest {
     @Test
     void edit_product_without_discount_test() throws Exception {
         // given
-        String uuid = "unique UUID";
+        String uuid = new GenerateRandomString().generateRandomUuid();
         String newProductName = "Awesome new product name";
 
         ProductEntity existProduct = DataFactoryProduct.createProductEntityWithoutDiscount(uuid);
@@ -566,12 +566,13 @@ class ProductControllerTest {
         long id = productRepository.findByProductUUID(uuid).getId();
 
         ProductPayload productPayloadForEdit = DataFactoryProduct.createProductPayloadWithoutDiscount(id, newProductName, uuid);
-
+        System.out.println(existProduct);
+        System.out.println(productPayloadForEdit);
 
         // when
         mvc
                 .perform(MockMvcRequestBuilders
-                        .put(MAIN_ENDPOINT + id)
+                        .put(MAIN_ENDPOINT + uuid)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(productPayloadForEdit))
                 )
@@ -602,7 +603,7 @@ class ProductControllerTest {
         // when
         mvc
                 .perform(MockMvcRequestBuilders
-                        .put(MAIN_ENDPOINT + idExist)
+                        .put(MAIN_ENDPOINT + uuid)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(productPayloadForEdit))
                 )
@@ -634,7 +635,7 @@ class ProductControllerTest {
         // when
         mvc
                 .perform(MockMvcRequestBuilders
-                        .put(MAIN_ENDPOINT + idExist)
+                        .put(MAIN_ENDPOINT + uuid)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(productPayloadForEdit))
                 )
@@ -652,51 +653,18 @@ class ProductControllerTest {
 
     @WithMockUser(username = "username")
     @Test
-    void edit_product_when_id_not_exist_test() throws Exception {
+    void edit_product_when_uuid_not_exist_test() throws Exception {
         // given
         ProductEntity existProduct = DataFactoryProduct.createProductEntity();
         productRepository.save(existProduct);
 
-        long idNotExist = 111111L;
-
 
         // when
         MvcResult mvcResult = mvc
                 .perform(MockMvcRequestBuilders
-                        .put(MAIN_ENDPOINT + idNotExist)
+                        .put(MAIN_ENDPOINT + "uuid not exist")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(productPayloadWithDiscount))
-                )
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(status().is(404))
-                .andReturn();
-
-
-        // then
-        assertTrue(mvcResult.getResponse().getContentAsString().contains(EXCEPTION_MESSAGE_FIRST_PART));
-        assertTrue(mvcResult.getResponse().getContentAsString().contains(EXCEPTION_MESSAGE_SECOND_PART));
-    }
-
-    @WithMockUser(username = "username")
-    @Test
-    void edit_product_when_id_and_uuid_not_belong_to_same_product_test() throws Exception {
-        // given
-        String uuidExist = "awesome UUID";
-        ProductEntity existProduct = DataFactoryProduct.createProductEntity(uuidExist);
-        productRepository.save(existProduct);
-
-        long id = productRepository.findByProductUUID(uuidExist).getId();
-
-        String uuidIncorrect = "incorrect UUID";
-        ProductPayload productPayload = DataFactoryProduct.createProductPayloadWithDiscount(id, uuidIncorrect);
-
-
-        // when
-        MvcResult mvcResult = mvc
-                .perform(MockMvcRequestBuilders
-                        .put(MAIN_ENDPOINT + id)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(productPayload))
                 )
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().is(400))

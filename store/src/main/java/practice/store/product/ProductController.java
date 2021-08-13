@@ -43,9 +43,9 @@ public class ProductController {
     }
 
     @ApiOperation(value = "This method is used to edit specific product.")
-    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public ResponseEntity edit(@Valid @RequestBody ProductPayload productPayload, @PathVariable("id") long id) {
-        productService.edit(productPayload, id);
+    @RequestMapping(value = "/{productUUID}", method = RequestMethod.PUT)
+    public ResponseEntity edit(@Valid @RequestBody ProductPayload productPayload, @PathVariable("productUUID") String uuid) {
+        productService.edit(productPayload, uuid);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

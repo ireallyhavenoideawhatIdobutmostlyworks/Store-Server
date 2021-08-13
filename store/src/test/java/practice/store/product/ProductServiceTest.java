@@ -388,46 +388,19 @@ class ProductServiceTest {
     @Test
     void should_throw_exception_when_product_not_exist_during_edit_test() {
         // given
-        long idNotExist = 11L;
-        when(productRepository.existsById(idNotExist)).thenThrow(new EntityNotFoundException());
+        String uuidNotExist = "Incorrect UUID";
+        when(productRepository.existsByProductUUID(uuidNotExist)).thenThrow(new EntityNotFoundException());
 
 
         // when
-        Throwable exception = catchThrowable(() -> productService.edit(productPayloadWithoutDiscount, idNotExist));
+        Throwable exception = catchThrowable(() -> productService.edit(productPayloadWithoutDiscount, uuidNotExist));
 
 
         // then
         assertThat(exception)
                 .isInstanceOf(javax.persistence.EntityNotFoundException.class);
 
-        verify(productRepository, times(1)).existsById(idNotExist);
-        verify(productRepository, times(0)).save(productEntity);
-    }
-
-    @DisplayName("Throw exception when uuid and entity not belong to same product during edit")
-    @Test
-    void should_throw_exception_when_uuid_and_entity_not_belong_to_same_product_during_edit_test() {
-        // given
-        when(productRepository.findAll()).thenReturn(productEntityList);
-        String incorrectUUID = "Incorrect UUID";
-        long secondID = productEntityList.get(1).getId();
-        productPayloadWithoutDiscount.setProductUUID(incorrectUUID);
-
-        when(productRepository.existsById(secondID)).thenReturn(true);
-        when(productRepository.existsByProductUUIDAndId(incorrectUUID, secondID) && productRepository.existsByProductUUID(incorrectUUID)).thenThrow(new ProductUuidCanNotChangeException());
-
-
-        // when
-        Throwable exception = catchThrowable(() -> productService.edit(productPayloadWithoutDiscount, secondID));
-
-
-        // then
-        assertThat(exception)
-                .isInstanceOf(ProductUuidCanNotChangeException.class)
-                .hasMessage("UUID cannot be changed.");
-
-        verify(productRepository, times(1)).existsById(secondID);
-        verify(productRepository, times(1)).existsByProductUUIDAndId(incorrectUUID, secondID);
+        verify(productRepository, times(1)).existsByProductUUID(uuidNotExist);
         verify(productRepository, times(0)).save(productEntity);
     }
 
@@ -435,7 +408,6 @@ class ProductServiceTest {
     @Test
     void should_edit_product_with_discount_during_edit_test() {
         // given
-        long id = productPayloadWithDiscount.getId();
         String uuid = productPayloadWithDiscount.getProductUUID();
 
         productPayloadWithDiscount.setBasePrice(BigDecimal.valueOf(1000).setScale(2, RoundingMode.HALF_UP));
@@ -443,18 +415,18 @@ class ProductServiceTest {
         productPayloadWithDiscount.setFinalPrice(BigDecimal.valueOf(500).setScale(2, RoundingMode.HALF_UP));
         productPayloadWithDiscount.setAmountPriceReduction(BigDecimal.valueOf(500).setScale(2, RoundingMode.HALF_UP));
 
-        when(productRepository.existsById(id)).thenReturn(true);
-        when(productRepository.existsByProductUUIDAndId(uuid, id)).thenReturn(true);
+        when(productRepository.existsByProductUUID(uuid)).thenReturn(true);
+        when(productRepository.findByProductUUID(uuid)).thenReturn(productEntity);
         ProductEntity existingProduct = payloadsConverter.convertProduct(productPayloadWithDiscount);
 
 
         // when
-        productService.edit(productPayloadWithDiscount, id);
+        productService.edit(productPayloadWithDiscount, uuid);
 
 
         // then
-        verify(productRepository, times(1)).existsById(id);
-        verify(productRepository, times(1)).existsByProductUUIDAndId(uuid, id);
+        verify(productRepository, times(1)).existsByProductUUID(uuid);
+        verify(productRepository, times(1)).findByProductUUID(uuid);
         verify(productRepository, times(1)).save(existingProduct);
     }
 
@@ -462,7 +434,6 @@ class ProductServiceTest {
     @Test
     void should_edit_product_without_discount_during_edit_test() {
         // given
-        long id = productPayloadWithDiscount.getId();
         String uuid = productPayloadWithDiscount.getProductUUID();
 
         productPayloadWithDiscount.setHasDiscount(false);
@@ -471,18 +442,18 @@ class ProductServiceTest {
         productPayloadWithDiscount.setDiscountPercentage(0);
         productPayloadWithDiscount.setAmountPriceReduction(BigDecimal.valueOf(0));
 
-        when(productRepository.existsById(id)).thenReturn(true);
-        when(productRepository.existsByProductUUIDAndId(uuid, id)).thenReturn(true);
+        when(productRepository.existsByProductUUID(uuid)).thenReturn(true);
+        when(productRepository.findByProductUUID(uuid)).thenReturn(productEntity);
         ProductEntity existingProduct = payloadsConverter.convertProduct(productPayloadWithDiscount);
 
 
         // when
-        productService.edit(productPayloadWithDiscount, id);
+        productService.edit(productPayloadWithDiscount, uuid);
 
 
         // then
-        verify(productRepository, times(1)).existsById(id);
-        verify(productRepository, times(1)).existsByProductUUIDAndId(uuid, id);
+        verify(productRepository, times(1)).existsByProductUUID(uuid);
+        verify(productRepository, times(1)).findByProductUUID(uuid);
         verify(productRepository, times(1)).save(existingProduct);
     }
 }
