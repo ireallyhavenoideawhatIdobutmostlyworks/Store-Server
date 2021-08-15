@@ -83,8 +83,7 @@ public class ProductService {
         checkIfProductUuidsAreTheSame(productPayload.getProductUUID(), uuid);
 
         if (productPayload.isHasDiscount()) {
-            checkIfDiscountPercentageIsNotToHigh(productPayload.getDiscountPercentage());
-            checkIfDiscountPercentageIsNotToLow(productPayload.getDiscountPercentage());
+            isDiscountValueValid(productPayload);
 
             setPriceAndAmount(productPayload);
         } else {
@@ -96,6 +95,12 @@ public class ProductService {
         productPayload.setId(productRepository.findByProductUUID(uuid).getId());
         ProductEntity existingProduct = payloadsConverter.convertProduct(productPayload);
         productRepository.save(existingProduct);
+    }
+
+
+    private void isDiscountValueValid(ProductPayload productPayload) {
+        checkIfDiscountPercentageIsNotToHigh(productPayload.getDiscountPercentage());
+        checkIfDiscountPercentageIsNotToLow(productPayload.getDiscountPercentage());
     }
 
 
