@@ -25,9 +25,9 @@ class CalculatePriceProductTest {
     @Test
     void should_calculate_final_price_product_with_discount() {
         // given
-        BigDecimal basePrice = BigDecimal.valueOf(100.11);
+        BigDecimal basePrice = BigDecimal.valueOf(123);
         int discountPercentage = 20;
-        BigDecimal finalPrice = calculateFinalPriceAlgorithm(basePrice, discountPercentage);
+        BigDecimal finalPrice = BigDecimal.valueOf(98.40).setScale(2, RoundingMode.HALF_UP);
 
 
         // when
@@ -44,7 +44,7 @@ class CalculatePriceProductTest {
         // given
         BigDecimal basePrice = BigDecimal.valueOf(100);
         int discountPercentage = 0;
-        BigDecimal finalPrice = calculateFinalPriceAlgorithm(basePrice, discountPercentage);
+        BigDecimal finalPrice = BigDecimal.valueOf(100).setScale(2, RoundingMode.HALF_UP);
 
 
         // when
@@ -53,11 +53,5 @@ class CalculatePriceProductTest {
 
         // then
         assertThat(finalPrice).isEqualTo(finalPriceCalculate);
-    }
-
-
-    private BigDecimal calculateFinalPriceAlgorithm(BigDecimal basePrice, int discountPercentage) {
-        BigDecimal finalPrice = basePrice.subtract(BigDecimal.valueOf(discountPercentage));
-        return finalPrice.setScale(2, RoundingMode.HALF_UP);
     }
 }

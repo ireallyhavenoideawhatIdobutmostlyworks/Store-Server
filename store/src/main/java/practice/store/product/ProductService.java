@@ -78,6 +78,48 @@ public class ProductService {
         productRepository.save(existingProduct);
     }
 
+    public void edit(ProductPayload productPayload, String uuid) {
+        checkIfProductUuidNotExist(uuid);
+        checkIfProductUuidsAreTheSame(productPayload.getProductUUID(), uuid);
+
+        if (productPayload.isHasDiscount()) {
+            isDiscountValueValid(productPayload);
+
+            setPriceAndAmount(productPayload);
+        } else {
+            setNoDiscount(productPayload);
+        }
+
+        calculateAvailabilityDependsOnProductAmounts(productPayload);
+
+        productPayload.setId(productRepository.findByProductUUID(uuid).getId());
+        ProductEntity existingProduct = payloadsConverter.convertProduct(productPayload);
+        productRepository.save(existingProduct);
+    }
+
+
+    private void isDiscountValueValid(ProductPayload productPayload) {
+        checkIfDiscountPercentageIsNotToHigh(productPayload.getDiscountPercentage());
+        checkIfDiscountPercentageIsNotToLow(productPayload.getDiscountPercentage());
+    }
+
+
+    private void setPriceAndAmount(ProductPayload productPayload) {
+        BigDecimal finalPrice = calculateFinalPrice.calculateFinalPrice(productPayload.getBasePrice(), productPayload.getDiscountPercentage());
+        productPayload.setFinalPrice(finalPrice);
+        productPayload.setAmountPriceReduction(productPayload.getBasePrice().subtract(finalPrice));
+    }
+
+    private void setNoDiscount(ProductPayload productPayload) {
+        productPayload.setDiscountPercentage(0);
+        productPayload.setAmountPriceReduction(BigDecimal.valueOf(0));
+        productPayload.setFinalPrice(productPayload.getBasePrice());
+    }
+
+    private void checkIfProductUuidsAreTheSame(String uuidPayload, String uuidParameter) {
+        if (!uuidPayload.equals(uuidParameter))
+            throw new ProductUuidCanNotChangeException();
+    }
 
     private void calculateAvailabilityDependsOnProductAmounts(ProductPayload product) {
         if (product.getAmountInStock() == 0)
@@ -129,6 +171,11 @@ public class ProductService {
     private void checkIfProductUuidExist(String uuid) {
         if (productRepository.existsByProductUUID(uuid))
             throw new ProductUuidExistException(uuid);
+    }
+
+    private void checkIfProductUuidNotExist(String uuid) {
+        if (!productRepository.existsByProductUUID(uuid))
+            throw new ProductUuidNotExistException(uuid);
     }
 
     private void checkIfProductIsNotWithdrawFromSale(Availability availability, String name, String uuid) {
