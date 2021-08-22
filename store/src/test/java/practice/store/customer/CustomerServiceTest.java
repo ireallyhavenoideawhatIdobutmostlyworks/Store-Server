@@ -9,9 +9,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import practice.store.exceptions.customer.CustomerEmailExistException;
 import practice.store.exceptions.customer.CustomerEmailWithIdIncorrectException;
-import testdata.DataFactoryCustomer;
 import practice.store.utils.converter.EntitiesConverter;
 import practice.store.utils.converter.PayloadsConverter;
+import testdata.entity.TestDataCustomerEntity;
+import testdata.payload.TestDataCustomerPayload;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
@@ -48,8 +49,8 @@ class CustomerServiceTest {
 
         customerService = new CustomerService(customerRepository, entitiesConverter, payloadsConverter);
 
-        customerEntity = DataFactoryCustomer.createCustomerEntity(1L, "test name", "test password", "test@email.store", true, true);
-        customerPayload = DataFactoryCustomer.createCustomerPayload(1L, "test name", "test password", "test@email.store", true, true);
+        customerEntity = TestDataCustomerEntity.Customer(1L, "test name", "test password", "test@email.store", true, true);
+        customerPayload = TestDataCustomerPayload.Customer(1L, "test name", "test password", "test@email.store", true, true);
     }
 
     @DisplayName("Return customer by ID")

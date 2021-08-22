@@ -15,7 +15,8 @@ import practice.store.utils.converter.EntitiesConverter;
 import practice.store.utils.converter.PayloadsConverter;
 import practice.store.utils.numbers.CalculatePriceProduct;
 import practice.store.utils.values.GenerateRandomString;
-import testdata.DataFactoryProduct;
+import testdata.entity.TestDataProductEntity;
+import testdata.payload.TestDataProductPayload;
 
 import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
@@ -65,11 +66,11 @@ class ProductServiceTest {
 
         productService = new ProductService(productRepository, entitiesConverter, payloadsConverter, new GenerateRandomString(), calculateFinalPrice, discountPercentageMaxHigherValue, discountPercentageMaxLowerValue);
 
-        productEntity = DataFactoryProduct.createProductEntity();
-        productEntityList = DataFactoryProduct.creteProductList();
+        productEntity = TestDataProductEntity.Product();
+        productEntityList = TestDataProductEntity.ProductList();
 
-        productPayloadWithDiscount = DataFactoryProduct.createProductPayloadWithDiscount();
-        productPayloadWithoutDiscount = DataFactoryProduct.createProductPayloadWithoutDiscount();
+        productPayloadWithDiscount = TestDataProductPayload.ProductWithDiscount();
+        productPayloadWithoutDiscount = TestDataProductPayload.ProductWithoutDiscount();
     }
 
 

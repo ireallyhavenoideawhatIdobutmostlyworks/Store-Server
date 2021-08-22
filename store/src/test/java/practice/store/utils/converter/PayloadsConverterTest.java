@@ -9,12 +9,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import practice.store.customer.CustomerEntity;
 import practice.store.customer.CustomerPayload;
-import testdata.DataFactoryCustomer;
-import testdata.DataFactoryProduct;
 import practice.store.product.Availability;
 import practice.store.product.Categories;
 import practice.store.product.ProductEntity;
 import practice.store.product.ProductPayload;
+import testdata.payload.TestDataCustomerPayload;
+import testdata.payload.TestDataProductPayload;
 
 import java.math.BigDecimal;
 
@@ -41,7 +41,7 @@ class PayloadsConverterTest {
     @Test
     void should_convert_customer_payload_to_entity_test() {
         // given
-        CustomerPayload customerPayload = DataFactoryCustomer.createCustomerPayload(
+        CustomerPayload customerPayload = TestDataCustomerPayload.Customer(
                 1L,
                 "test name",
                 "test password",
@@ -71,7 +71,7 @@ class PayloadsConverterTest {
     @Test
     void should_convert_product_payload_to_entity_test() {
         // given
-        ProductPayload productPayload = DataFactoryProduct.createProductPayload(
+        ProductPayload productPayload = TestDataProductPayload.Product(
                 1L,
                 "test name",
                 "test uuid",
