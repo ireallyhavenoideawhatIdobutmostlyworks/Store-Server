@@ -7,12 +7,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import practice.store.customer.CustomerEntity;
 import practice.store.customer.CustomerPayload;
-import testdata.DataFactoryCustomer;
-import testdata.DataFactoryProduct;
 import practice.store.product.Availability;
 import practice.store.product.Categories;
 import practice.store.product.ProductEntity;
 import practice.store.product.ProductPayload;
+import testdata.entity.TestDataCustomerEntity;
+import testdata.entity.TestDataProductEntity;
 
 import java.math.BigDecimal;
 
@@ -36,7 +36,7 @@ class EntitiesConverterTest {
     @Test
     void should_convert_customer_entity_to_payload_test() {
         // given
-        CustomerEntity customerEntity = DataFactoryCustomer.createCustomerEntity(
+        CustomerEntity customerEntity = TestDataCustomerEntity.Customer(
                 1L,
                 "test name",
                 "test@email.store",
@@ -60,7 +60,7 @@ class EntitiesConverterTest {
     @Test
     void should_convert_product_entity_to_payload_test() {
         // given
-        ProductEntity productEntity = DataFactoryProduct.createProductEntity(
+        ProductEntity productEntity = TestDataProductEntity.Product(
                 1L,
                 "test name",
                 "test uuid",

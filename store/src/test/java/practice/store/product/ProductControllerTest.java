@@ -19,7 +19,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import practice.store.utils.converter.EntitiesConverter;
 import practice.store.utils.values.GenerateRandomString;
-import testdata.DataFactoryProduct;
+import testdata.entity.TestDataProductEntity;
+import testdata.payload.TestDataProductPayload;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -63,8 +64,8 @@ class ProductControllerTest {
                 .apply(SecurityMockMvcConfigurers.springSecurity())
                 .build();
 
-        productPayloadWithDiscount = DataFactoryProduct.createProductPayloadWithDiscount();
-        productPayloadWithoutDiscount = DataFactoryProduct.createProductPayloadWithoutDiscount();
+        productPayloadWithDiscount = TestDataProductPayload.ProductWithDiscount();
+        productPayloadWithoutDiscount = TestDataProductPayload.ProductWithoutDiscount();
     }
 
 
@@ -73,7 +74,7 @@ class ProductControllerTest {
     void get_by_id_when_id_exist_test() throws Exception {
         // given
         String uuid = generateRandomString.generateRandomUuid();
-        ProductEntity productBeforeSave = DataFactoryProduct.createProductEntity(uuid);
+        ProductEntity productBeforeSave = TestDataProductEntity.Product(uuid);
         productRepository.save(productBeforeSave);
 
         ProductPayload payload = converter.convertProduct(productBeforeSave);
@@ -132,7 +133,7 @@ class ProductControllerTest {
         productRepository.deleteAll();
         assertThat(productRepository.findAll()).isEmpty();
 
-        List<ProductEntity> products = DataFactoryProduct.creteProductList();
+        List<ProductEntity> products = TestDataProductEntity.ProductList();
         productRepository.saveAll(products);
         assertThat(productRepository.findAll()).hasSize(products.size());
 
@@ -333,7 +334,7 @@ class ProductControllerTest {
         String uuidExist = "uuid exist test";
         productPayloadWithDiscount.setProductUUID(uuidExist);
 
-        ProductEntity existProduct = DataFactoryProduct.createProductEntity(uuidExist);
+        ProductEntity existProduct = TestDataProductEntity.Product(uuidExist);
         productRepository.save(existProduct);
 
 
@@ -530,11 +531,11 @@ class ProductControllerTest {
         String uuid = new GenerateRandomString().generateRandomUuid();
         String newProductName = "Awesome new product name";
 
-        ProductEntity existProduct = DataFactoryProduct.createProductEntity(uuid);
+        ProductEntity existProduct = TestDataProductEntity.Product(uuid);
         productRepository.save(existProduct);
         long id = productRepository.findByProductUUID(uuid).getId();
 
-        ProductPayload productPayloadForEdit = DataFactoryProduct.createProductPayloadWithDiscount(id, newProductName, uuid);
+        ProductPayload productPayloadForEdit = TestDataProductPayload.ProductWithDiscount(id, newProductName, uuid);
 
 
         // when
@@ -561,11 +562,11 @@ class ProductControllerTest {
         String uuid = new GenerateRandomString().generateRandomUuid();
         String newProductName = "Awesome new product name";
 
-        ProductEntity existProduct = DataFactoryProduct.createProductEntityWithoutDiscount(uuid);
+        ProductEntity existProduct = TestDataProductEntity.ProductWithoutDiscount(uuid);
         productRepository.save(existProduct);
         long id = productRepository.findByProductUUID(uuid).getId();
 
-        ProductPayload productPayloadForEdit = DataFactoryProduct.createProductPayloadWithoutDiscount(id, newProductName, uuid);
+        ProductPayload productPayloadForEdit = TestDataProductPayload.ProductWithoutDiscount(id, newProductName, uuid);
         System.out.println(existProduct);
         System.out.println(productPayloadForEdit);
 
@@ -590,14 +591,14 @@ class ProductControllerTest {
     @Test
     void edit_product_from_with_to_without_discount_test() throws Exception {
         // given
-        ProductEntity existProduct = DataFactoryProduct.createProductEntity();
+        ProductEntity existProduct = TestDataProductEntity.Product();
         productRepository.save(existProduct);
 
         String uuid = existProduct.getProductUUID();
         long idExist = productRepository.findByProductUUID(uuid).getId();
         assertTrue(productRepository.findByProductUUID(uuid).isHasDiscount());
 
-        ProductPayload productPayloadForEdit = DataFactoryProduct.createProductPayloadWithoutDiscount(idExist, uuid);
+        ProductPayload productPayloadForEdit = TestDataProductPayload.ProductWithoutDiscount(idExist, uuid);
 
 
         // when
@@ -622,14 +623,14 @@ class ProductControllerTest {
     @WithMockUser(username = "username")
     @Test
     void edit_product_from_without_to_with_discount_test() throws Exception {
-        ProductEntity existProduct = DataFactoryProduct.createProductEntityWithoutDiscount();
+        ProductEntity existProduct = TestDataProductEntity.ProductWithoutDiscount();
         productRepository.save(existProduct);
 
         String uuid = existProduct.getProductUUID();
         long idExist = productRepository.findByProductUUID(uuid).getId();
         assertFalse(productRepository.findByProductUUID(uuid).isHasDiscount());
 
-        ProductPayload productPayloadForEdit = DataFactoryProduct.createProductPayloadWithDiscount(idExist, uuid);
+        ProductPayload productPayloadForEdit = TestDataProductPayload.ProductWithDiscount(idExist, uuid);
 
 
         // when
@@ -655,7 +656,7 @@ class ProductControllerTest {
     @Test
     void edit_product_when_uuid_not_exist_test() throws Exception {
         // given
-        ProductEntity existProduct = DataFactoryProduct.createProductEntity();
+        ProductEntity existProduct = TestDataProductEntity.Product();
         productRepository.save(existProduct);
 
 
