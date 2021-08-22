@@ -97,12 +97,26 @@ public class ProductService {
         productRepository.save(existingProduct);
     }
 
+    public void setWithdrawFromSale(String uuid) {
+        checkIfProductUuidNotExist(uuid);
+
+        ProductEntity product = productRepository.findByProductUUID(uuid);
+
+        if (!productRepository.whetherTheProductWasBought(product.getId())){
+            productRepository.delete(product);
+        } else {
+            product.setAvailability(Availability.WITHDRAW_FROM_SALE);
+            product.setActive(false);
+
+            productRepository.save(product);
+        }
+    }
+
 
     private void isDiscountValueValid(ProductPayload productPayload) {
         checkIfDiscountPercentageIsNotToHigh(productPayload.getDiscountPercentage());
         checkIfDiscountPercentageIsNotToLow(productPayload.getDiscountPercentage());
     }
-
 
     private void setPriceAndAmount(ProductPayload productPayload) {
         BigDecimal finalPrice = calculateFinalPrice.calculateFinalPrice(productPayload.getBasePrice(), productPayload.getDiscountPercentage());

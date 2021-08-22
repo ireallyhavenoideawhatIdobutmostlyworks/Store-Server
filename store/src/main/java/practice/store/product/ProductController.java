@@ -7,14 +7,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import practice.store.customer.CustomerPayload;
 
 import javax.validation.Valid;
 import java.util.List;
 
 @RequestMapping(value = "/api/product", produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
-@Api( tags = "Products")
+@Api(tags = "Products")
 @RestController
 public class ProductController {
 
@@ -46,6 +45,14 @@ public class ProductController {
     @RequestMapping(value = "/{productUUID}", method = RequestMethod.PUT)
     public ResponseEntity edit(@Valid @RequestBody ProductPayload productPayload, @PathVariable("productUUID") String uuid) {
         productService.edit(productPayload, uuid);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @ApiOperation(value = "This method is used to set 'Availability.WITHDRAW_FROM_SALE' and 'setIsActive' to false if product was bought " +
+            "or to remove specific product if product was never bought.")
+    @RequestMapping(value = "/{productUUID}", method = RequestMethod.DELETE)
+    public ResponseEntity remove(@PathVariable("productUUID") String uuid) {
+        productService.setWithdrawFromSale(uuid);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
