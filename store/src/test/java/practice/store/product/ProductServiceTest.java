@@ -27,8 +27,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @TestPropertySource("classpath:productsDiscountValueTest.properties")
@@ -456,5 +455,52 @@ class ProductServiceTest {
         verify(productRepository, times(1)).existsByProductUUID(uuid);
         verify(productRepository, times(1)).findByProductUUID(uuid);
         verify(productRepository, times(1)).save(existingProduct);
+    }
+
+    @DisplayName("Remove product if never was bought")
+    @Test
+    void should_remove_product_if_never_was_bought_during_remove_test() {
+        // given
+        String uuid = productEntity.getProductUUID();
+        when(productRepository.existsByProductUUID(uuid)).thenReturn(true);
+        when(productRepository.findByProductUUID(uuid)).thenReturn(productEntity);
+        when(productRepository.whetherTheProductWasBought(productEntity.getId())).thenReturn(false);
+
+
+        // when
+        productService.setWithdrawFromSale(uuid);
+
+
+        // then
+        verify(productRepository, times(1)).existsByProductUUID(uuid);
+        verify(productRepository, times(1)).findByProductUUID(uuid);
+        verify(productRepository, times(1)).whetherTheProductWasBought(productEntity.getId());
+        verify(productRepository, times(1)).delete(productEntity);
+        verify(productRepository, times(0)).save(productEntity);
+    }
+
+    @DisplayName("Set WITHDRAW_FROM_SALE if product was bought")
+    @Test
+    void should_set_withdraw_from_sale_if_product_was_bought_during_remove_test() {
+        // given
+        String uuid = productEntity.getProductUUID();
+        when(productRepository.existsByProductUUID(uuid)).thenReturn(true);
+        when(productRepository.findByProductUUID(uuid)).thenReturn(productEntity);
+        when(productRepository.whetherTheProductWasBought(productEntity.getId())).thenReturn(true);
+
+
+        // when
+        productService.setWithdrawFromSale(uuid);
+
+
+        // then
+        assertEquals(Availability.WITHDRAW_FROM_SALE, productEntity.getAvailability());
+        assertFalse(productEntity.isActive());
+
+        verify(productRepository, times(1)).existsByProductUUID(uuid);
+        verify(productRepository, times(1)).findByProductUUID(uuid);
+        verify(productRepository, times(1)).whetherTheProductWasBought(productEntity.getId());
+        verify(productRepository, times(1)).save(productEntity);
+        verify(productRepository, times(0)).delete(productEntity);
     }
 }

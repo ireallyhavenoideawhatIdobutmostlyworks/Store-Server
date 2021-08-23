@@ -676,4 +676,30 @@ class ProductControllerTest {
         assertTrue(mvcResult.getResponse().getContentAsString().contains(EXCEPTION_MESSAGE_FIRST_PART));
         assertTrue(mvcResult.getResponse().getContentAsString().contains(EXCEPTION_MESSAGE_SECOND_PART));
     }
+
+    @WithMockUser(username = "username")
+    @Test
+    void remove_product_if_was_not_bought_test() throws Exception {
+        // given
+        ProductEntity existProduct = TestDataProductEntity.Product();
+        String uuid = existProduct.getProductUUID();
+        productRepository.save(existProduct);
+
+
+        // when
+        mvc
+                .perform(MockMvcRequestBuilders
+                        .delete(MAIN_ENDPOINT + uuid)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(productPayloadWithDiscount))
+                )
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().is(204));
+
+
+        // then
+        assertFalse(productRepository.existsByProductUUID(uuid));
+//        assertEquals(Availability.WITHDRAW_FROM_SALE, productRepository.findByProductUUID(uuid).getAvailability());
+//        assertFalse(productRepository.findByProductUUID(uuid).isActive());
+    }
 }
