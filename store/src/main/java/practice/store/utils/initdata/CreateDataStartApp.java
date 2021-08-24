@@ -28,20 +28,13 @@ public class CreateDataStartApp {
     private final PasswordEncoder passwordEncoder;
     private final CalculatePriceProduct calculateFinalPrice;
 
-    private CustomerEntity customerFirst;
-    private CustomerEntity customerSecond;
+    private CustomerEntity customerFirst, customerSecond, customerThird;
     private Set<CustomerEntity> customers;
 
-    private ProductEntity productFirst;
-    private ProductEntity productSecond;
-    private ProductEntity productThird;
-    private ProductEntity productFourth;
-    private ProductEntity productFifth;
-    private ProductEntity productSixth;
+    private ProductEntity productFirst, productSecond, productThird, productFourth, productFifth, productSixth;
     private Set<ProductEntity> products;
 
-    private OrderEntity orderFirst;
-    private OrderEntity orderSecond;
+    private OrderEntity orderFirst, orderSecond;
     private Set<OrderEntity> orders;
 
     @Value("${email.second.customer}")
@@ -53,7 +46,8 @@ public class CreateDataStartApp {
     public void createCustomers() {
         customerFirst = createCustomerFirst();
         customerSecond = createCustomerSecond();
-        customers = new HashSet<>(Arrays.asList(customerFirst, customerSecond));
+        customerThird = createCustomerThirdInactive();
+        customers = new HashSet<>(Arrays.asList(customerFirst, customerSecond, customerThird));
     }
 
     public void createProducts() {
@@ -77,7 +71,7 @@ public class CreateDataStartApp {
         customerFirst = CustomerEntity.builder()
                 .id(1L)
                 .username("first")
-                .password(passwordEncoder.encode("123456789012345"))
+                .password(passwordEncoder.encode("first"))
                 .email("first@first.first")
                 .isActive(true)
                 .isCompany(false)
@@ -97,6 +91,18 @@ public class CreateDataStartApp {
         return customerSecond;
     }
 
+    private CustomerEntity createCustomerThirdInactive() {
+        customerSecond = CustomerEntity.builder()
+                .id(3L)
+                .username("third")
+                .password(passwordEncoder.encode("third"))
+                .email("third@third.third")
+                .isActive(false)
+                .isCompany(true)
+                .build();
+        return customerSecond;
+    }
+
     private ProductEntity createProductFirst() {
         BigDecimal basePrice = BigDecimal.valueOf(500);
         int discount = 15;
@@ -106,7 +112,7 @@ public class CreateDataStartApp {
                 .id(1L)
                 .name("Nexus 6")
                 .productUUID("UUID1")
-                .description("Lorem ipsum")
+                .description("Description product 1")
                 .categories(Categories.PHONES)
                 .basePrice(basePrice)
                 .finalPrice(finalPrice)
@@ -129,7 +135,7 @@ public class CreateDataStartApp {
                 .id(2L)
                 .name("Dell")
                 .productUUID("UUID2")
-                .description("Lorem ipsum")
+                .description("Description product 2")
                 .categories(Categories.LAPTOP)
                 .availability(Availability.AVAILABLE)
                 .basePrice(basePrice)
@@ -148,7 +154,7 @@ public class CreateDataStartApp {
                 .id(3L)
                 .name("PANASONIC")
                 .productUUID("UUID3")
-                .description("Lorem ipsum")
+                .description("Description product 3")
                 .categories(Categories.MONITOR)
                 .availability(Availability.AVAILABLE)
                 .basePrice(BigDecimal.valueOf(2000D))
@@ -167,7 +173,7 @@ public class CreateDataStartApp {
                 .id(4L)
                 .name("XIAOMI")
                 .productUUID("UUID4")
-                .description("Lorem ipsum")
+                .description("Description product 4")
                 .categories(Categories.MONITOR)
                 .availability(Availability.WITHDRAW_FROM_SALE)
                 .basePrice(BigDecimal.valueOf(2000D))
@@ -186,7 +192,7 @@ public class CreateDataStartApp {
                 .id(5L)
                 .name("APPLE")
                 .productUUID("UUID5")
-                .description("Lorem ipsum")
+                .description("Description product 5")
                 .categories(Categories.PHONES)
                 .availability(Availability.AWAITING_FROM_MANUFACTURE)
                 .basePrice(BigDecimal.valueOf(2000D))
@@ -205,7 +211,7 @@ public class CreateDataStartApp {
                 .id(6L)
                 .name("SAMSUNG")
                 .productUUID("UUID6")
-                .description("Lorem ipsum")
+                .description("Description product 6")
                 .categories(Categories.PHONES)
                 .availability(Availability.NOT_AVAILABLE)
                 .basePrice(BigDecimal.valueOf(2000D))
@@ -223,7 +229,7 @@ public class CreateDataStartApp {
         orderFirst = OrderEntity.builder()
                 .id(1L)
                 .orderUUID("UUID1")
-                .accountNumber("account number 1")
+                .accountNumber("1111")
                 .isPaid(true)
                 .paymentType(PaymentType.BANK_CARD)
                 .orderStatus(OrderStatus.ORDER_SENT)
@@ -237,7 +243,7 @@ public class CreateDataStartApp {
         orderSecond = OrderEntity.builder()
                 .id(2L)
                 .orderUUID("UUID2")
-                .accountNumber("account number 2")
+                .accountNumber("2222")
                 .isPaid(true)
                 .paymentType(PaymentType.BANK_TRANSFER)
                 .orderStatus(OrderStatus.ORDER_RETURNED)
