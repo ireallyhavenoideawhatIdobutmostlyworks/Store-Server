@@ -5,6 +5,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import practice.store.customer.CustomerEntity;
 import practice.store.customer.CustomerPayload;
+import practice.store.order.OrderEntity;
+import practice.store.order.OrderPayload;
 import practice.store.product.ProductEntity;
 import practice.store.product.ProductPayload;
 
@@ -45,5 +47,25 @@ public class PayloadsConverter {
                 .availability(productPayload.getAvailability())
                 .isActive(productPayload.isActive())
                 .build();
+    }
+
+    public OrderEntity convertOrder(OrderPayload orderPayload) {
+        return OrderEntity.builder()
+                .id(orderPayload.getId())
+                .orderUUID(orderPayload.getOrderUUID())
+                .accountNumber(orderPayload.getAccountNumber())
+                .isPaid(orderPayload.getIsPaid())
+                .paymentType(orderPayload.getPaymentType())
+                .shipmentStatus(orderPayload.getShipmentStatus())
+                .orderStatus(orderPayload.getOrderStatus())
+                .product(convertProductsList(orderPayload.getProductsSet()))
+                .orderPrice(orderPayload.getOrderPrice())
+                .build();
+    }
+
+    private Set<ProductEntity> convertProductsList(Set<ProductPayload> products) {
+        return products.stream()
+                .map(this::convertProduct)
+                .collect(Collectors.toSet());
     }
 }
