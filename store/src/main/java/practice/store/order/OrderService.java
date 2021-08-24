@@ -44,23 +44,30 @@ public class OrderService {
         productPayloads.forEach(
                 product -> {
                     ProductEntity productEntity = productRepository.getById(product.getId());
-
-                    checkIfAmountIsNotEqualZero(product.getAmountInStock(), product.getProductUUID());
-                    checkIfAmountIsAvailable(product.getAmountInStock(), productEntity.getAmountInStock());
-
-                    productEntity.setAmountInStock(productEntity.getAmountInStock() - product.getAmountInStock());
-
-                    calculateAvailabilityDependsOnProductAmounts(productEntity);
-
-                    productRepository.save(productEntity);
+                    saveEditedProduct(productEntity, product);
                 });
 
-        BigDecimal finalOrderPrice = productPayloads.stream().map(ProductPayload::getFinalPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal finalOrderPrice = addProductsPrice(productPayloads);
 
         OrderEntity newOrderEntity = prepareNewOrderContent(orderPayload, finalOrderPrice, actualLoggedCustomer);
         orderRepository.save(newOrderEntity);
     }
 
+
+    private void saveEditedProduct(ProductEntity productEntity, ProductPayload productPayload) {
+        checkIfAmountIsNotEqualZero(productPayload.getAmountInStock(), productPayload.getProductUUID())
+                .checkIfAmountIsAvailable(productPayload.getAmountInStock(), productEntity.getAmountInStock())
+                .setNewAmountInStock(productEntity, productEntity.getAmountInStock(), productPayload.getAmountInStock())
+                .calculateAvailabilityDependsOnProductAmounts(productEntity)
+                .saveProduct(productEntity);
+    }
+
+    private BigDecimal addProductsPrice(Set<ProductPayload> productPayloads ) {
+        return productPayloads
+                .stream()
+                .map(ProductPayload::getFinalPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
 
     private CustomerEntity actualLoggedCustomer() {
         return customerRepository.findByEmail(
@@ -71,23 +78,27 @@ public class OrderService {
     }
 
     private OrderEntity prepareNewOrderContent(OrderPayload orderPayload, BigDecimal finalOrderPrice, CustomerEntity actualLoggedCustomer) {
-        OrderEntity order = payloadsConverter.convertOrder(orderPayload);
-
-        order.setOrderUUID(generateRandomString.generateRandomUuid());
-        order.setCustomer(actualLoggedCustomer);
-        order.setShipmentStatus(ShipmentStatus.SHIPMENT_AWAITING_FOR_ACCEPT);
-        order.setOrderPrice(finalOrderPrice);
-        order.setIsPaid(false);
-        order.setOrderStatus(OrderStatus.ORDER_AWAITING);
-
-        return order;
+        return payloadsConverter.convertOrder(orderPayload)
+                .toBuilder()
+                .orderUUID(generateRandomString.generateRandomUuid())
+                .customer(actualLoggedCustomer)
+                .shipmentStatus(ShipmentStatus.SHIPMENT_AWAITING_FOR_ACCEPT)
+                .orderPrice(finalOrderPrice)
+                .isPaid(false)
+                .orderStatus(OrderStatus.ORDER_AWAITING)
+                .build();
     }
 
-    private void calculateAvailabilityDependsOnProductAmounts(ProductEntity productEntity) {
+    private OrderService calculateAvailabilityDependsOnProductAmounts(ProductEntity productEntity) {
         if (productEntity.getAmountInStock() == 0)
             productEntity.setAvailability(Availability.NOT_AVAILABLE);
         else if (productEntity.getAmountInStock() < 5)
             productEntity.setAvailability(Availability.AWAITING_FROM_MANUFACTURE);
+        return this;
+    }
+
+    private void saveProduct(ProductEntity productEntity) {
+        productRepository.save(productEntity);
     }
 
     private void checkIfOrderHasProduct(Set<ProductPayload> productPayloads) {
@@ -96,14 +107,21 @@ public class OrderService {
         }
     }
 
-    private void checkIfAmountIsAvailable(int amountPayload, int amountInStock) {
+    private OrderService checkIfAmountIsAvailable(int amountPayload, int amountInStock) {
         if ((amountInStock < amountPayload) || (amountInStock == 0))
             throw new ProductAmountNotEnoughException();
+        return this;
     }
 
-    private void checkIfAmountIsNotEqualZero(int amount, String uuid) {
+    private OrderService checkIfAmountIsNotEqualZero(int amount, String uuid) {
         if (amount == 0)
             throw new ProductAmountInvalidParameterException(amount, uuid);
+        return this;
+    }
+
+    private OrderService setNewAmountInStock(ProductEntity productEntity, int amountFromEntity, int amountFromPayload) {
+        productEntity.setAmountInStock(amountFromEntity - amountFromPayload);
+        return this;
     }
 
     private void checkIfCustomerIsActive(CustomerEntity actualLoggedCustomer) {
