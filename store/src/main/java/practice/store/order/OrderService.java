@@ -62,7 +62,7 @@ public class OrderService {
                 .saveProduct(productEntity);
     }
 
-    private BigDecimal addProductsPrice(Set<ProductPayload> productPayloads ) {
+    private BigDecimal addProductsPrice(Set<ProductPayload> productPayloads) {
         return productPayloads
                 .stream()
                 .map(ProductPayload::getFinalPrice)
