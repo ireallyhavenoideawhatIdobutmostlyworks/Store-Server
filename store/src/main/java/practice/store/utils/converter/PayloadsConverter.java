@@ -42,7 +42,7 @@ public class PayloadsConverter {
                 .amountPriceReduction(productPayload.getAmountPriceReduction())
                 .discountPercentage(productPayload.getDiscountPercentage())
                 .hasDiscount(productPayload.isHasDiscount())
-                .amountInStock(productPayload.getAmountInStock())
+                .amount(productPayload.getAmount())
                 .categories(productPayload.getCategories())
                 .availability(productPayload.getAvailability())
                 .isActive(productPayload.isActive())

@@ -55,9 +55,9 @@ public class OrderService {
 
 
     private void saveEditedProduct(ProductEntity productEntity, ProductPayload productPayload) {
-        checkIfAmountIsNotEqualZero(productPayload.getAmountInStock(), productPayload.getProductUUID())
-                .checkIfAmountIsAvailable(productPayload.getAmountInStock(), productEntity.getAmountInStock())
-                .setNewAmountInStock(productEntity, productEntity.getAmountInStock(), productPayload.getAmountInStock())
+        checkIfAmountIsNotEqualZero(productPayload.getAmount(), productPayload.getProductUUID())
+                .checkIfAmountIsAvailable(productPayload.getAmount(), productEntity.getAmount())
+                .setNewAmountInStock(productEntity, productEntity.getAmount(), productPayload.getAmount())
                 .calculateAvailabilityDependsOnProductAmounts(productEntity)
                 .saveProduct(productEntity);
     }
@@ -80,6 +80,7 @@ public class OrderService {
     private OrderEntity prepareNewOrderContent(OrderPayload orderPayload, BigDecimal finalOrderPrice, CustomerEntity actualLoggedCustomer) {
         return payloadsConverter.convertOrder(orderPayload)
                 .toBuilder()
+                .id(null)
                 .orderUUID(generateRandomString.generateRandomUuid())
                 .customer(actualLoggedCustomer)
                 .shipmentStatus(ShipmentStatus.SHIPMENT_AWAITING_FOR_ACCEPT)
@@ -90,9 +91,9 @@ public class OrderService {
     }
 
     private OrderService calculateAvailabilityDependsOnProductAmounts(ProductEntity productEntity) {
-        if (productEntity.getAmountInStock() == 0)
+        if (productEntity.getAmount() == 0)
             productEntity.setAvailability(Availability.NOT_AVAILABLE);
-        else if (productEntity.getAmountInStock() < 5)
+        else if (productEntity.getAmount() < 5)
             productEntity.setAvailability(Availability.AWAITING_FROM_MANUFACTURE);
         return this;
     }
@@ -120,7 +121,7 @@ public class OrderService {
     }
 
     private OrderService setNewAmountInStock(ProductEntity productEntity, int amountFromEntity, int amountFromPayload) {
-        productEntity.setAmountInStock(amountFromEntity - amountFromPayload);
+        productEntity.setAmount(amountFromEntity - amountFromPayload);
         return this;
     }
 

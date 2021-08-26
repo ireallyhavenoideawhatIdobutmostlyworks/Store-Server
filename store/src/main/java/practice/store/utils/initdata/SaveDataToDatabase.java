@@ -39,6 +39,7 @@ public class SaveDataToDatabase implements ApplicationRunner {
     private void addCustomers() {
         customerRepository.save(createDataStartApp.getCustomerFirst());
         customerRepository.save(createDataStartApp.getCustomerSecond());
+        customerRepository.save(createDataStartApp.getCustomerThird());
     }
 
     private void addProducts() {

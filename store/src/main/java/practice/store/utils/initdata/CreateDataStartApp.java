@@ -92,7 +92,7 @@ public class CreateDataStartApp {
     }
 
     private CustomerEntity createCustomerThirdInactive() {
-        customerSecond = CustomerEntity.builder()
+        customerThird = CustomerEntity.builder()
                 .id(3L)
                 .username("third")
                 .password(passwordEncoder.encode("third"))
@@ -100,7 +100,7 @@ public class CreateDataStartApp {
                 .isActive(false)
                 .isCompany(true)
                 .build();
-        return customerSecond;
+        return customerThird;
     }
 
     private ProductEntity createProductFirst() {
@@ -118,7 +118,7 @@ public class CreateDataStartApp {
                 .finalPrice(finalPrice)
                 .amountPriceReduction(basePrice.subtract(finalPrice))
                 .discountPercentage(discount)
-                .amountInStock(10)
+                .amount(100)
                 .hasDiscount(true)
                 .availability(Availability.AVAILABLE)
                 .isActive(true)
@@ -142,7 +142,7 @@ public class CreateDataStartApp {
                 .finalPrice(finalPrice)
                 .amountPriceReduction(basePrice.subtract(finalPrice))
                 .discountPercentage(discount)
-                .amountInStock(9)
+                .amount(900)
                 .hasDiscount(true)
                 .isActive(true)
                 .build();
@@ -161,7 +161,7 @@ public class CreateDataStartApp {
                 .finalPrice(BigDecimal.valueOf(2000D))
                 .amountPriceReduction(BigDecimal.valueOf(2000D))
                 .discountPercentage(0)
-                .amountInStock(10)
+                .amount(100)
                 .hasDiscount(false)
                 .isActive(true)
                 .build();
@@ -180,7 +180,7 @@ public class CreateDataStartApp {
                 .finalPrice(BigDecimal.valueOf(2000D))
                 .amountPriceReduction(BigDecimal.valueOf(2000D))
                 .discountPercentage(0)
-                .amountInStock(10)
+                .amount(100)
                 .hasDiscount(false)
                 .isActive(false)
                 .build();
@@ -199,7 +199,7 @@ public class CreateDataStartApp {
                 .finalPrice(BigDecimal.valueOf(2000D))
                 .amountPriceReduction(BigDecimal.valueOf(2000D))
                 .discountPercentage(0)
-                .amountInStock(10)
+                .amount(100)
                 .hasDiscount(false)
                 .isActive(true)
                 .build();
@@ -218,7 +218,7 @@ public class CreateDataStartApp {
                 .finalPrice(BigDecimal.valueOf(2000D))
                 .amountPriceReduction(BigDecimal.valueOf(2000D))
                 .discountPercentage(0)
-                .amountInStock(10)
+                .amount(100)
                 .hasDiscount(false)
                 .isActive(true)
                 .build();

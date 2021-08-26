@@ -252,7 +252,7 @@ class ProductControllerTest {
         // given
         String uuid = generateRandomString.generateRandomUuid();
         productPayloadWithDiscount.setProductUUID(uuid);
-        productPayloadWithDiscount.setAmountInStock(3);
+        productPayloadWithDiscount.setAmount(3);
 
 
         // when
@@ -281,7 +281,7 @@ class ProductControllerTest {
         // given
         String uuid = generateRandomString.generateRandomUuid();
         productPayloadWithDiscount.setProductUUID(uuid);
-        productPayloadWithDiscount.setAmountInStock(0);
+        productPayloadWithDiscount.setAmount(0);
 
         // when
         mvc

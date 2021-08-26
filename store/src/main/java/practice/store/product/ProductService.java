@@ -122,9 +122,9 @@ public class ProductService {
     }
 
     private void calculateAvailabilityDependsOnProductAmounts(ProductPayload product) {
-        if (product.getAmountInStock() == 0)
+        if (product.getAmount() == 0)
             product.setAvailability(Availability.NOT_AVAILABLE);
-        else if (product.getAmountInStock() < 5)
+        else if (product.getAmount() < 5)
             product.setAvailability(Availability.AWAITING_FROM_MANUFACTURE);
     }
 

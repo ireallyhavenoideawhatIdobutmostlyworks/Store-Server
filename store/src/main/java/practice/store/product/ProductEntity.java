@@ -54,9 +54,9 @@ public class ProductEntity {
     @Column
     private boolean hasDiscount;
 
-    @NotNull(message = "'Amount in stock' parameter may not be null")
+    @NotNull(message = "'Amount' parameter may not be null")
     @Column
-    private int amountInStock;
+    private int amount;
 
     @NotNull(message = "'Categories' parameter may not be null")
     @Enumerated(EnumType.STRING)

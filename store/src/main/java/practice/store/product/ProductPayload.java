@@ -18,7 +18,7 @@ public class ProductPayload {
     private BigDecimal finalPrice;
     private int discountPercentage;
     private boolean hasDiscount;
-    private int amountInStock;
+    private int amount;
     private Categories categories;
     private Availability availability;
     private boolean isActive;
