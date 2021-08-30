@@ -1,7 +1,7 @@
 package practice.store.product;
 
 import lombok.*;
-import org.hibernate.annotations.SelectBeforeUpdate;
+import practice.store.order.details.OrderProductEntity;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -11,15 +11,16 @@ import java.math.BigDecimal;
 @Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode
+//@EqualsAndHashCode
 @Entity
-@Data
+@Getter
+@Setter
 @Table(name = "products")
-@SelectBeforeUpdate
 public class ProductEntity {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
+    @Column(name = "product_id", unique = true, nullable = false)
     private Long id;
 
     @NotBlank(message = "'Name' parameter may not be blank")
@@ -69,4 +70,8 @@ public class ProductEntity {
     @NotNull(message = "'Is active' parameter may not be null")
     @Column
     private boolean isActive;
+
+    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY, optional = false)
+    private OrderProductEntity orderProduct;
 }

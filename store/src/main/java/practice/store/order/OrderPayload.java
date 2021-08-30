@@ -2,7 +2,7 @@ package practice.store.order;
 
 import lombok.Builder;
 import lombok.Data;
-import practice.store.product.ProductPayload;
+import practice.store.order.details.OrderProductPayload;
 
 import java.math.BigDecimal;
 import java.util.Set;
@@ -18,6 +18,6 @@ public class OrderPayload {
     private String accountNumber;
     private ShipmentStatus shipmentStatus;
     private OrderStatus orderStatus;
-    private Set<ProductPayload> productsSet;
+    private Set<OrderProductPayload> productDetails;
     private BigDecimal orderPrice;
 }

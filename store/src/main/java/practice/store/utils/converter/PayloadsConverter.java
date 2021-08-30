@@ -7,6 +7,8 @@ import practice.store.customer.CustomerEntity;
 import practice.store.customer.CustomerPayload;
 import practice.store.order.OrderEntity;
 import practice.store.order.OrderPayload;
+import practice.store.order.details.OrderProductEntity;
+import practice.store.order.details.OrderProductPayload;
 import practice.store.product.ProductEntity;
 import practice.store.product.ProductPayload;
 
@@ -49,6 +51,16 @@ public class PayloadsConverter {
                 .build();
     }
 
+    public OrderProductEntity convertOrderProduct(OrderProductPayload orderProduct) {
+        return OrderProductEntity.builder()
+                .id(orderProduct.getId())
+                .amount(orderProduct.getAmount())
+                .unitPrice(orderProduct.getUnitPrice())
+                .collectionPrice(orderProduct.getCollectionPrice())
+                .product(orderProduct.getProduct())
+                .build();
+    }
+
     public OrderEntity convertOrder(OrderPayload orderPayload) {
         return OrderEntity.builder()
                 .id(orderPayload.getId())
@@ -58,14 +70,15 @@ public class PayloadsConverter {
                 .paymentType(orderPayload.getPaymentType())
                 .shipmentStatus(orderPayload.getShipmentStatus())
                 .orderStatus(orderPayload.getOrderStatus())
-                .product(convertProductsList(orderPayload.getProductsSet()))
+                .orderProduct(convertProductsList(orderPayload.getProductDetails()))
                 .orderPrice(orderPayload.getOrderPrice())
                 .build();
     }
 
-    private Set<ProductEntity> convertProductsList(Set<ProductPayload> products) {
+
+    private Set<OrderProductEntity> convertProductsList(Set<OrderProductPayload> products) {
         return products.stream()
-                .map(this::convertProduct)
+                .map(this::convertOrderProduct)
                 .collect(Collectors.toSet());
     }
 }

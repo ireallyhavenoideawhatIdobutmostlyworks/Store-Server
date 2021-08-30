@@ -10,6 +10,7 @@ import practice.store.order.OrderEntity;
 import practice.store.order.OrderStatus;
 import practice.store.order.PaymentType;
 import practice.store.order.ShipmentStatus;
+import practice.store.order.details.OrderProductEntity;
 import practice.store.product.Availability;
 import practice.store.product.Categories;
 import practice.store.product.ProductEntity;
@@ -36,6 +37,9 @@ public class CreateDataStartApp {
 
     private OrderEntity orderFirst, orderSecond;
     private Set<OrderEntity> orders;
+
+    private OrderProductEntity orderProductFirst, orderProductSecond, orderProductThird;
+    private Set<OrderProductEntity> orderProductEntities;
 
     @Value("${email.second.customer}")
     private String emailSecondCustomer;
@@ -64,6 +68,13 @@ public class CreateDataStartApp {
         orderFirst = createOrderFirst();
         orderSecond = createOrderSecond();
         orders = new HashSet<>(Arrays.asList(orderFirst, orderSecond));
+    }
+
+    public void createOrderProductDetails() {
+        orderProductFirst = createOrderProductFirst();
+        orderProductSecond = createOrderProductSecond();
+        orderProductThird = createOrderProductThird();
+        orderProductEntities = new HashSet<>(Arrays.asList(orderProductFirst, orderProductSecond, orderProductThird));
     }
 
 
@@ -252,4 +263,41 @@ public class CreateDataStartApp {
                 .build();
         return orderSecond;
     }
+
+    private OrderProductEntity createOrderProductFirst() {
+        int amount = 10;
+        orderProductFirst = OrderProductEntity.builder()
+                .id(1L)
+                .unitPrice(productFirst.getFinalPrice())
+                .collectionPrice(productFirst.getFinalPrice().multiply(BigDecimal.valueOf(amount)))
+                .product(productFirst)
+                .amount(amount)
+                .build();
+        return orderProductFirst;
+    }
+
+    private OrderProductEntity createOrderProductSecond() {
+        int amount = 20;
+        orderProductSecond = OrderProductEntity.builder()
+                .id(2L)
+                .unitPrice(productSecond.getFinalPrice())
+                .collectionPrice(productSecond.getFinalPrice().multiply(BigDecimal.valueOf(amount)))
+                .product(productSecond)
+                .amount(amount)
+                .build();
+        return orderProductSecond;
+    }
+
+    private OrderProductEntity createOrderProductThird() {
+        int amount = 30;
+        orderProductThird = OrderProductEntity.builder()
+                .id(3L)
+                .unitPrice(productThird.getFinalPrice())
+                .collectionPrice(productThird.getFinalPrice().multiply(BigDecimal.valueOf(amount)))
+                .product(productThird)
+                .amount(amount)
+                .build();
+        return orderProductThird;
+    }
+
 }

@@ -9,6 +9,7 @@ import practice.store.customer.CustomerEntity;
 import practice.store.customer.CustomerRepository;
 import practice.store.order.OrderEntity;
 import practice.store.order.OrderRepository;
+import practice.store.order.details.OrderProductRepository;
 import practice.store.product.ProductRepository;
 
 @RequiredArgsConstructor
@@ -19,6 +20,7 @@ public class SaveDataToDatabase implements ApplicationRunner {
     private final CustomerRepository customerRepository;
     private final ProductRepository productRepository;
     private final OrderRepository orderRepository;
+    private final OrderProductRepository orderProductRepository;
 
     private final CreateDataStartApp createDataStartApp;
 
@@ -28,12 +30,15 @@ public class SaveDataToDatabase implements ApplicationRunner {
         createDataStartApp.createCustomers();
         createDataStartApp.createProducts();
         createDataStartApp.createOrders();
+        createDataStartApp.createOrderProductDetails();
 
         addCustomers();
         addProducts();
         addOrders();
-        addProductsToOrders();
+
         addCustomerToOrders();
+        addOrderProductDetails();
+        mappingOrderWithOrderProduct();
     }
 
     private void addCustomers() {
@@ -56,16 +61,6 @@ public class SaveDataToDatabase implements ApplicationRunner {
         orderRepository.save(createDataStartApp.getOrderSecond());
     }
 
-    private void addProductsToOrders() {
-        OrderEntity orderFirst = orderRepository.getById(1L);
-        orderFirst.setProduct(createDataStartApp.getProducts());
-        orderRepository.save(orderFirst);
-
-        OrderEntity orderSecond = orderRepository.getById(2L);
-        orderSecond.setProduct(createDataStartApp.getProducts());
-        orderRepository.save(orderSecond);
-    }
-
     private void addCustomerToOrders() {
         CustomerEntity customer = createDataStartApp.getCustomerFirst();
 
@@ -75,6 +70,22 @@ public class SaveDataToDatabase implements ApplicationRunner {
 
         OrderEntity orderSecond = orderRepository.getById(2L);
         orderSecond.setCustomer(customer);
+        orderRepository.save(orderSecond);
+    }
+
+    private void addOrderProductDetails() {
+        orderProductRepository.save(createDataStartApp.getOrderProductFirst());
+        orderProductRepository.save(createDataStartApp.getOrderProductSecond());
+        orderProductRepository.save(createDataStartApp.getOrderProductThird());
+    }
+
+    private void mappingOrderWithOrderProduct() {
+        OrderEntity orderFirst = orderRepository.getById(1L);
+        orderFirst.setOrderProduct(createDataStartApp.getOrderProductEntities());
+        orderRepository.save(orderFirst);
+
+        OrderEntity orderSecond = orderRepository.getById(2L);
+        orderSecond.setOrderProduct(createDataStartApp.getOrderProductEntities());
         orderRepository.save(orderSecond);
     }
 }

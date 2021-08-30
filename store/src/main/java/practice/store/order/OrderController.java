@@ -22,8 +22,8 @@ public class OrderController {
 
     @ApiOperation(value = "This method is used to save the order.")
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public ResponseEntity save(@Valid @RequestBody OrderContentPayload orderContentPayload) {
-        orderService.save(orderContentPayload);
+    public ResponseEntity save(@Valid @RequestBody OrderPayload orderPayload) {
+        orderService.save(orderPayload);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }
