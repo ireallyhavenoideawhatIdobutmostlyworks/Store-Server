@@ -26,4 +26,12 @@ public class OrderController {
         orderService.save(orderPayload);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
+
+    @ApiImplicitParam(name = "id", value = "Customer ID", required = true, dataType = "Long", paramType = "path")
+    @ApiOperation(value = "This method is used to get the specific client.")
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    public ResponseEntity<OrderPayload> getById(@PathVariable("id") long id) {
+        OrderPayload order = orderService.getById(id);
+        return new ResponseEntity<>(order, HttpStatus.OK);
+    }
 }

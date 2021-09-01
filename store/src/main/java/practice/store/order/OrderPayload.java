@@ -12,12 +12,8 @@ import java.util.Set;
 public class OrderPayload {
 
     private Long id;
-    private Boolean isPaid;
     private PaymentType paymentType;
-    private String orderUUID;
     private String accountNumber;
-    private ShipmentStatus shipmentStatus;
-    private OrderStatus orderStatus;
-    private Set<OrderProductPayload> productDetails;
+    private Set<OrderProductPayload> orderProductPayloads;
     private BigDecimal orderPrice;
 }

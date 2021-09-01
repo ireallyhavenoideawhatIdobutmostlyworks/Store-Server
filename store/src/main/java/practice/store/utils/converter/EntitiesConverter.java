@@ -46,24 +46,24 @@ public class EntitiesConverter {
 
     public OrderProductPayload convertOrderProduct(OrderProductEntity orderProduct) {
         return OrderProductPayload.builder()
-                .id(orderProduct.getId())
+           //     .id(orderProduct.getId())
                 .amount(orderProduct.getAmount())
-                .unitPrice(orderProduct.getUnitPrice())
-                .collectionPrice(orderProduct.getCollectionPrice())
-                .product(orderProduct.getProduct())
+           //     .unitPrice(orderProduct.getUnitPrice())
+            //    .collectionPrice(orderProduct.getCollectionPrice())
+            //    .product(orderProduct.getProduct())
                 .build();
     }
 
     public OrderPayload convertOrder(OrderEntity orderEntity) {
         return OrderPayload.builder()
                 .id(orderEntity.getId())
-                .orderUUID(orderEntity.getOrderUUID())
+              //  .orderUUID(orderEntity.getOrderUUID())
                 .accountNumber(orderEntity.getAccountNumber())
-                .isPaid(orderEntity.getIsPaid())
+             //   .isPaid(orderEntity.getIsPaid())
                 .paymentType(orderEntity.getPaymentType())
-                .shipmentStatus(orderEntity.getShipmentStatus())
-                .orderStatus(orderEntity.getOrderStatus())
-                .productDetails(convertProductsList(orderEntity.getOrderProduct()))
+             //   .shipmentStatus(orderEntity.getShipmentStatus())
+             //   .orderStatus(orderEntity.getOrderStatus())
+                .orderProductPayloads(convertProductsList(orderEntity.getOrderProduct()))
                 .orderPrice(orderEntity.getOrderPrice())
                 .build();
     }

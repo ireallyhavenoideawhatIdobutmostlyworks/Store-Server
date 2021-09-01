@@ -1,5 +1,6 @@
 package practice.store.product;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import practice.store.order.details.OrderProductEntity;
 
@@ -11,7 +12,7 @@ import java.math.BigDecimal;
 @Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
-//@EqualsAndHashCode
+@EqualsAndHashCode
 @Entity
 @Getter
 @Setter
@@ -71,7 +72,10 @@ public class ProductEntity {
     @Column
     private boolean isActive;
 
-    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY, optional = false)
+    @OneToOne(mappedBy = "product",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY,
+            optional = false)
+    @JsonIgnore
     private OrderProductEntity orderProduct;
 }

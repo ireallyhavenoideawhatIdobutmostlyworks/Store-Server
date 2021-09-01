@@ -58,11 +58,11 @@ public class OrderEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private CustomerEntity customer;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinTable(
             name = "order_map_product_details",
-            joinColumns = @JoinColumn(name = "order_id", nullable = false, updatable = false),
-            inverseJoinColumns = @JoinColumn(name = "order_product_details_id", nullable = false, updatable = false)
+            joinColumns = @JoinColumn(name = "order_id", nullable = false),
+            inverseJoinColumns = @JoinColumn(name = "order_product_details_id", nullable = false)
     )
     private Set<OrderProductEntity> orderProduct = new HashSet<>();
 }

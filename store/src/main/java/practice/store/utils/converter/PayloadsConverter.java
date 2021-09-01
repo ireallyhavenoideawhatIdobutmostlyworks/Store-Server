@@ -53,24 +53,34 @@ public class PayloadsConverter {
 
     public OrderProductEntity convertOrderProduct(OrderProductPayload orderProduct) {
         return OrderProductEntity.builder()
-                .id(orderProduct.getId())
+             //   .id(orderProduct.getId())
                 .amount(orderProduct.getAmount())
-                .unitPrice(orderProduct.getUnitPrice())
-                .collectionPrice(orderProduct.getCollectionPrice())
-                .product(orderProduct.getProduct())
+             //   .unitPrice(orderProduct.getUnitPrice())
+             //   .collectionPrice(orderProduct.getCollectionPrice())
+            //    .product(orderProduct.getProduct())
+                .build();
+    }
+
+    public OrderProductEntity convertOrderProduct(OrderProductPayload orderProduct, ProductEntity product) {
+        return OrderProductEntity.builder()
+           //     .id(orderProduct.getId())
+                .amount(orderProduct.getAmount())
+             //   .unitPrice(orderProduct.getUnitPrice())
+             //   .collectionPrice(orderProduct.getCollectionPrice())
+                .product(product)
                 .build();
     }
 
     public OrderEntity convertOrder(OrderPayload orderPayload) {
         return OrderEntity.builder()
                 .id(orderPayload.getId())
-                .orderUUID(orderPayload.getOrderUUID())
+               // .orderUUID(orderPayload.getOrderUUID())
                 .accountNumber(orderPayload.getAccountNumber())
-                .isPaid(orderPayload.getIsPaid())
+            //    .isPaid(orderPayload.getIsPaid())
                 .paymentType(orderPayload.getPaymentType())
-                .shipmentStatus(orderPayload.getShipmentStatus())
-                .orderStatus(orderPayload.getOrderStatus())
-                .orderProduct(convertProductsList(orderPayload.getProductDetails()))
+              //  .shipmentStatus(orderPayload.getShipmentStatus())
+              //  .orderStatus(orderPayload.getOrderStatus())
+                .orderProduct(convertProductsList(orderPayload.getOrderProductPayloads()))
                 .orderPrice(orderPayload.getOrderPrice())
                 .build();
     }
