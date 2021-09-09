@@ -1,5 +1,6 @@
 package practice.store.order;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import practice.store.customer.CustomerEntity;
 import practice.store.order.details.OrderProductEntity;
@@ -7,21 +8,21 @@ import practice.store.order.details.OrderProductEntity;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
+
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 @Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 @Entity
 @Getter
 @Setter
 @Table(name = "orders")
 public class OrderEntity {
-
-    /*
-    ToDo add Date
-     */
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -50,19 +51,31 @@ public class OrderEntity {
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
-    @NotNull(message = "'Order price' parameter may not be null")
+    @NotNull(message = "'Order base price' parameter may not be null")
     @Column
-    private BigDecimal orderPrice;
+    private BigDecimal orderBasePrice;
 
-    @JoinColumn(name = "customer_id")
+    @NotNull(message = "'Order final price' parameter may not be null")
+    @Column
+    private BigDecimal orderFinalPrice;
+
+    @NotNull(message = "'Has discount' parameter may not be null")
+    @Column
+    private boolean hasDiscount;
+
+    @NotNull(message = "'Discount percentage' parameter may not be null")
+    @Column
+    private int discountPercentage;
+
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column
+    private Date creationDateTime;
+
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "customer_id")
     private CustomerEntity customer;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    @JoinTable(
-            name = "order_map_product_details",
-            joinColumns = @JoinColumn(name = "order_id", nullable = false),
-            inverseJoinColumns = @JoinColumn(name = "order_product_details_id", nullable = false)
-    )
+    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
     private Set<OrderProductEntity> orderProduct = new HashSet<>();
 }

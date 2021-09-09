@@ -14,10 +14,13 @@ import practice.store.order.details.OrderProductEntity;
 import practice.store.product.Availability;
 import practice.store.product.Categories;
 import practice.store.product.ProductEntity;
-import practice.store.utils.numbers.CalculatePriceProduct;
+import practice.store.utils.numbers.CalculatePrice;
 
 import java.math.BigDecimal;
+
+import java.text.ParseException;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -27,7 +30,7 @@ import java.util.Set;
 public class CreateDataStartApp {
 
     private final PasswordEncoder passwordEncoder;
-    private final CalculatePriceProduct calculateFinalPrice;
+    private final CalculatePrice calculateFinalPrice;
 
     private CustomerEntity customerFirst, customerSecond, customerThird;
     private Set<CustomerEntity> customers;
@@ -64,7 +67,7 @@ public class CreateDataStartApp {
         products = new HashSet<>(Arrays.asList(productFirst, productSecond, productThird));
     }
 
-    public void createOrders() {
+    public void createOrders() throws ParseException {
         orderFirst = createOrderFirst();
         orderSecond = createOrderSecond();
         orders = new HashSet<>(Arrays.asList(orderFirst, orderSecond));
@@ -186,7 +189,7 @@ public class CreateDataStartApp {
                 .productUUID("UUID4")
                 .description("Description product 4")
                 .categories(Categories.MONITOR)
-                .availability(Availability.WITHDRAW_FROM_SALE)
+                .availability(Availability.AVAILABLE)
                 .basePrice(BigDecimal.valueOf(2000D))
                 .finalPrice(BigDecimal.valueOf(2000D))
                 .amountPriceReduction(BigDecimal.valueOf(2000D))
@@ -205,7 +208,7 @@ public class CreateDataStartApp {
                 .productUUID("UUID5")
                 .description("Description product 5")
                 .categories(Categories.PHONES)
-                .availability(Availability.AWAITING_FROM_MANUFACTURE)
+                .availability(Availability.AVAILABLE)
                 .basePrice(BigDecimal.valueOf(2000D))
                 .finalPrice(BigDecimal.valueOf(2000D))
                 .amountPriceReduction(BigDecimal.valueOf(2000D))
@@ -224,7 +227,7 @@ public class CreateDataStartApp {
                 .productUUID("UUID6")
                 .description("Description product 6")
                 .categories(Categories.PHONES)
-                .availability(Availability.NOT_AVAILABLE)
+                .availability(Availability.AVAILABLE)
                 .basePrice(BigDecimal.valueOf(2000D))
                 .finalPrice(BigDecimal.valueOf(2000D))
                 .amountPriceReduction(BigDecimal.valueOf(2000D))
@@ -245,7 +248,11 @@ public class CreateDataStartApp {
                 .paymentType(PaymentType.BANK_CARD)
                 .orderStatus(OrderStatus.ORDER_SENT)
                 .shipmentStatus(ShipmentStatus.SHIPMENT_IN_STORAGE)
-                .orderPrice(BigDecimal.valueOf(200D))
+                .orderBasePrice(BigDecimal.valueOf(200D))
+                .orderFinalPrice(BigDecimal.valueOf(200D))
+                .hasDiscount(false)
+                .discountPercentage(0)
+                .creationDateTime(new Date())
                 .build();
         return orderFirst;
     }
@@ -259,7 +266,11 @@ public class CreateDataStartApp {
                 .paymentType(PaymentType.BANK_TRANSFER)
                 .orderStatus(OrderStatus.ORDER_RETURNED)
                 .shipmentStatus(ShipmentStatus.SHIPMENT_RETURNED_TO_SENDER)
-                .orderPrice(BigDecimal.valueOf(300D))
+                .orderBasePrice(BigDecimal.valueOf(300D))
+                .orderFinalPrice(BigDecimal.valueOf(300D))
+                .hasDiscount(false)
+                .discountPercentage(0)
+                .creationDateTime(new Date())
                 .build();
         return orderSecond;
     }
@@ -270,6 +281,7 @@ public class CreateDataStartApp {
                 .id(1L)
                 .unitPrice(productFirst.getFinalPrice())
                 .collectionPrice(productFirst.getFinalPrice().multiply(BigDecimal.valueOf(amount)))
+                .order(orderFirst)
                 .product(productFirst)
                 .amount(amount)
                 .build();
@@ -282,6 +294,7 @@ public class CreateDataStartApp {
                 .id(2L)
                 .unitPrice(productSecond.getFinalPrice())
                 .collectionPrice(productSecond.getFinalPrice().multiply(BigDecimal.valueOf(amount)))
+                .order(orderFirst)
                 .product(productSecond)
                 .amount(amount)
                 .build();
@@ -294,10 +307,10 @@ public class CreateDataStartApp {
                 .id(3L)
                 .unitPrice(productThird.getFinalPrice())
                 .collectionPrice(productThird.getFinalPrice().multiply(BigDecimal.valueOf(amount)))
+                .order(orderFirst)
                 .product(productThird)
                 .amount(amount)
                 .build();
         return orderProductThird;
     }
-
 }

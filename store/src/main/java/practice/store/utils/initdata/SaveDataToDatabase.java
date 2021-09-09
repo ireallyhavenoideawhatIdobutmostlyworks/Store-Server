@@ -3,6 +3,7 @@ package practice.store.utils.initdata;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import practice.store.customer.CustomerEntity;
@@ -11,6 +12,8 @@ import practice.store.order.OrderEntity;
 import practice.store.order.OrderRepository;
 import practice.store.order.details.OrderProductRepository;
 import practice.store.product.ProductRepository;
+
+import java.text.ParseException;
 
 @RequiredArgsConstructor
 @Transactional
@@ -26,7 +29,7 @@ public class SaveDataToDatabase implements ApplicationRunner {
 
 
     @Override
-    public void run(ApplicationArguments args) {
+    public void run(ApplicationArguments args) throws ParseException {
         createDataStartApp.createCustomers();
         createDataStartApp.createProducts();
         createDataStartApp.createOrders();
@@ -38,8 +41,8 @@ public class SaveDataToDatabase implements ApplicationRunner {
 
         addCustomerToOrders();
         addOrderProductDetails();
-        mappingOrderWithOrderProduct();
     }
+
 
     private void addCustomers() {
         customerRepository.save(createDataStartApp.getCustomerFirst());
@@ -77,15 +80,5 @@ public class SaveDataToDatabase implements ApplicationRunner {
         orderProductRepository.save(createDataStartApp.getOrderProductFirst());
         orderProductRepository.save(createDataStartApp.getOrderProductSecond());
         orderProductRepository.save(createDataStartApp.getOrderProductThird());
-    }
-
-    private void mappingOrderWithOrderProduct() {
-        OrderEntity orderFirst = orderRepository.getById(1L);
-        orderFirst.setOrderProduct(createDataStartApp.getOrderProductEntities());
-        orderRepository.save(orderFirst);
-
-        OrderEntity orderSecond = orderRepository.getById(2L);
-        orderSecond.setOrderProduct(createDataStartApp.getOrderProductEntities());
-        orderRepository.save(orderSecond);
     }
 }

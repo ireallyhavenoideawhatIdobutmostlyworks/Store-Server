@@ -7,11 +7,10 @@ import org.springframework.transaction.annotation.Transactional;
 import practice.store.customer.CustomerEntity;
 import practice.store.customer.CustomerRepository;
 import practice.store.exceptions.customer.CustomerIsNotActiveException;
-import practice.store.exceptions.order.OrderMissingProductException;
+import practice.store.exceptions.order.*;
 import practice.store.exceptions.product.ProductAmountInvalidParameterException;
 import practice.store.exceptions.product.ProductAmountNotEnoughException;
 import practice.store.exceptions.product.ProductUuidExistException;
-import practice.store.order.details.OrderProductDetails;
 import practice.store.order.details.OrderProductEntity;
 import practice.store.order.details.OrderProductPayload;
 import practice.store.order.details.OrderProductRepository;
@@ -20,11 +19,13 @@ import practice.store.product.ProductEntity;
 import practice.store.product.ProductRepository;
 import practice.store.utils.converter.EntitiesConverter;
 import practice.store.utils.converter.PayloadsConverter;
+import practice.store.utils.numbers.CalculatePrice;
 import practice.store.utils.values.GenerateRandomString;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.Date;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Transactional
@@ -40,68 +41,32 @@ public class OrderService {
     private final EntitiesConverter entitiesConverter;
 
     private final GenerateRandomString generateRandomString;
+    private final CalculatePrice calculateFinalPrice;
 
-    public OrderPayload getById(long id) {
-        return entitiesConverter.convertOrder(orderRepository.getById(id));
-    }
 
     public void save(OrderPayload orderPayload) {
-        checkExceptions(orderPayload);
+        checkIfOrderHasProduct(orderPayload.getOrderProductPayloads());
+        checkProductExceptions(orderPayload);
+        checkIfPriceDiscountCase(orderPayload);
+        checkDiscountPercentage(orderPayload);
+        checkFinalPriceIfOrderHasDiscount(orderPayload);
+        checkIfPriceAreGreaterThanZero(orderPayload);
 
-        OrderEntity orderEntity = prepareNewOrderContent(orderPayload);
-
-        Set<OrderProductEntity> orderProductEntitySet = orderPayload
-                .getOrderProductPayloads()
-                .stream()
-                .map(orderProductPayload -> {
-                    ProductEntity productEntity = productRepository.findByProductUUID(orderProductPayload.getProductUUID());
-                    OrderProductEntity orderProductEntity = payloadsConverter.convertOrderProduct(orderProductPayload);
-                    orderProductEntity.setId(null);
-                    orderProductEntity.setUnitPrice(productEntity.getFinalPrice());
-                    orderProductEntity.setCollectionPrice(productEntity.getFinalPrice().multiply(BigDecimal.valueOf(orderProductPayload.getAmount())));
-                    orderProductEntity.setProduct(productEntity);
-
-                    orderProductRepository.save(orderProductEntity);
-
-                    return orderProductEntity;
-                })
-                .collect(Collectors.toSet());
-
-        Set<ProductEntity> productEntitySet = orderPayload
-                .getOrderProductPayloads()
-                .stream()
-                .map(orderProductPayload -> {
-
-                    ProductEntity productEntity = productRepository.findByProductUUID(orderProductPayload.getProductUUID());
-                    productEntity.setAmount(productEntity.getAmount() - orderProductPayload.getAmount());
-
-                    calculateAvailabilityDependsOnProductAmounts(productEntity);
-                    productRepository.save(productEntity);
-
-                    return productEntity;
-                })
-                .collect(Collectors.toSet());
-
-        orderEntity.setOrderProduct(orderProductEntitySet);
+        OrderEntity orderEntity = prepareNewOrder(orderPayload);
         orderRepository.save(orderEntity);
 
+        orderPayload
+                .getOrderProductPayloads()
+                .forEach(orderProductPayload -> {
+                    ProductEntity productEntity = productRepository.findByProductUUID(orderProductPayload.getProductUUID());
 
-
-//        BigDecimal finalOrderPrice = addProductsPrice(productEntitiesSet);
-//        OrderEntity newOrderEntity = prepareNewOrderContent(orderPayload, finalOrderPrice);
-//        orderRepository.save(newOrderEntity);
-
+                    updateProductIntoDatabase(productEntity, orderProductPayload);
+                    addOrderProductIntoDatabase(productEntity, orderProductPayload, orderEntity);
+                });
     }
 
 
-    private BigDecimal addProductsPrice(Set<ProductEntity> productEntities) {
-        return productEntities
-                .stream()
-                .map(ProductEntity::getFinalPrice)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-    }
-
-    private OrderEntity prepareNewOrderContent(OrderPayload orderPayload) {
+    private OrderEntity prepareNewOrder(OrderPayload orderPayload) {
         return payloadsConverter.convertOrder(orderPayload)
                 .toBuilder()
                 .id(null)
@@ -110,7 +75,26 @@ public class OrderService {
                 .shipmentStatus(ShipmentStatus.SHIPMENT_AWAITING_FOR_ACCEPT)
                 .isPaid(false)
                 .orderStatus(OrderStatus.ORDER_AWAITING)
+                .creationDateTime(new Date())
                 .build();
+    }
+
+    private void updateProductIntoDatabase(ProductEntity productEntity, OrderProductPayload orderProductPayload) {
+        productEntity.setAmount(productEntity.getAmount() - orderProductPayload.getAmount());
+        calculateAvailabilityDependsOnProductAmounts(productEntity);
+        productRepository.save(productEntity);
+    }
+
+    private void addOrderProductIntoDatabase(ProductEntity productEntity, OrderProductPayload orderProductPayload, OrderEntity orderEntity) {
+        OrderProductEntity orderProductEntity = payloadsConverter.convertOrderProduct(orderProductPayload)
+                .toBuilder()
+                .id(null)
+                .unitPrice(productEntity.getFinalPrice())
+                .collectionPrice(productEntity.getFinalPrice().multiply(BigDecimal.valueOf(orderProductPayload.getAmount())))
+                .order(orderEntity)
+                .product(productEntity)
+                .build();
+        orderProductRepository.save(orderProductEntity);
     }
 
     private CustomerEntity actualLoggedActiveCustomer() {
@@ -127,9 +111,23 @@ public class OrderService {
                         .getName());
     }
 
-    private void checkExceptions(OrderPayload orderPayload) {
-        checkIfOrderHasProduct(orderPayload.getOrderProductPayloads());
+    private void calculateAvailabilityDependsOnProductAmounts(ProductEntity productEntity) {
+        if (productEntity.getAmount() == 0)
+            productEntity.setAvailability(Availability.NOT_AVAILABLE);
+        else if (productEntity.getAmount() < 5)
+            productEntity.setAvailability(Availability.AWAITING_FROM_MANUFACTURE);
+    }
 
+    private BigDecimal allProductsPrice(OrderPayload orderPayload) {
+        return orderPayload
+                .getOrderProductPayloads()
+                .stream()
+                .map(orderProductPayload ->
+                        productRepository.findByProductUUID(orderProductPayload.getProductUUID()).getFinalPrice().multiply(BigDecimal.valueOf(orderProductPayload.getAmount())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add).setScale(2, RoundingMode.CEILING);
+    }
+
+    private void checkProductExceptions(OrderPayload orderPayload) {
         orderPayload
                 .getOrderProductPayloads()
                 .forEach(
@@ -141,11 +139,38 @@ public class OrderService {
                 );
     }
 
-    private void calculateAvailabilityDependsOnProductAmounts(ProductEntity productEntity) {
-        if (productEntity.getAmount() == 0)
-            productEntity.setAvailability(Availability.NOT_AVAILABLE);
-        else if (productEntity.getAmount() < 5)
-            productEntity.setAvailability(Availability.AWAITING_FROM_MANUFACTURE);
+    private void checkDiscountPercentage(OrderPayload orderPayload) {
+        if (orderPayload.isHasDiscount() && orderPayload.getDiscountPercentage() == 0)
+            throw new OrderDiscountPercentageException();
+        else if (!orderPayload.isHasDiscount() && orderPayload.getDiscountPercentage() > 0)
+            throw new OrderDiscountPercentageException(orderPayload.getDiscountPercentage());
+    }
+
+    private void checkFinalPriceIfOrderHasDiscount(OrderPayload orderPayload) {
+        BigDecimal orderFinalPrice = orderPayload.getOrderFinalPrice().setScale(2, RoundingMode.CEILING);
+        BigDecimal finalPriceCalculate = calculateFinalPrice.calculateFinalPrice(orderPayload.getOrderBasePrice(), orderPayload.getDiscountPercentage());
+
+        if (orderPayload.isHasDiscount() && (!finalPriceCalculate.equals(orderFinalPrice)))
+            throw new OrderFinalPriceException(orderFinalPrice, orderPayload.getOrderBasePrice(), orderPayload.getDiscountPercentage(), finalPriceCalculate);
+    }
+
+    private void checkIfPriceDiscountCase(OrderPayload orderPayload) {
+        BigDecimal orderFinalPrice = orderPayload.getOrderFinalPrice().setScale(2, RoundingMode.CEILING);
+        BigDecimal orderBasePrice = orderPayload.getOrderBasePrice().setScale(2, RoundingMode.CEILING);
+        BigDecimal allProductPriceMultiplyByAmount = allProductsPrice(orderPayload).setScale(2, RoundingMode.CEILING);
+
+        if (!orderPayload.isHasDiscount() && (!orderFinalPrice.equals(allProductPriceMultiplyByAmount))) {
+            throw new OrderFinalPriceException(orderFinalPrice, allProductPriceMultiplyByAmount);
+        } else if ((orderPayload.isHasDiscount()) && (orderBasePrice.equals(orderFinalPrice))) {
+            throw new OrderDiscountException(orderBasePrice, orderFinalPrice);
+        }
+    }
+
+    private void checkIfPriceAreGreaterThanZero(OrderPayload orderPayload) {
+        if (orderPayload.getOrderBasePrice().equals(BigDecimal.valueOf(0D)))
+            throw new OrderBasePriceException();
+        else if (orderPayload.getOrderFinalPrice().equals(BigDecimal.valueOf(0D)))
+            throw new OrderFinalPriceException();
     }
 
     private void checkIfOrderHasProduct(Set<OrderProductPayload> orderProductPayloads) {

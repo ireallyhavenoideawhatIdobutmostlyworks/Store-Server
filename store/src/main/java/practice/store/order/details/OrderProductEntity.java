@@ -7,16 +7,15 @@ import practice.store.product.ProductEntity;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.Set;
 
 @Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 @Getter
 @Setter
 @Entity
-@Table(name = "order_product_details")
+@Table(name = "order_product")
 public class OrderProductEntity {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,7 +35,11 @@ public class OrderProductEntity {
     @Column
     private BigDecimal collectionPrice;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @ManyToOne
     @JoinColumn(name = "product_id")
     private ProductEntity product;
+
+    @ManyToOne
+    @JoinColumn(name = "order_id")
+    private OrderEntity order;
 }

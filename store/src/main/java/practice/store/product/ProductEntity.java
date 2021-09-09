@@ -1,6 +1,5 @@
 package practice.store.product;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import practice.store.order.details.OrderProductEntity;
 
@@ -8,11 +7,13 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
 
 @Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode
+@ToString
 @Entity
 @Getter
 @Setter
@@ -72,10 +73,6 @@ public class ProductEntity {
     @Column
     private boolean isActive;
 
-    @OneToOne(mappedBy = "product",
-            cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY,
-            optional = false)
-    @JsonIgnore
-    private OrderProductEntity orderProduct;
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
+    private Set<OrderProductEntity> orderProduct = new HashSet<>();
 }

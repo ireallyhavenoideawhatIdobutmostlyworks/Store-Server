@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import practice.store.exceptions.product.*;
 import practice.store.utils.converter.EntitiesConverter;
 import practice.store.utils.converter.PayloadsConverter;
-import practice.store.utils.numbers.CalculatePriceProduct;
+import practice.store.utils.numbers.CalculatePrice;
 import practice.store.utils.values.GenerateRandomString;
 
 import java.math.BigDecimal;
@@ -26,13 +26,13 @@ public class ProductService {
     private final PayloadsConverter payloadsConverter;
 
     private final GenerateRandomString generateRandomString;
-    private final CalculatePriceProduct calculateFinalPrice;
+    private final CalculatePrice calculateFinalPrice;
 
     private final int discountPercentageMaxHigherValue;
     private final int discountPercentageMaxLowerValue;
 
     @Autowired
-    public ProductService(ProductRepository productRepository, EntitiesConverter entitiesConverter, PayloadsConverter payloadsConverter, GenerateRandomString generateRandomString, CalculatePriceProduct calculateFinalPrice, @Value("${discount.percentage.max.value.higher}") int discountPercentageMaxHigherValue, @Value("${discount.percentage.max.value.lower}") int discountPercentageMaxLowerValue) {
+    public ProductService(ProductRepository productRepository, EntitiesConverter entitiesConverter, PayloadsConverter payloadsConverter, GenerateRandomString generateRandomString, CalculatePrice calculateFinalPrice, @Value("${discount.percentage.max.value.higher}") int discountPercentageMaxHigherValue, @Value("${discount.percentage.max.value.lower}") int discountPercentageMaxLowerValue) {
         this.productRepository = productRepository;
         this.entitiesConverter = entitiesConverter;
         this.payloadsConverter = payloadsConverter;
