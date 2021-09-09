@@ -1,6 +1,6 @@
 package practice.store.product;
 
-public enum Categories {
+public enum CategoriesEnum {
 
     PHONES,
     LAPTOP,

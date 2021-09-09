@@ -13,7 +13,7 @@ import java.util.Set;
 public class OrderPayload {
 
     private Long id;
-    private PaymentType paymentType;
+    private PaymentTypeEnum paymentTypeEnum;
     private String accountNumber;
     private BigDecimal orderBasePrice;
     private BigDecimal orderFinalPrice;

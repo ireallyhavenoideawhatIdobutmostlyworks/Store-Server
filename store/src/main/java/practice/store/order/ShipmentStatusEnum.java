@@ -1,6 +1,6 @@
 package practice.store.order;
 
-public enum ShipmentStatus {
+public enum ShipmentStatusEnum {
 
     // for delivered scenario
     SHIPMENT_AWAITING_FOR_ACCEPT,

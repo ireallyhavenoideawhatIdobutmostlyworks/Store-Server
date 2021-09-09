@@ -19,7 +19,7 @@ public class ProductPayload {
     private int discountPercentage;
     private boolean hasDiscount;
     private int amount;
-    private Categories categories;
+    private CategoriesEnum categoriesEnum;
     private Availability availability;
     private boolean isActive;
 }

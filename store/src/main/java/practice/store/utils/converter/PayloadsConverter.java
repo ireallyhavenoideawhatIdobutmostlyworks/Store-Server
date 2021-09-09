@@ -45,7 +45,7 @@ public class PayloadsConverter {
                 .discountPercentage(productPayload.getDiscountPercentage())
                 .hasDiscount(productPayload.isHasDiscount())
                 .amount(productPayload.getAmount())
-                .categories(productPayload.getCategories())
+                .categoriesEnum(productPayload.getCategoriesEnum())
                 .availability(productPayload.getAvailability())
                 .isActive(productPayload.isActive())
                 .build();
@@ -62,7 +62,7 @@ public class PayloadsConverter {
         return OrderEntity.builder()
                 .id(orderPayload.getId())
                 .accountNumber(orderPayload.getAccountNumber())
-                .paymentType(orderPayload.getPaymentType())
+                .paymentTypeEnum(orderPayload.getPaymentTypeEnum())
                 .orderProduct(convertProductsList(orderPayload.getOrderProductPayloads()))
                 .orderBasePrice(orderPayload.getOrderBasePrice())
                 .orderFinalPrice(orderPayload.getOrderFinalPrice())

@@ -1,6 +1,6 @@
 package practice.store.order;
 
-public enum OrderStatus {
+public enum OrderStatusEnum {
 
     ORDER_AWAITING,
 

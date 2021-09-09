@@ -72,9 +72,9 @@ public class OrderService {
                 .id(null)
                 .orderUUID(generateRandomString.generateRandomUuid())
                 .customer(actualLoggedActiveCustomer())
-                .shipmentStatus(ShipmentStatus.SHIPMENT_AWAITING_FOR_ACCEPT)
+                .shipmentStatusEnum(ShipmentStatusEnum.SHIPMENT_AWAITING_FOR_ACCEPT)
                 .isPaid(false)
-                .orderStatus(OrderStatus.ORDER_AWAITING)
+                .orderStatusEnum(OrderStatusEnum.ORDER_AWAITING)
                 .creationDateTime(new Date())
                 .build();
     }

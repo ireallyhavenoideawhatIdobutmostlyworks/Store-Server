@@ -1,6 +1,6 @@
 package practice.store.order;
 
-public enum PaymentType {
+public enum PaymentTypeEnum {
 
     BANK_TRANSFER,
     BANK_CARD,

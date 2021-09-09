@@ -9,7 +9,6 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
-import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -41,15 +40,15 @@ public class OrderEntity {
     private Boolean isPaid;
 
     @Enumerated(EnumType.STRING)
-    private PaymentType paymentType;
+    private PaymentTypeEnum paymentTypeEnum;
 
     @NotNull(message = "'Shipment status' parameter may not be null")
     @Enumerated(EnumType.STRING)
-    private ShipmentStatus shipmentStatus;
+    private ShipmentStatusEnum shipmentStatusEnum;
 
     @NotNull(message = "'Order status' parameter may not be null")
     @Enumerated(EnumType.STRING)
-    private OrderStatus orderStatus;
+    private OrderStatusEnum orderStatusEnum;
 
     @NotNull(message = "'Order base price' parameter may not be null")
     @Column

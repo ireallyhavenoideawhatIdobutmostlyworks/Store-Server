@@ -7,12 +7,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import practice.store.customer.CustomerEntity;
 import practice.store.order.OrderEntity;
-import practice.store.order.OrderStatus;
-import practice.store.order.PaymentType;
-import practice.store.order.ShipmentStatus;
+import practice.store.order.OrderStatusEnum;
+import practice.store.order.PaymentTypeEnum;
+import practice.store.order.ShipmentStatusEnum;
 import practice.store.order.details.OrderProductEntity;
 import practice.store.product.Availability;
-import practice.store.product.Categories;
+import practice.store.product.CategoriesEnum;
 import practice.store.product.ProductEntity;
 import practice.store.utils.numbers.CalculatePrice;
 
@@ -127,7 +127,7 @@ public class CreateDataStartApp {
                 .name("Nexus 6")
                 .productUUID("UUID1")
                 .description("Description product 1")
-                .categories(Categories.PHONES)
+                .categoriesEnum(CategoriesEnum.PHONES)
                 .basePrice(basePrice)
                 .finalPrice(finalPrice)
                 .amountPriceReduction(basePrice.subtract(finalPrice))
@@ -150,7 +150,7 @@ public class CreateDataStartApp {
                 .name("Dell")
                 .productUUID("UUID2")
                 .description("Description product 2")
-                .categories(Categories.LAPTOP)
+                .categoriesEnum(CategoriesEnum.LAPTOP)
                 .availability(Availability.AVAILABLE)
                 .basePrice(basePrice)
                 .finalPrice(finalPrice)
@@ -169,7 +169,7 @@ public class CreateDataStartApp {
                 .name("PANASONIC")
                 .productUUID("UUID3")
                 .description("Description product 3")
-                .categories(Categories.MONITOR)
+                .categoriesEnum(CategoriesEnum.MONITOR)
                 .availability(Availability.AVAILABLE)
                 .basePrice(BigDecimal.valueOf(2000D))
                 .finalPrice(BigDecimal.valueOf(2000D))
@@ -188,7 +188,7 @@ public class CreateDataStartApp {
                 .name("XIAOMI")
                 .productUUID("UUID4")
                 .description("Description product 4")
-                .categories(Categories.MONITOR)
+                .categoriesEnum(CategoriesEnum.MONITOR)
                 .availability(Availability.AVAILABLE)
                 .basePrice(BigDecimal.valueOf(2000D))
                 .finalPrice(BigDecimal.valueOf(2000D))
@@ -207,7 +207,7 @@ public class CreateDataStartApp {
                 .name("APPLE")
                 .productUUID("UUID5")
                 .description("Description product 5")
-                .categories(Categories.PHONES)
+                .categoriesEnum(CategoriesEnum.PHONES)
                 .availability(Availability.AVAILABLE)
                 .basePrice(BigDecimal.valueOf(2000D))
                 .finalPrice(BigDecimal.valueOf(2000D))
@@ -226,7 +226,7 @@ public class CreateDataStartApp {
                 .name("SAMSUNG")
                 .productUUID("UUID6")
                 .description("Description product 6")
-                .categories(Categories.PHONES)
+                .categoriesEnum(CategoriesEnum.PHONES)
                 .availability(Availability.AVAILABLE)
                 .basePrice(BigDecimal.valueOf(2000D))
                 .finalPrice(BigDecimal.valueOf(2000D))
@@ -245,9 +245,9 @@ public class CreateDataStartApp {
                 .orderUUID("UUID1")
                 .accountNumber("1111")
                 .isPaid(true)
-                .paymentType(PaymentType.BANK_CARD)
-                .orderStatus(OrderStatus.ORDER_SENT)
-                .shipmentStatus(ShipmentStatus.SHIPMENT_IN_STORAGE)
+                .paymentTypeEnum(PaymentTypeEnum.BANK_CARD)
+                .orderStatusEnum(OrderStatusEnum.ORDER_SENT)
+                .shipmentStatusEnum(ShipmentStatusEnum.SHIPMENT_IN_STORAGE)
                 .orderBasePrice(BigDecimal.valueOf(200D))
                 .orderFinalPrice(BigDecimal.valueOf(200D))
                 .hasDiscount(false)
@@ -263,9 +263,9 @@ public class CreateDataStartApp {
                 .orderUUID("UUID2")
                 .accountNumber("2222")
                 .isPaid(true)
-                .paymentType(PaymentType.BANK_TRANSFER)
-                .orderStatus(OrderStatus.ORDER_RETURNED)
-                .shipmentStatus(ShipmentStatus.SHIPMENT_RETURNED_TO_SENDER)
+                .paymentTypeEnum(PaymentTypeEnum.BANK_TRANSFER)
+                .orderStatusEnum(OrderStatusEnum.ORDER_RETURNED)
+                .shipmentStatusEnum(ShipmentStatusEnum.SHIPMENT_RETURNED_TO_SENDER)
                 .orderBasePrice(BigDecimal.valueOf(300D))
                 .orderFinalPrice(BigDecimal.valueOf(300D))
                 .hasDiscount(false)
