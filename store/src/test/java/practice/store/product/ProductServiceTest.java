@@ -13,7 +13,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import practice.store.exceptions.product.*;
 import practice.store.utils.converter.EntitiesConverter;
 import practice.store.utils.converter.PayloadsConverter;
-import practice.store.utils.numbers.CalculatePriceProduct;
+import practice.store.utils.numbers.CalculatePrice;
 import practice.store.utils.values.GenerateRandomString;
 import testdata.entity.TestDataProductEntity;
 import testdata.payload.TestDataProductPayload;
@@ -54,7 +54,7 @@ class ProductServiceTest {
     private ProductPayload productPayloadWithDiscount;
     private ProductPayload productPayloadWithoutDiscount;
 
-    private CalculatePriceProduct calculateFinalPrice;
+    private CalculatePrice calculateFinalPrice;
 
 
     @BeforeEach
@@ -62,7 +62,7 @@ class ProductServiceTest {
         entitiesConverter = new EntitiesConverter();
         payloadsConverter = new PayloadsConverter(mock(PasswordEncoder.class));
 
-        calculateFinalPrice = new CalculatePriceProduct();
+        calculateFinalPrice = new CalculatePrice();
 
         productService = new ProductService(productRepository, entitiesConverter, payloadsConverter, new GenerateRandomString(), calculateFinalPrice, discountPercentageMaxHigherValue, discountPercentageMaxLowerValue);
 
@@ -390,7 +390,7 @@ class ProductServiceTest {
     void should_throw_exception_when_product_not_exist_during_edit_test() {
         // given
         String uuidNotExist = "Incorrect UUID";
-        when(productRepository.existsByProductUUID(uuidNotExist)).thenThrow(new EntityNotFoundException());
+        when(productRepository.existsByProductUUID(uuidNotExist)).thenThrow(new ProductUuidCanNotChangeException());
 
 
         // when
@@ -399,9 +399,8 @@ class ProductServiceTest {
 
         // then
         assertThat(exception)
-                .isInstanceOf(javax.persistence.EntityNotFoundException.class);
+                .isInstanceOf(ProductUuidCanNotChangeException.class);
 
-        verify(productRepository, times(1)).existsByProductUUID(uuidNotExist);
         verify(productRepository, times(0)).save(productEntity);
     }
 
@@ -416,7 +415,6 @@ class ProductServiceTest {
         productPayloadWithDiscount.setFinalPrice(BigDecimal.valueOf(500).setScale(2, RoundingMode.HALF_UP));
         productPayloadWithDiscount.setAmountPriceReduction(BigDecimal.valueOf(500).setScale(2, RoundingMode.HALF_UP));
 
-        when(productRepository.existsByProductUUID(uuid)).thenReturn(true);
         when(productRepository.findByProductUUID(uuid)).thenReturn(productEntity);
         ProductEntity existingProduct = payloadsConverter.convertProduct(productPayloadWithDiscount);
 
@@ -426,7 +424,6 @@ class ProductServiceTest {
 
 
         // then
-        verify(productRepository, times(1)).existsByProductUUID(uuid);
         verify(productRepository, times(1)).findByProductUUID(uuid);
         verify(productRepository, times(1)).save(existingProduct);
     }
@@ -453,7 +450,6 @@ class ProductServiceTest {
 
 
         // then
-        verify(productRepository, times(1)).existsByProductUUID(uuid);
         verify(productRepository, times(1)).findByProductUUID(uuid);
         verify(productRepository, times(1)).save(existingProduct);
     }

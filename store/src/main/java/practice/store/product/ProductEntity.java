@@ -1,6 +1,9 @@
 package practice.store.product;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import practice.store.order.details.OrderProductEntity;
 
 import javax.persistence.*;
@@ -13,6 +16,7 @@ import java.util.Set;
 @Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
 @ToString
 @Entity
 @Getter
@@ -41,7 +45,7 @@ public class ProductEntity {
     @Column
     private BigDecimal basePrice;
 
-    @NotNull(message = "'Amount of price reduction' parameter may not be null")
+    @NotNull(message = "'Amount of price reduction' parameter may not be null")  @JsonFormat(shape=JsonFormat.Shape.STRING)
     @Column
     private BigDecimal amountPriceReduction;
 
@@ -74,5 +78,6 @@ public class ProductEntity {
     private boolean isActive;
 
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<OrderProductEntity> orderProduct = new HashSet<>();
 }

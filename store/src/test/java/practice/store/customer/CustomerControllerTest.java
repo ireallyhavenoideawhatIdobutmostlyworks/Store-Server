@@ -3,6 +3,7 @@ package practice.store.customer;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -19,6 +20,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import practice.store.utils.converter.EntitiesConverter;
+import practice.store.utils.initdata.CreateDataStartApp;
+import practice.store.utils.initdata.SaveDataToDatabase;
+
 import testdata.entity.TestDataCustomerEntity;
 import testdata.payload.TestDataCustomerPayload;
 
@@ -45,6 +49,9 @@ class CustomerControllerTest {
     private CustomerRepository customerRepository;
     @Autowired
     private EntitiesConverter converter;
+//    @Autowired
+//    private SavaTestDataToDatabase savaTestDataToDatabase;
+
 
     private final String EXCEPTION_MESSAGE_FIRST_PART = "Something went wrong. Contact administrator with code";
     private final String EXCEPTION_MESSAGE_SECOND_PART = String.format("Timestamp: %s", LocalDate.now());
@@ -59,6 +66,14 @@ class CustomerControllerTest {
                 .build();
     }
 
+//    @BeforeAll
+//    public void addTestData() {
+//        savaTestDataToDatabase.addCustomers();
+//        savaTestDataToDatabase.addProducts();
+//        savaTestDataToDatabase.addOrders();
+//        savaTestDataToDatabase.addCustomerToOrders();
+//        savaTestDataToDatabase.addOrderProductDetails();
+//    }
 
     @WithMockUser(username = "username")
     @Test
@@ -156,6 +171,7 @@ class CustomerControllerTest {
     @Test
     void get_customers_empty_list_when_list_is_empty() throws Exception {
         // given
+        customerRepository.deleteAll();
         assertTrue(customerRepository.findAll().isEmpty());
 
 

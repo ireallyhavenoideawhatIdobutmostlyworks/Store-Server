@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import practice.store.utils.converter.EntitiesConverter;
 import practice.store.utils.values.GenerateRandomString;
@@ -34,6 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@Transactional
 class ProductControllerTest {
 
     @Autowired
@@ -216,7 +218,7 @@ class ProductControllerTest {
         // then
         assertThat(productRepository.findByProductUUID(uuid))
                 .usingRecursiveComparison()
-                .ignoringFields("id")
+                .ignoringFields("id", "orderProduct")
                 .isEqualTo(productPayloadWithDiscount);
     }
 
@@ -242,7 +244,7 @@ class ProductControllerTest {
         // then
         assertThat(productRepository.findByProductUUID(uuid))
                 .usingRecursiveComparison()
-                .ignoringFields("id")
+                .ignoringFields("id", "orderProduct")
                 .isEqualTo(productPayloadWithoutDiscount);
     }
 
@@ -269,7 +271,7 @@ class ProductControllerTest {
         // then
         assertThat(productRepository.findByProductUUID(uuid))
                 .usingRecursiveComparison()
-                .ignoringFields("id", "availability")
+                .ignoringFields("id", "availability", "orderProduct")
                 .isEqualTo(productPayloadWithDiscount);
 
         assertEquals(Availability.AWAITING_FROM_MANUFACTURE, productRepository.findByProductUUID(uuid).getAvailability());
@@ -297,7 +299,7 @@ class ProductControllerTest {
         // then
         assertThat(productRepository.findByProductUUID(uuid))
                 .usingRecursiveComparison()
-                .ignoringFields("id", "availability")
+                .ignoringFields("id", "availability", "orderProduct")
                 .isEqualTo(productPayloadWithDiscount);
 
         assertEquals(Availability.NOT_AVAILABLE, productRepository.findByProductUUID(uuid).getAvailability());
@@ -333,7 +335,6 @@ class ProductControllerTest {
         // given
         String uuidExist = "uuid exist test";
         productPayloadWithDiscount.setProductUUID(uuidExist);
-
         ProductEntity existProduct = TestDataProductEntity.Product(uuidExist);
         productRepository.save(existProduct);
 
@@ -552,6 +553,7 @@ class ProductControllerTest {
         // then
         assertThat(productRepository.findByProductUUID(uuid))
                 .usingRecursiveComparison()
+                .ignoringFields("orderProduct")
                 .isEqualTo(productPayloadForEdit);
     }
 
@@ -567,8 +569,7 @@ class ProductControllerTest {
         long id = productRepository.findByProductUUID(uuid).getId();
 
         ProductPayload productPayloadForEdit = TestDataProductPayload.ProductWithoutDiscount(id, newProductName, uuid);
-        System.out.println(existProduct);
-        System.out.println(productPayloadForEdit);
+
 
         // when
         mvc
@@ -584,7 +585,12 @@ class ProductControllerTest {
         // then
         assertThat(productRepository.findByProductUUID(uuid))
                 .usingRecursiveComparison()
+                .ignoringFields("orderProduct", "amountPriceReduction")
                 .isEqualTo(productPayloadForEdit);
+
+        assertEquals(
+                productRepository.findByProductUUID(uuid).getAmountPriceReduction().stripTrailingZeros(),
+                productPayloadForEdit.getAmountPriceReduction().stripTrailingZeros());
     }
 
     @WithMockUser(username = "username")
@@ -615,9 +621,14 @@ class ProductControllerTest {
         // then
         assertThat(productRepository.findByProductUUID(uuid))
                 .usingRecursiveComparison()
+                .ignoringFields("orderProduct", "amountPriceReduction")
                 .isEqualTo(productPayloadForEdit);
 
         assertFalse(productRepository.findByProductUUID(uuid).isHasDiscount());
+
+        assertEquals(
+                productRepository.findByProductUUID(uuid).getAmountPriceReduction().stripTrailingZeros(),
+                productPayloadForEdit.getAmountPriceReduction().stripTrailingZeros());
     }
 
     @WithMockUser(username = "username")
@@ -647,6 +658,7 @@ class ProductControllerTest {
         // then
         assertThat(productRepository.findByProductUUID(uuid))
                 .usingRecursiveComparison()
+                .ignoringFields("orderProduct")
                 .isEqualTo(productPayloadForEdit);
 
         assertTrue(productRepository.findByProductUUID(uuid).isHasDiscount());

@@ -1,7 +1,7 @@
 package testdata.payload;
 
 import practice.store.product.Availability;
-import practice.store.product.Categories;
+import practice.store.product.CategoriesEnum;
 import practice.store.product.ProductPayload;
 import practice.store.utils.values.GenerateRandomString;
 
@@ -10,7 +10,7 @@ import java.math.RoundingMode;
 
 public abstract class TestDataProductPayload {
 
-    public static ProductPayload Product(long id, String name, String productUUID, String description, BigDecimal basePrice, BigDecimal amountPriceReduction, BigDecimal finalPrice, int discountPercentage, boolean hasDiscount, int amountInStock, Categories categories, Availability availability, boolean isActive) {
+    public static ProductPayload Product(long id, String name, String productUUID, String description, BigDecimal basePrice, BigDecimal amountPriceReduction, BigDecimal finalPrice, int discountPercentage, boolean hasDiscount, int amountInStock, CategoriesEnum categoriesEnum, Availability availability, boolean isActive) {
         return ProductPayload.builder()
                 .id(id)
                 .name(name)
@@ -22,7 +22,7 @@ public abstract class TestDataProductPayload {
                 .discountPercentage(discountPercentage)
                 .hasDiscount(hasDiscount)
                 .amount(amountInStock)
-                .categories(categories)
+                .categoriesEnum(categoriesEnum)
                 .availability(availability)
                 .isActive(isActive)
                 .build();
@@ -40,7 +40,7 @@ public abstract class TestDataProductPayload {
                 .discountPercentage(10)
                 .hasDiscount(true)
                 .amount(5)
-                .categories(Categories.PHONES)
+                .categoriesEnum(CategoriesEnum.PHONES)
                 .availability(Availability.AVAILABLE)
                 .isActive(true)
                 .build();
@@ -58,7 +58,7 @@ public abstract class TestDataProductPayload {
                 .discountPercentage(10)
                 .hasDiscount(true)
                 .amount(5)
-                .categories(Categories.PHONES)
+                .categoriesEnum(CategoriesEnum.PHONES)
                 .availability(Availability.AVAILABLE)
                 .isActive(true)
                 .build();
@@ -76,7 +76,7 @@ public abstract class TestDataProductPayload {
                 .discountPercentage(10)
                 .hasDiscount(true)
                 .amount(5)
-                .categories(Categories.PHONES)
+                .categoriesEnum(CategoriesEnum.PHONES)
                 .availability(Availability.AVAILABLE)
                 .isActive(true)
                 .build();
@@ -94,7 +94,7 @@ public abstract class TestDataProductPayload {
                 .discountPercentage(0)
                 .hasDiscount(false)
                 .amount(5)
-                .categories(Categories.PHONES)
+                .categoriesEnum(CategoriesEnum.PHONES)
                 .availability(Availability.AVAILABLE)
                 .isActive(true)
                 .build();
@@ -112,7 +112,7 @@ public abstract class TestDataProductPayload {
                 .discountPercentage(0)
                 .hasDiscount(false)
                 .amount(5)
-                .categories(Categories.PHONES)
+                .categoriesEnum(CategoriesEnum.PHONES)
                 .availability(Availability.AVAILABLE)
                 .isActive(true)
                 .build();
@@ -130,7 +130,7 @@ public abstract class TestDataProductPayload {
                 .discountPercentage(0)
                 .hasDiscount(false)
                 .amount(5)
-                .categories(Categories.PHONES)
+                .categoriesEnum(CategoriesEnum.PHONES)
                 .availability(Availability.AVAILABLE)
                 .isActive(true)
                 .build();

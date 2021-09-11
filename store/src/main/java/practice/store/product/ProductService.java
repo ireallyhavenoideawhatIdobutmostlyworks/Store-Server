@@ -79,7 +79,6 @@ public class ProductService {
     }
 
     public void edit(ProductPayload productPayload, String uuid) {
-        checkIfProductUuidExist(uuid);
         checkIfProductUuidsAreTheSame(productPayload.getProductUUID(), uuid);
 
         if (productPayload.isHasDiscount()) {
@@ -169,7 +168,7 @@ public class ProductService {
     }
 
     private void checkIfProductUuidExist(String uuid) {
-        if (!productRepository.existsByProductUUID(uuid))
+        if (productRepository.existsByProductUUID(uuid))
             throw new ProductUuidExistException(uuid);
     }
 

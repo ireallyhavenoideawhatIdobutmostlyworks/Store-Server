@@ -2,6 +2,8 @@ package practice.store.order;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import practice.store.customer.CustomerEntity;
 import practice.store.order.details.OrderProductEntity;
 
@@ -72,9 +74,11 @@ public class OrderEntity {
     private Date creationDateTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "customer_id")
     private CustomerEntity customer;
 
     @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<OrderProductEntity> orderProduct = new HashSet<>();
 }
