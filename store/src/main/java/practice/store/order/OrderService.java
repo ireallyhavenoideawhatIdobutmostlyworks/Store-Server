@@ -122,9 +122,9 @@ public class OrderService {
         return orderPayload
                 .getOrderProductPayloads()
                 .stream()
-                .map(orderProductPayload ->
-                        productRepository.findByProductUUID(orderProductPayload.getProductUUID()).getFinalPrice().multiply(BigDecimal.valueOf(orderProductPayload.getAmount())))
-                .reduce(BigDecimal.ZERO, BigDecimal::add).setScale(2, RoundingMode.CEILING);
+                .map(this::multiplyAmountFromOrderProductWithProductFinalPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add)
+                .setScale(2, RoundingMode.CEILING);
     }
 
     private void checkProductExceptions(OrderPayload orderPayload) {
@@ -138,6 +138,13 @@ public class OrderService {
                         }
                 );
     }
+
+    private BigDecimal multiplyAmountFromOrderProductWithProductFinalPrice(OrderProductPayload orderProductPayload) {
+        BigDecimal productFinalPrice = productRepository.findByProductUUID(orderProductPayload.getProductUUID()).getFinalPrice();
+        BigDecimal productAmount = BigDecimal.valueOf(orderProductPayload.getAmount());
+        return productFinalPrice.multiply(productAmount);
+    }
+
 
     private void checkDiscountPercentage(OrderPayload orderPayload) {
         if (orderPayload.isHasDiscount() && orderPayload.getDiscountPercentage() == 0)
