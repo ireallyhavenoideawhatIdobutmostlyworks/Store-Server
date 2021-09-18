@@ -16,7 +16,7 @@ import java.util.Set;
 
 public abstract class TestDataOrderEntity {
 
-    public static OrderEntity createOrderFirst() {
+    public static OrderEntity Order() {
         return OrderEntity.builder()
                 .id(1L)
                 .orderUUID("UUID1")
