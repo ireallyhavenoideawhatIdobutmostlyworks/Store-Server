@@ -18,6 +18,7 @@ import java.util.Set;
 @Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
 @ToString
 @Entity
 @Getter
@@ -33,6 +34,10 @@ public class OrderEntity {
     @NotNull(message = "'Order UUID' parameter may not be empty")
     @Column
     private String orderUUID;
+
+    @NotNull(message = "'Payload UUID' parameter may not be empty")
+    @Column
+    private String payloadUUID;
 
     @Column
     private String accountNumber;

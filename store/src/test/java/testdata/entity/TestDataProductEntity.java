@@ -30,6 +30,23 @@ public abstract class TestDataProductEntity {
                 .build();
     }
 
+    public static ProductEntity Product(int amount) {
+        return ProductEntity.builder()
+                .name("test name")
+                .productUUID(new GenerateRandomString().generateRandomUuid())
+                .description("test description")
+                .basePrice(setBigDecimalWithScale(100))
+                .amountPriceReduction(setBigDecimalWithScale(10))
+                .finalPrice(setBigDecimalWithScale(90))
+                .discountPercentage(10)
+                .hasDiscount(true)
+                .amount(amount)
+                .categoriesEnum(CategoriesEnum.PHONES)
+                .availability(Availability.AVAILABLE)
+                .isActive(true)
+                .build();
+    }
+
     public static ProductEntity Product(String uuid) {
         return ProductEntity.builder()
                 .id(1L)

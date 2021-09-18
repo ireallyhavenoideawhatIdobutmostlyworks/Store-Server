@@ -10,7 +10,7 @@ import practice.store.exceptions.customer.CustomerIsNotActiveException;
 import practice.store.exceptions.order.*;
 import practice.store.exceptions.product.ProductAmountInvalidParameterException;
 import practice.store.exceptions.product.ProductAmountNotEnoughException;
-import practice.store.exceptions.product.ProductUuidExistException;
+import practice.store.exceptions.product.ProductUuidNotExistException;
 import practice.store.order.details.OrderProductEntity;
 import practice.store.order.details.OrderProductPayload;
 import practice.store.order.details.OrderProductRepository;
@@ -50,7 +50,6 @@ public class OrderService {
         checkIfPriceDiscountCase(orderPayload);
         checkDiscountPercentage(orderPayload);
         checkFinalPriceIfOrderHasDiscount(orderPayload);
-        checkIfPriceAreGreaterThanZero(orderPayload);
 
         OrderEntity orderEntity = prepareNewOrder(orderPayload);
         orderRepository.save(orderEntity);
@@ -173,13 +172,6 @@ public class OrderService {
         }
     }
 
-    private void checkIfPriceAreGreaterThanZero(OrderPayload orderPayload) {
-        if (orderPayload.getOrderBasePrice().equals(BigDecimal.valueOf(0D)))
-            throw new OrderBasePriceException();
-        else if (orderPayload.getOrderFinalPrice().equals(BigDecimal.valueOf(0D)))
-            throw new OrderFinalPriceException();
-    }
-
     private void checkIfOrderHasProduct(Set<OrderProductPayload> orderProductPayloads) {
         if (orderProductPayloads.isEmpty()) {
             throw new OrderMissingProductException();
@@ -204,6 +196,6 @@ public class OrderService {
 
     private void checkIfProductUuidExist(String uuid) {
         if (!productRepository.existsByProductUUID(uuid))
-            throw new ProductUuidExistException(uuid);
+            throw new ProductUuidNotExistException(uuid);
     }
 }

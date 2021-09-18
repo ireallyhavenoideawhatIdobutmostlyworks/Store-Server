@@ -53,14 +53,13 @@ public class PayloadsConverter {
 
     public OrderProductEntity convertOrderProduct(OrderProductPayload orderProduct) {
         return OrderProductEntity.builder()
-                .id(orderProduct.getId())
                 .amount(orderProduct.getAmount())
                 .build();
     }
 
     public OrderEntity convertOrder(OrderPayload orderPayload) {
         return OrderEntity.builder()
-                .id(orderPayload.getId())
+                .payloadUUID(orderPayload.getPayloadUUID())
                 .accountNumber(orderPayload.getAccountNumber())
                 .paymentTypeEnum(orderPayload.getPaymentTypeEnum())
                 .orderProduct(convertProductsList(orderPayload.getOrderProductPayloads()))

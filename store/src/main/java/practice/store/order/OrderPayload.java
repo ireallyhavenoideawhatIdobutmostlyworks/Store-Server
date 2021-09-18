@@ -2,7 +2,6 @@ package practice.store.order;
 
 import lombok.Builder;
 import lombok.Data;
-import practice.store.customer.CustomerEntity;
 import practice.store.order.details.OrderProductPayload;
 
 import java.math.BigDecimal;
@@ -12,13 +11,12 @@ import java.util.Set;
 @Data
 public class OrderPayload {
 
-    private Long id;
-    private PaymentTypeEnum paymentTypeEnum;
+    private String payloadUUID;
     private String accountNumber;
+    private PaymentTypeEnum paymentTypeEnum;
     private BigDecimal orderBasePrice;
     private BigDecimal orderFinalPrice;
     private boolean hasDiscount;
     private int discountPercentage;
-    private CustomerEntity customer;
     private Set<OrderProductPayload> orderProductPayloads;
 }

@@ -46,7 +46,6 @@ class CustomerControllerTest {
     @Autowired
     private EntitiesConverter converter;
 
-
     private final String EXCEPTION_MESSAGE_FIRST_PART = "Something went wrong. Contact administrator with code";
     private final String EXCEPTION_MESSAGE_SECOND_PART = String.format("Timestamp: %s", LocalDate.now());
     private final String MAIN_ENDPOINT = "/api/customer/";
@@ -60,14 +59,6 @@ class CustomerControllerTest {
                 .build();
     }
 
-//    @BeforeAll
-//    public void addTestData() {
-//        savaTestDataToDatabase.addCustomers();
-//        savaTestDataToDatabase.addProducts();
-//        savaTestDataToDatabase.addOrders();
-//        savaTestDataToDatabase.addCustomerToOrders();
-//        savaTestDataToDatabase.addOrderProductDetails();
-//    }
 
     @WithMockUser(username = "username")
     @Test
