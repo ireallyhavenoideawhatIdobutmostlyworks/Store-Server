@@ -120,10 +120,11 @@ public class OrderControllerTest {
         OrderEntity addedOrder = orderRepository.findByPayloadUUID(orderPayload.getPayloadUUID());
         assertThat(addedOrder)
                 .usingRecursiveComparison()
-                .ignoringFields("id", "orderUUID", "isPaid", "shipmentStatusEnum", "orderStatusEnum", "creationDateTime", "orderProduct", "customer")
+                .ignoringFields("id", "orderUUID", "isPaid", "shipmentStatusEnum", "orderStatusEnum", "creationDateTime", "orderProduct", "customer", "isCancelled")
                 .isEqualTo(orderPayload);
 
         assertFalse(addedOrder.getIsPaid());
+        assertFalse(addedOrder.isCancelled());
         assertEquals(ShipmentStatusEnum.SHIPMENT_AWAITING_FOR_ACCEPT, addedOrder.getShipmentStatusEnum());
         assertEquals(OrderStatusEnum.ORDER_AWAITING, addedOrder.getOrderStatusEnum());
         assertThat(loggedCustomer).isEqualTo(addedOrder.getCustomer());

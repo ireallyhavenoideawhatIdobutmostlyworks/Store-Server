@@ -73,6 +73,10 @@ public class OrderEntity {
     @Column
     private int discountPercentage;
 
+    @NotNull(message = "'Is cancelled' parameter may not be null")
+    @Column
+    private boolean isCancelled;
+
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @Temporal(TemporalType.TIMESTAMP)
     @Column

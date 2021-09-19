@@ -253,6 +253,7 @@ public class CreateDataStartApp {
                 .orderFinalPrice(BigDecimal.valueOf(200D))
                 .hasDiscount(false)
                 .discountPercentage(0)
+                .isCancelled(false)
                 .creationDateTime(new Date())
                 .build();
         return orderFirst;
@@ -272,6 +273,7 @@ public class CreateDataStartApp {
                 .orderFinalPrice(BigDecimal.valueOf(300D))
                 .hasDiscount(false)
                 .discountPercentage(0)
+                .isCancelled(false)
                 .creationDateTime(new Date())
                 .build();
         return orderSecond;

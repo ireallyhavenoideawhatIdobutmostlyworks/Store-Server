@@ -75,6 +75,7 @@ public class OrderService {
                 .isPaid(false)
                 .orderStatusEnum(OrderStatusEnum.ORDER_AWAITING)
                 .creationDateTime(new Date())
+                .isCancelled(false)
                 .build();
     }
 
