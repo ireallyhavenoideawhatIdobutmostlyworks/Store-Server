@@ -1,6 +1,5 @@
 
-name: CI
-
+name: CI unit and integration tests
 
 on:
 
@@ -8,7 +7,6 @@ on:
     branches: [ master ]
   pull_request:
     branches: [ master ]
-
 
   workflow_dispatch:
 
@@ -26,6 +24,72 @@ jobs:
         with:
           java-version: 11
 
-      - name: Step 3 - run test
-        run: mvn clean test
+  unit-tests-customer:
+    runs-on: ubuntu-latest
+    steps:
+      - name: use cache
+        uses: actions/cache@v2
+        with:
+          java-version: 11
+      - name: run tests
+        run: mvn test -Dtest=CustomerServiceTest
 
+  integration-tests-customer:
+    runs-on: ubuntu-latest
+    steps:
+      - name: use cache
+        uses: actions/cache@v2
+        with:
+          java-version: 11
+      - name: run tests
+        run: mvn test -Dtest=CustomerControllerTest
+
+  unit-tests-order:
+    runs-on: ubuntu-latest
+    steps:
+      - name: use cache
+        uses: actions/cache@v2
+        with:
+          java-version: 11
+      - name: run tests
+        run: mvn test -Dtest=OrderServiceTest
+
+  integration-tests-order:
+    runs-on: ubuntu-latest
+    steps:
+      - name: use cache
+        uses: actions/cache@v2
+        with:
+          java-version: 11
+      - name: run tests
+        run: mvn test -Dtest=OrderControllerTest
+
+  unit-tests-product:
+    runs-on: ubuntu-latest
+    steps:
+      - name: use cache
+        uses: actions/cache@v2
+        with:
+          java-version: 11
+      - name: run tests
+        run: mvn test -Dtest=ProductServiceTest
+
+  integration-tests-product:
+    runs-on: ubuntu-latest
+    steps:
+      - name: use cache
+        uses: actions/cache@v2
+        with:
+          java-version: 11
+      - name: run tests
+        run: mvn test -Dtest=ProductControllerTest
+
+  utils-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: use cache
+        uses: actions/cache@v2
+        with:
+          java-version: 11
+      - name: run tests
+        run: mvn clean test -Dtest="**/service/**/*.java"
