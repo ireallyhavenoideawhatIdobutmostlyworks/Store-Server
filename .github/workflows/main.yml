@@ -1,0 +1,31 @@
+
+name: CI
+
+
+on:
+
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+
+  workflow_dispatch:
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Step 1 - checkout main branch from github
+        uses: actions/checkout@v2
+
+      - name: Step 2 - Setup Java JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - name: Step 3 - run test
+        run: mvn clean test
+
