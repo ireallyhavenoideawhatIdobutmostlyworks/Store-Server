@@ -45,7 +45,7 @@ public class PayloadsConverter {
                 .discountPercentage(productPayload.getDiscountPercentage())
                 .hasDiscount(productPayload.isHasDiscount())
                 .amount(productPayload.getAmount())
-                .categoriesEnum(productPayload.getCategoriesEnum())
+                .categories(productPayload.getCategories())
                 .availability(productPayload.getAvailability())
                 .isActive(productPayload.isActive())
                 .build();

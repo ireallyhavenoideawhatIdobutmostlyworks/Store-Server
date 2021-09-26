@@ -67,7 +67,7 @@ public class ProductEntity {
 
     @NotNull(message = "'Categories' parameter may not be null")
     @Enumerated(EnumType.STRING)
-    private CategoriesEnum categoriesEnum;
+    private Categories categories;
 
     @NotNull(message = "'Availability' parameter may not be null")
     @Enumerated(EnumType.STRING)

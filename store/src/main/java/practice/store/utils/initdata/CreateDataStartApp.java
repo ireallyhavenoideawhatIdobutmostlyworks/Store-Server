@@ -12,13 +12,14 @@ import practice.store.order.PaymentTypeEnum;
 import practice.store.order.ShipmentStatusEnum;
 import practice.store.order.details.OrderProductEntity;
 import practice.store.product.Availability;
-import practice.store.product.CategoriesEnum;
+import practice.store.product.Categories;
 import practice.store.product.ProductEntity;
 import practice.store.utils.numbers.CalculatePrice;
 
 import java.math.BigDecimal;
 
 import java.text.ParseException;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
@@ -127,7 +128,7 @@ public class CreateDataStartApp {
                 .name("Nexus 6")
                 .productUUID("UUID1")
                 .description("Description product 1")
-                .categoriesEnum(CategoriesEnum.PHONES)
+                .categories(Categories.PHONES)
                 .basePrice(basePrice)
                 .finalPrice(finalPrice)
                 .amountPriceReduction(basePrice.subtract(finalPrice))
@@ -150,7 +151,7 @@ public class CreateDataStartApp {
                 .name("Dell")
                 .productUUID("UUID2")
                 .description("Description product 2")
-                .categoriesEnum(CategoriesEnum.LAPTOP)
+                .categories(Categories.LAPTOP)
                 .availability(Availability.AVAILABLE)
                 .basePrice(basePrice)
                 .finalPrice(finalPrice)
@@ -169,7 +170,7 @@ public class CreateDataStartApp {
                 .name("PANASONIC")
                 .productUUID("UUID3")
                 .description("Description product 3")
-                .categoriesEnum(CategoriesEnum.MONITOR)
+                .categories(Categories.MONITOR)
                 .availability(Availability.AVAILABLE)
                 .basePrice(BigDecimal.valueOf(2000D))
                 .finalPrice(BigDecimal.valueOf(2000D))
@@ -188,7 +189,7 @@ public class CreateDataStartApp {
                 .name("XIAOMI")
                 .productUUID("UUID4")
                 .description("Description product 4")
-                .categoriesEnum(CategoriesEnum.MONITOR)
+                .categories(Categories.MONITOR)
                 .availability(Availability.AVAILABLE)
                 .basePrice(BigDecimal.valueOf(2000D))
                 .finalPrice(BigDecimal.valueOf(2000D))
@@ -207,7 +208,7 @@ public class CreateDataStartApp {
                 .name("APPLE")
                 .productUUID("UUID5")
                 .description("Description product 5")
-                .categoriesEnum(CategoriesEnum.PHONES)
+                .categories(Categories.PHONES)
                 .availability(Availability.AVAILABLE)
                 .basePrice(BigDecimal.valueOf(2000D))
                 .finalPrice(BigDecimal.valueOf(2000D))
@@ -226,7 +227,7 @@ public class CreateDataStartApp {
                 .name("SAMSUNG")
                 .productUUID("UUID6")
                 .description("Description product 6")
-                .categoriesEnum(CategoriesEnum.PHONES)
+                .categories(Categories.PHONES)
                 .availability(Availability.AVAILABLE)
                 .basePrice(BigDecimal.valueOf(2000D))
                 .finalPrice(BigDecimal.valueOf(2000D))
@@ -244,7 +245,7 @@ public class CreateDataStartApp {
                 .id(1L)
                 .orderUUID("UUID1")
                 .payloadUUID("UUID1")
-                .accountNumber("1111")
+                .accountNumber("KW81CBKU0000000000001234560101")
                 .isPaid(true)
                 .paymentTypeEnum(PaymentTypeEnum.BANK_CARD)
                 .orderStatusEnum(OrderStatusEnum.ORDER_SENT)
@@ -254,7 +255,7 @@ public class CreateDataStartApp {
                 .hasDiscount(false)
                 .discountPercentage(0)
                 .isCancelled(false)
-                .creationDateTime(new Date())
+                .creationDateTime(LocalDateTime.now())
                 .build();
         return orderFirst;
     }
@@ -264,7 +265,7 @@ public class CreateDataStartApp {
                 .id(2L)
                 .orderUUID("UUID2")
                 .payloadUUID("UUID2")
-                .accountNumber("2222")
+                .accountNumber("KW81CBKU0000000000001234560101")
                 .isPaid(true)
                 .paymentTypeEnum(PaymentTypeEnum.BANK_TRANSFER)
                 .orderStatusEnum(OrderStatusEnum.ORDER_RETURNED)
@@ -274,7 +275,7 @@ public class CreateDataStartApp {
                 .hasDiscount(false)
                 .discountPercentage(0)
                 .isCancelled(false)
-                .creationDateTime(new Date())
+                .creationDateTime(LocalDateTime.now())
                 .build();
         return orderSecond;
     }

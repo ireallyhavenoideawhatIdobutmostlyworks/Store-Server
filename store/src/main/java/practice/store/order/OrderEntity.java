@@ -1,6 +1,5 @@
 package practice.store.order;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -10,8 +9,7 @@ import practice.store.order.details.OrderProductEntity;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
-
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -77,10 +75,8 @@ public class OrderEntity {
     @Column
     private boolean isCancelled;
 
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    @Temporal(TemporalType.TIMESTAMP)
     @Column
-    private Date creationDateTime;
+    private LocalDateTime creationDateTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)

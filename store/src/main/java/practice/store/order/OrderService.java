@@ -24,6 +24,7 @@ import practice.store.utils.values.GenerateRandomString;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Set;
 
@@ -59,7 +60,7 @@ public class OrderService {
                 .forEach(orderProductPayload -> {
                     ProductEntity productEntity = productRepository.findByProductUUID(orderProductPayload.getProductUUID());
 
-                    updateProductIntoDatabase(productEntity, orderProductPayload);
+                    changeAmountBoughtProduct(productEntity, orderProductPayload);
                     addOrderProductIntoDatabase(productEntity, orderProductPayload, orderEntity);
                 });
     }
@@ -74,12 +75,12 @@ public class OrderService {
                 .shipmentStatusEnum(ShipmentStatusEnum.SHIPMENT_AWAITING_FOR_ACCEPT)
                 .isPaid(false)
                 .orderStatusEnum(OrderStatusEnum.ORDER_AWAITING)
-                .creationDateTime(new Date())
+                .creationDateTime(LocalDateTime.now())
                 .isCancelled(false)
                 .build();
     }
 
-    private void updateProductIntoDatabase(ProductEntity productEntity, OrderProductPayload orderProductPayload) {
+    private void changeAmountBoughtProduct(ProductEntity productEntity, OrderProductPayload orderProductPayload) {
         productEntity.setAmount(productEntity.getAmount() - orderProductPayload.getAmount());
         calculateAvailabilityDependsOnProductAmounts(productEntity);
         productRepository.save(productEntity);

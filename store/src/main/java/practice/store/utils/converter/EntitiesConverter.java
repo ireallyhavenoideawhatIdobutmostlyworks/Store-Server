@@ -38,7 +38,7 @@ public class EntitiesConverter {
                 .discountPercentage(productEntity.getDiscountPercentage())
                 .hasDiscount(productEntity.isHasDiscount())
                 .amount(productEntity.getAmount())
-                .categoriesEnum(productEntity.getCategoriesEnum())
+                .categories(productEntity.getCategories())
                 .availability(productEntity.getAvailability())
                 .isActive(productEntity.isActive())
                 .build();
