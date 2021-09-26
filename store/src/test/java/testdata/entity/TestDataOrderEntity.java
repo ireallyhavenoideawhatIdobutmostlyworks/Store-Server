@@ -1,6 +1,5 @@
 package testdata.entity;
 
-import org.junit.jupiter.api.Order;
 import practice.store.customer.CustomerEntity;
 import practice.store.order.OrderEntity;
 import practice.store.order.OrderStatusEnum;
@@ -9,6 +8,7 @@ import practice.store.order.ShipmentStatusEnum;
 import practice.store.order.details.OrderProductEntity;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -29,7 +29,7 @@ public abstract class TestDataOrderEntity {
                 .orderFinalPrice(BigDecimal.valueOf(200D))
                 .hasDiscount(false)
                 .discountPercentage(0)
-                .creationDateTime(new Date())
+                .creationDateTime(LocalDateTime.now())
                 .build();
     }
 
@@ -46,7 +46,7 @@ public abstract class TestDataOrderEntity {
                 .orderFinalPrice(BigDecimal.valueOf(1000))
                 .hasDiscount(false)
                 .discountPercentage(0)
-                .creationDateTime(new Date())
+                .creationDateTime(LocalDateTime.now())
                 .customer(customerFirst)
                 .orderProduct(orderProduct)
                 .build();
@@ -63,7 +63,7 @@ public abstract class TestDataOrderEntity {
                 .orderFinalPrice(BigDecimal.valueOf(2000))
                 .hasDiscount(false)
                 .discountPercentage(0)
-                .creationDateTime(new Date())
+                .creationDateTime(LocalDateTime.now())
                 .customer(customerFirst)
                 .orderProduct(orderProduct)
                 .build();
@@ -80,7 +80,7 @@ public abstract class TestDataOrderEntity {
                 .orderFinalPrice(BigDecimal.valueOf(3000))
                 .hasDiscount(false)
                 .discountPercentage(0)
-                .creationDateTime(new Date())
+                .creationDateTime(LocalDateTime.now())
                 .customer(customerFirst)
                 .orderProduct(orderProduct)
                 .build();

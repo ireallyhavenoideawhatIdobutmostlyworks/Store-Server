@@ -5,7 +5,8 @@ import practice.store.customer.CustomerPayload;
 public abstract class TestDataCustomerPayload {
 
     public static CustomerPayload Customer() {
-        return CustomerPayload.builder()
+        return CustomerPayload
+                .builder()
                 .id(1L)
                 .username("name")
                 .password("password")
@@ -16,7 +17,8 @@ public abstract class TestDataCustomerPayload {
     }
 
     public static CustomerPayload Customer(String email) {
-        return CustomerPayload.builder()
+        return CustomerPayload
+                .builder()
                 .id(1L)
                 .username("name")
                 .password("password")
@@ -27,7 +29,8 @@ public abstract class TestDataCustomerPayload {
     }
 
     public static CustomerPayload Customer(long id, String email) {
-        return CustomerPayload.builder()
+        return CustomerPayload
+                .builder()
                 .id(id)
                 .username("name")
                 .password("password")
@@ -38,7 +41,8 @@ public abstract class TestDataCustomerPayload {
     }
 
     public static CustomerPayload Customer(long id, String username, String password, String email, boolean isActive, boolean isCompany) {
-        return CustomerPayload.builder()
+        return CustomerPayload
+                .builder()
                 .id(id)
                 .username(username)
                 .password(password)

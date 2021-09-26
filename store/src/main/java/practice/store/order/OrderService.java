@@ -7,14 +7,16 @@ import org.springframework.transaction.annotation.Transactional;
 import practice.store.customer.CustomerEntity;
 import practice.store.customer.CustomerRepository;
 import practice.store.exceptions.customer.CustomerIsNotActiveException;
-import practice.store.exceptions.order.*;
+import practice.store.exceptions.order.OrderDiscountException;
+import practice.store.exceptions.order.OrderDiscountPercentageException;
+import practice.store.exceptions.order.OrderFinalPriceException;
+import practice.store.exceptions.order.OrderMissingProductException;
 import practice.store.exceptions.product.ProductAmountInvalidParameterException;
 import practice.store.exceptions.product.ProductAmountNotEnoughException;
 import practice.store.exceptions.product.ProductUuidNotExistException;
 import practice.store.order.details.OrderProductEntity;
 import practice.store.order.details.OrderProductPayload;
 import practice.store.order.details.OrderProductRepository;
-import practice.store.product.Availability;
 import practice.store.product.ProductEntity;
 import practice.store.product.ProductRepository;
 import practice.store.product.ProductService;
@@ -26,7 +28,6 @@ import practice.store.utils.values.GenerateRandomString;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.Set;
 
 @RequiredArgsConstructor
