@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Step 1 - checkout main branch from github
+      - name: Checkout
         uses: actions/checkout@v2
 
       - name: Step 2 - Setup Java JDK
@@ -27,69 +27,69 @@ jobs:
   unit-tests-customer:
     runs-on: ubuntu-latest
     steps:
-      - name: use cache
-        uses: actions/cache@v2
-        with:
-          java-version: 11
+#       - name: use cache
+#         uses: actions/cache@v2
+#         with:
+#           java-version: 11
       - name: run tests
         run: mvn test -Dtest=CustomerServiceTest
 
   integration-tests-customer:
     runs-on: ubuntu-latest
     steps:
-      - name: use cache
-        uses: actions/cache@v2
-        with:
-          java-version: 11
+#       - name: use cache
+#         uses: actions/cache@v2
+#         with:
+#           java-version: 11
       - name: run tests
         run: mvn test -Dtest=CustomerControllerTest
 
   unit-tests-order:
     runs-on: ubuntu-latest
     steps:
-      - name: use cache
-        uses: actions/cache@v2
-        with:
-          java-version: 11
+#       - name: use cache
+#         uses: actions/cache@v2
+#         with:
+#           java-version: 11
       - name: run tests
         run: mvn test -Dtest=OrderServiceTest
 
   integration-tests-order:
     runs-on: ubuntu-latest
     steps:
-      - name: use cache
-        uses: actions/cache@v2
-        with:
-          java-version: 11
+#       - name: use cache
+#         uses: actions/cache@v2
+#         with:
+#           java-version: 11
       - name: run tests
         run: mvn test -Dtest=OrderControllerTest
 
   unit-tests-product:
     runs-on: ubuntu-latest
     steps:
-      - name: use cache
-        uses: actions/cache@v2
-        with:
-          java-version: 11
+#       - name: use cache
+#         uses: actions/cache@v2
+#         with:
+#           java-version: 11
       - name: run tests
         run: mvn test -Dtest=ProductServiceTest
 
   integration-tests-product:
     runs-on: ubuntu-latest
     steps:
-      - name: use cache
-        uses: actions/cache@v2
-        with:
-          java-version: 11
+#       - name: use cache
+#         uses: actions/cache@v2
+#         with:
+#           java-version: 11
       - name: run tests
         run: mvn test -Dtest=ProductControllerTest
 
   utils-tests:
     runs-on: ubuntu-latest
     steps:
-      - name: use cache
-        uses: actions/cache@v2
-        with:
-          java-version: 11
+#       - name: use cache
+#         uses: actions/cache@v2
+#         with:
+#           java-version: 11
       - name: run tests
         run: mvn clean test -Dtest="**/service/**/*.java"
