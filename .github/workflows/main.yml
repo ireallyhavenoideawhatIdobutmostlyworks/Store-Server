@@ -23,73 +23,83 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
-
-  unit-tests-customer:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Setup Java JDK
-        uses: actions/setup-java@v1
+          
+      - uses: actions/cache@v1
         with:
-          java-version: 11
-      - name: run tests
-        run: mvn test -Dtest=CustomerServiceTest  --file pom.xml
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
 
-  integration-tests-customer:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Setup Java JDK
-        uses: actions/setup-java@v1
-        with:
-          java-version: 11
-      - name: run tests
-        run: mvn test -Dtest=CustomerControllerTest
+      - name: Run tests
+        run: mvn clean test
 
-  unit-tests-order:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Setup Java JDK
-        uses: actions/setup-java@v1
-        with:
-          java-version: 11
-      - name: run tests
-        run: mvn test -Dtest=OrderServiceTest
+#   unit-tests-customer:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Setup Java JDK
+#         uses: actions/setup-java@v1
+#         with:
+#           java-version: 11
+#       - name: run tests
+#         run: mvn test -Dtest=CustomerServiceTest  --file pom.xml
 
-  integration-tests-order:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Setup Java JDK
-        uses: actions/setup-java@v1
-        with:
-          java-version: 11
-      - name: run tests
-        run: mvn test -Dtest=OrderControllerTest
+#   integration-tests-customer:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Setup Java JDK
+#         uses: actions/setup-java@v1
+#         with:
+#           java-version: 11
+#       - name: run tests
+#         run: mvn test -Dtest=CustomerControllerTest
 
-  unit-tests-product:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Setup Java JDK
-        uses: actions/setup-java@v1
-        with:
-          java-version: 11
-      - name: run tests
-        run: mvn test -Dtest=ProductServiceTest
+#   unit-tests-order:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Setup Java JDK
+#         uses: actions/setup-java@v1
+#         with:
+#           java-version: 11
+#       - name: run tests
+#         run: mvn test -Dtest=OrderServiceTest
 
-  integration-tests-product:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Setup Java JDK
-        uses: actions/setup-java@v1
-        with:
-          java-version: 11
-      - name: run tests
-        run: mvn test -Dtest=ProductControllerTest
+#   integration-tests-order:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Setup Java JDK
+#         uses: actions/setup-java@v1
+#         with:
+#           java-version: 11
+#       - name: run tests
+#         run: mvn test -Dtest=OrderControllerTest
 
-  utils-tests:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Setup Java JDK
-        uses: actions/setup-java@v1
-        with:
-          java-version: 11
-      - name: run tests
-        run: mvn clean test -Dtest="**/service/**/*.java"
+#   unit-tests-product:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Setup Java JDK
+#         uses: actions/setup-java@v1
+#         with:
+#           java-version: 11
+#       - name: run tests
+#         run: mvn test -Dtest=ProductServiceTest
+
+#   integration-tests-product:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Setup Java JDK
+#         uses: actions/setup-java@v1
+#         with:
+#           java-version: 11
+#       - name: run tests
+#         run: mvn test -Dtest=ProductControllerTest
+
+#   utils-tests:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Setup Java JDK
+#         uses: actions/setup-java@v1
+#         with:
+#           java-version: 11
+#       - name: run tests
+#         run: mvn clean test -Dtest="**/service/**/*.java"
