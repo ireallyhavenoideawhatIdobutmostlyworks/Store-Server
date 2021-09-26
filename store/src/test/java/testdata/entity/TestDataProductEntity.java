@@ -1,7 +1,8 @@
 package testdata.entity;
 
 import practice.store.product.Availability;
-import practice.store.product.CategoriesEnum;
+
+import practice.store.product.Categories;
 import practice.store.product.ProductEntity;
 import practice.store.utils.values.GenerateRandomString;
 
@@ -24,7 +25,7 @@ public abstract class TestDataProductEntity {
                 .discountPercentage(10)
                 .hasDiscount(true)
                 .amount(5)
-                .categoriesEnum(CategoriesEnum.PHONES)
+                .categories(Categories.PHONES)
                 .availability(Availability.AVAILABLE)
                 .isActive(true)
                 .build();
@@ -41,7 +42,7 @@ public abstract class TestDataProductEntity {
                 .discountPercentage(10)
                 .hasDiscount(true)
                 .amount(amount)
-                .categoriesEnum(CategoriesEnum.PHONES)
+                .categories(Categories.PHONES)
                 .availability(Availability.AVAILABLE)
                 .isActive(true)
                 .build();
@@ -59,13 +60,13 @@ public abstract class TestDataProductEntity {
                 .discountPercentage(10)
                 .hasDiscount(true)
                 .amount(5)
-                .categoriesEnum(CategoriesEnum.PHONES)
+                .categories(Categories.PHONES)
                 .availability(Availability.AVAILABLE)
                 .isActive(true)
                 .build();
     }
 
-    public static ProductEntity Product(long id, String name, String productUUID, String description, BigDecimal basePrice, BigDecimal amountPriceReduction, BigDecimal finalPrice, int discountPercentage, boolean hasDiscount, int amountInStock, CategoriesEnum categoriesEnum, Availability availability, boolean isActive) {
+    public static ProductEntity Product(long id, String name, String productUUID, String description, BigDecimal basePrice, BigDecimal amountPriceReduction, BigDecimal finalPrice, int discountPercentage, boolean hasDiscount, int amountInStock, Categories categories, Availability availability, boolean isActive) {
         return ProductEntity.builder()
                 .id(id)
                 .name(name)
@@ -77,7 +78,7 @@ public abstract class TestDataProductEntity {
                 .discountPercentage(discountPercentage)
                 .hasDiscount(hasDiscount)
                 .amount(amountInStock)
-                .categoriesEnum(categoriesEnum)
+                .categories(categories)
                 .availability(availability)
                 .isActive(isActive)
                 .build();
@@ -95,7 +96,7 @@ public abstract class TestDataProductEntity {
                 .discountPercentage(0)
                 .hasDiscount(false)
                 .amount(5)
-                .categoriesEnum(CategoriesEnum.PHONES)
+                .categories(Categories.PHONES)
                 .availability(Availability.AVAILABLE)
                 .isActive(true)
                 .build();
@@ -113,7 +114,7 @@ public abstract class TestDataProductEntity {
                 .discountPercentage(0)
                 .hasDiscount(false)
                 .amount(5)
-                .categoriesEnum(CategoriesEnum.PHONES)
+                .categories(Categories.PHONES)
                 .availability(Availability.AVAILABLE)
                 .isActive(true)
                 .build();
@@ -132,7 +133,7 @@ public abstract class TestDataProductEntity {
                 .discountPercentage(10)
                 .hasDiscount(true)
                 .amount(5)
-                .categoriesEnum(CategoriesEnum.PHONES)
+                .categories(Categories.PHONES)
                 .availability(Availability.AVAILABLE)
                 .isActive(true)
                 .build();
@@ -149,7 +150,7 @@ public abstract class TestDataProductEntity {
                 .discountPercentage(10)
                 .hasDiscount(true)
                 .amount(5)
-                .categoriesEnum(CategoriesEnum.PHONES)
+                .categories(Categories.PHONES)
                 .availability(Availability.AVAILABLE)
                 .isActive(true)
                 .build();
@@ -166,7 +167,7 @@ public abstract class TestDataProductEntity {
                 .discountPercentage(10)
                 .hasDiscount(true)
                 .amount(5)
-                .categoriesEnum(CategoriesEnum.PHONES)
+                .categories(Categories.PHONES)
                 .availability(Availability.AVAILABLE)
                 .isActive(true)
                 .build();
