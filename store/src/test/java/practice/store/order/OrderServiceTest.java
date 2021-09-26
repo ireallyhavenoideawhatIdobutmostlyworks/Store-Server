@@ -11,6 +11,7 @@ import practice.store.customer.CustomerRepository;
 import practice.store.order.details.OrderProductRepository;
 import practice.store.product.ProductPayload;
 import practice.store.product.ProductRepository;
+import practice.store.product.ProductService;
 import practice.store.utils.converter.EntitiesConverter;
 import practice.store.utils.converter.PayloadsConverter;
 import practice.store.utils.numbers.CalculatePrice;
@@ -47,13 +48,15 @@ class OrderServiceTest {
     private EntitiesConverter entitiesConverter;
     private PayloadsConverter payloadsConverter;
 
+    private ProductService productService;
+
 
     @BeforeEach
     void setUp() {
         entitiesConverter = new EntitiesConverter();
         payloadsConverter = new PayloadsConverter(passwordEncoder);
 
-        orderService = new OrderService(orderRepository, customerRepository, productRepository, orderProductRepository, payloadsConverter, entitiesConverter, generateRandomString, calculateFinalPrice);
+        orderService = new OrderService(orderRepository, customerRepository, productRepository, orderProductRepository, payloadsConverter, entitiesConverter, generateRandomString, calculateFinalPrice, productService);
 
         productFirst = TestDataProductPayload.Product(100);
         productSecond = TestDataProductPayload.Product(100);
