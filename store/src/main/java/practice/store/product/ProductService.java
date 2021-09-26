@@ -6,9 +6,10 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import practice.store.exceptions.product.*;
+import practice.store.order.details.OrderProductPayload;
 import practice.store.utils.converter.EntitiesConverter;
 import practice.store.utils.converter.PayloadsConverter;
-import practice.store.utils.numbers.CalculatePriceProduct;
+import practice.store.utils.numbers.CalculatePrice;
 import practice.store.utils.values.GenerateRandomString;
 
 import java.math.BigDecimal;
@@ -26,13 +27,13 @@ public class ProductService {
     private final PayloadsConverter payloadsConverter;
 
     private final GenerateRandomString generateRandomString;
-    private final CalculatePriceProduct calculateFinalPrice;
+    private final CalculatePrice calculateFinalPrice;
 
     private final int discountPercentageMaxHigherValue;
     private final int discountPercentageMaxLowerValue;
 
     @Autowired
-    public ProductService(ProductRepository productRepository, EntitiesConverter entitiesConverter, PayloadsConverter payloadsConverter, GenerateRandomString generateRandomString, CalculatePriceProduct calculateFinalPrice, @Value("${discount.percentage.max.value.higher}") int discountPercentageMaxHigherValue, @Value("${discount.percentage.max.value.lower}") int discountPercentageMaxLowerValue) {
+    public ProductService(ProductRepository productRepository, EntitiesConverter entitiesConverter, PayloadsConverter payloadsConverter, GenerateRandomString generateRandomString, CalculatePrice calculateFinalPrice, @Value("${discount.percentage.max.value.higher}") int discountPercentageMaxHigherValue, @Value("${discount.percentage.max.value.lower}") int discountPercentageMaxLowerValue) {
         this.productRepository = productRepository;
         this.entitiesConverter = entitiesConverter;
         this.payloadsConverter = payloadsConverter;
@@ -78,11 +79,64 @@ public class ProductService {
         productRepository.save(existingProduct);
     }
 
+    public void edit(ProductPayload productPayload, String uuid) {
+        checkIfProductUuidsAreTheSame(productPayload.getProductUUID(), uuid);
+
+        if (productPayload.isHasDiscount()) {
+            isDiscountValueValid(productPayload);
+
+            setPriceAndAmount(productPayload);
+        } else {
+            setNoDiscount(productPayload);
+        }
+
+        calculateAvailabilityDependsOnProductAmounts(productPayload);
+
+        productPayload.setId(productRepository.findByProductUUID(uuid).getId());
+        ProductEntity existingProduct = payloadsConverter.convertProduct(productPayload);
+        productRepository.save(existingProduct);
+    }
+
+    public void changeAmountBoughtProduct(ProductEntity productEntity, OrderProductPayload orderProductPayload) {
+        productEntity.setAmount(productEntity.getAmount() - orderProductPayload.getAmount());
+        calculateAvailabilityDependsOnProductAmounts(productEntity);
+        productRepository.save(productEntity);
+    }
+
+
+    private void isDiscountValueValid(ProductPayload productPayload) {
+        checkIfDiscountPercentageIsNotToHigh(productPayload.getDiscountPercentage());
+        checkIfDiscountPercentageIsNotToLow(productPayload.getDiscountPercentage());
+    }
+
+    private void setPriceAndAmount(ProductPayload productPayload) {
+        BigDecimal finalPrice = calculateFinalPrice.calculateFinalPrice(productPayload.getBasePrice(), productPayload.getDiscountPercentage());
+        productPayload.setFinalPrice(finalPrice);
+        productPayload.setAmountPriceReduction(productPayload.getBasePrice().subtract(finalPrice));
+    }
+
+    private void setNoDiscount(ProductPayload productPayload) {
+        productPayload.setDiscountPercentage(0);
+        productPayload.setAmountPriceReduction(BigDecimal.valueOf(0));
+        productPayload.setFinalPrice(productPayload.getBasePrice());
+    }
+
+    private void checkIfProductUuidsAreTheSame(String uuidPayload, String uuidParameter) {
+        if (!uuidPayload.equals(uuidParameter))
+            throw new ProductUuidCanNotChangeException();
+    }
 
     private void calculateAvailabilityDependsOnProductAmounts(ProductPayload product) {
-        if (product.getAmountInStock() == 0)
+        if (product.getAmount() == 0)
             product.setAvailability(Availability.NOT_AVAILABLE);
-        else if (product.getAmountInStock() < 5)
+        else if (product.getAmount() < 5)
+            product.setAvailability(Availability.AWAITING_FROM_MANUFACTURE);
+    }
+
+    private void calculateAvailabilityDependsOnProductAmounts(ProductEntity product) {
+        if (product.getAmount() == 0)
+            product.setAvailability(Availability.NOT_AVAILABLE);
+        else if (product.getAmount() < 5)
             product.setAvailability(Availability.AWAITING_FROM_MANUFACTURE);
     }
 

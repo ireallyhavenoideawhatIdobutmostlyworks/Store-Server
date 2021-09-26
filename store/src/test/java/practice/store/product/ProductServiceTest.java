@@ -13,12 +13,14 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import practice.store.exceptions.product.*;
 import practice.store.utils.converter.EntitiesConverter;
 import practice.store.utils.converter.PayloadsConverter;
-import practice.store.utils.numbers.CalculatePriceProduct;
+import practice.store.utils.numbers.CalculatePrice;
 import practice.store.utils.values.GenerateRandomString;
-import testdata.DataFactoryProduct;
+import testdata.entity.TestDataProductEntity;
+import testdata.payload.TestDataProductPayload;
 
 import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -48,10 +50,11 @@ class ProductServiceTest {
     private PayloadsConverter payloadsConverter;
 
     private ProductEntity productEntity;
+    private List<ProductEntity> productEntityList;
     private ProductPayload productPayloadWithDiscount;
     private ProductPayload productPayloadWithoutDiscount;
 
-    private CalculatePriceProduct calculateFinalPrice;
+    private CalculatePrice calculateFinalPrice;
 
 
     @BeforeEach
@@ -59,14 +62,15 @@ class ProductServiceTest {
         entitiesConverter = new EntitiesConverter();
         payloadsConverter = new PayloadsConverter(mock(PasswordEncoder.class));
 
-        calculateFinalPrice = new CalculatePriceProduct();
+        calculateFinalPrice = new CalculatePrice();
 
         productService = new ProductService(productRepository, entitiesConverter, payloadsConverter, new GenerateRandomString(), calculateFinalPrice, discountPercentageMaxHigherValue, discountPercentageMaxLowerValue);
 
-        productEntity = DataFactoryProduct.createProductEntity();
+        productEntity = TestDataProductEntity.Product();
+        productEntityList = TestDataProductEntity.ProductList();
 
-        productPayloadWithDiscount = DataFactoryProduct.createProductPayloadWithDiscount();
-        productPayloadWithoutDiscount = DataFactoryProduct.createProductPayloadWithoutDiscount();
+        productPayloadWithDiscount = TestDataProductPayload.ProductWithDiscount();
+        productPayloadWithoutDiscount = TestDataProductPayload.ProductWithoutDiscount();
     }
 
 
@@ -379,5 +383,74 @@ class ProductServiceTest {
                 .hasMessage("Final price should equal base price because that product is without discount.");
 
         verify(productRepository, times(0)).save(productEntity);
+    }
+
+    @DisplayName("Throw exception for entity not found during edit")
+    @Test
+    void should_throw_exception_when_product_not_exist_during_edit_test() {
+        // given
+        String uuidNotExist = "Incorrect UUID";
+        when(productRepository.existsByProductUUID(uuidNotExist)).thenThrow(new ProductUuidCanNotChangeException());
+
+
+        // when
+        Throwable exception = catchThrowable(() -> productService.edit(productPayloadWithoutDiscount, uuidNotExist));
+
+
+        // then
+        assertThat(exception)
+                .isInstanceOf(ProductUuidCanNotChangeException.class);
+
+        verify(productRepository, times(0)).save(productEntity);
+    }
+
+    @DisplayName("Edit product with discount")
+    @Test
+    void should_edit_product_with_discount_during_edit_test() {
+        // given
+        String uuid = productPayloadWithDiscount.getProductUUID();
+
+        productPayloadWithDiscount.setBasePrice(BigDecimal.valueOf(1000).setScale(2, RoundingMode.HALF_UP));
+        productPayloadWithDiscount.setDiscountPercentage(50);
+        productPayloadWithDiscount.setFinalPrice(BigDecimal.valueOf(500).setScale(2, RoundingMode.HALF_UP));
+        productPayloadWithDiscount.setAmountPriceReduction(BigDecimal.valueOf(500).setScale(2, RoundingMode.HALF_UP));
+
+        when(productRepository.findByProductUUID(uuid)).thenReturn(productEntity);
+        ProductEntity existingProduct = payloadsConverter.convertProduct(productPayloadWithDiscount);
+
+
+        // when
+        productService.edit(productPayloadWithDiscount, uuid);
+
+
+        // then
+        verify(productRepository, times(1)).findByProductUUID(uuid);
+        verify(productRepository, times(1)).save(existingProduct);
+    }
+
+    @DisplayName("Edit product without discount")
+    @Test
+    void should_edit_product_without_discount_during_edit_test() {
+        // given
+        String uuid = productPayloadWithDiscount.getProductUUID();
+
+        productPayloadWithDiscount.setHasDiscount(false);
+        productPayloadWithDiscount.setFinalPrice(BigDecimal.valueOf(100).setScale(2, RoundingMode.HALF_UP));
+        productPayloadWithDiscount.setBasePrice(BigDecimal.valueOf(100).setScale(2, RoundingMode.HALF_UP));
+        productPayloadWithDiscount.setDiscountPercentage(0);
+        productPayloadWithDiscount.setAmountPriceReduction(BigDecimal.valueOf(0));
+
+        when(productRepository.existsByProductUUID(uuid)).thenReturn(true);
+        when(productRepository.findByProductUUID(uuid)).thenReturn(productEntity);
+        ProductEntity existingProduct = payloadsConverter.convertProduct(productPayloadWithDiscount);
+
+
+        // when
+        productService.edit(productPayloadWithDiscount, uuid);
+
+
+        // then
+        verify(productRepository, times(1)).findByProductUUID(uuid);
+        verify(productRepository, times(1)).save(existingProduct);
     }
 }

@@ -33,8 +33,6 @@
         <!-- VERSIONS FOR TEST DEPENDENCIES -->
         <junit-jupiter.version>5.7.0</junit-jupiter.version>
         <mockito-junit-jupiter.version>3.11.2</mockito-junit-jupiter.version>
-<!--        <pitest-maven.version>1.6.7</pitest-maven.version>-->
-<!--        <pitest-junit5-plugin.version>0.14</pitest-junit5-plugin.version>-->
         <spock-core.version>2.0-groovy-3.0</spock-core.version>
         <spock-spring.version>2.0-groovy-3.0</spock-spring.version>
         <groovy-all.version>3.0.8</groovy-all.version>

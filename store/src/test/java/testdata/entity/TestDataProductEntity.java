@@ -1,9 +1,8 @@
-package testdata;
+package testdata.entity;
 
 import practice.store.product.Availability;
-import practice.store.product.Categories;
+import practice.store.product.CategoriesEnum;
 import practice.store.product.ProductEntity;
-import practice.store.product.ProductPayload;
 import practice.store.utils.values.GenerateRandomString;
 
 import java.math.BigDecimal;
@@ -11,46 +10,10 @@ import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.List;
 
-public class DataFactoryProduct {
+public abstract class TestDataProductEntity {
 
-    public static ProductEntity createProductEntity(long id, String name, String productUUID, String description, BigDecimal basePrice, BigDecimal amountPriceReduction, BigDecimal finalPrice, int discountPercentage, boolean hasDiscount, int amountInStock, Categories categories, Availability availability, boolean isActive) {
+    public static ProductEntity Product() {
         return ProductEntity.builder()
-                .id(id)
-                .name(name)
-                .productUUID(productUUID)
-                .description(description)
-                .basePrice(basePrice)
-                .amountPriceReduction(amountPriceReduction)
-                .finalPrice(finalPrice)
-                .discountPercentage(discountPercentage)
-                .hasDiscount(hasDiscount)
-                .amountInStock(amountInStock)
-                .categories(categories)
-                .availability(availability)
-                .isActive(isActive)
-                .build();
-    }
-
-    public static ProductPayload createProductPayload(long id, String name, String productUUID, String description, BigDecimal basePrice, BigDecimal amountPriceReduction, BigDecimal finalPrice, int discountPercentage, boolean hasDiscount, int amountInStock, Categories categories, Availability availability, boolean isActive) {
-        return ProductPayload.builder()
-                .id(id)
-                .name(name)
-                .productUUID(productUUID)
-                .description(description)
-                .basePrice(basePrice)
-                .amountPriceReduction(amountPriceReduction)
-                .finalPrice(finalPrice)
-                .discountPercentage(discountPercentage)
-                .hasDiscount(hasDiscount)
-                .amountInStock(amountInStock)
-                .categories(categories)
-                .availability(availability)
-                .isActive(isActive)
-                .build();
-    }
-
-    public static ProductPayload createProductPayloadWithDiscount() {
-        return ProductPayload.builder()
                 .id(1L)
                 .name("test name")
                 .productUUID(new GenerateRandomString().generateRandomUuid())
@@ -60,50 +23,31 @@ public class DataFactoryProduct {
                 .finalPrice(setBigDecimalWithScale(90))
                 .discountPercentage(10)
                 .hasDiscount(true)
-                .amountInStock(5)
-                .categories(Categories.PHONES)
+                .amount(5)
+                .categoriesEnum(CategoriesEnum.PHONES)
                 .availability(Availability.AVAILABLE)
                 .isActive(true)
                 .build();
     }
 
-    public static ProductPayload createProductPayloadWithoutDiscount() {
-        return ProductPayload.builder()
-                .id(1L)
+    public static ProductEntity Product(int amount) {
+        return ProductEntity.builder()
                 .name("test name")
                 .productUUID(new GenerateRandomString().generateRandomUuid())
-                .description("test description")
-                .basePrice(setBigDecimalWithScale(100))
-                .amountPriceReduction(setBigDecimalWithScale(0))
-                .finalPrice(setBigDecimalWithScale(100))
-                .discountPercentage(0)
-                .hasDiscount(false)
-                .amountInStock(5)
-                .categories(Categories.PHONES)
-                .availability(Availability.AVAILABLE)
-                .isActive(true)
-                .build();
-    }
-
-    public static ProductEntity createProductEntity() {
-        return ProductEntity.builder()
-                .id(1L)
-                .name("test name")
-                .productUUID("test uuid")
                 .description("test description")
                 .basePrice(setBigDecimalWithScale(100))
                 .amountPriceReduction(setBigDecimalWithScale(10))
                 .finalPrice(setBigDecimalWithScale(90))
                 .discountPercentage(10)
                 .hasDiscount(true)
-                .amountInStock(5)
-                .categories(Categories.PHONES)
+                .amount(amount)
+                .categoriesEnum(CategoriesEnum.PHONES)
                 .availability(Availability.AVAILABLE)
                 .isActive(true)
                 .build();
     }
 
-    public static ProductEntity createProductEntity(String uuid) {
+    public static ProductEntity Product(String uuid) {
         return ProductEntity.builder()
                 .id(1L)
                 .name("test name")
@@ -114,14 +58,68 @@ public class DataFactoryProduct {
                 .finalPrice(setBigDecimalWithScale(90))
                 .discountPercentage(10)
                 .hasDiscount(true)
-                .amountInStock(5)
-                .categories(Categories.PHONES)
+                .amount(5)
+                .categoriesEnum(CategoriesEnum.PHONES)
                 .availability(Availability.AVAILABLE)
                 .isActive(true)
                 .build();
     }
 
-    public static List<ProductEntity> creteProductList() {
+    public static ProductEntity Product(long id, String name, String productUUID, String description, BigDecimal basePrice, BigDecimal amountPriceReduction, BigDecimal finalPrice, int discountPercentage, boolean hasDiscount, int amountInStock, CategoriesEnum categoriesEnum, Availability availability, boolean isActive) {
+        return ProductEntity.builder()
+                .id(id)
+                .name(name)
+                .productUUID(productUUID)
+                .description(description)
+                .basePrice(basePrice)
+                .amountPriceReduction(amountPriceReduction)
+                .finalPrice(finalPrice)
+                .discountPercentage(discountPercentage)
+                .hasDiscount(hasDiscount)
+                .amount(amountInStock)
+                .categoriesEnum(categoriesEnum)
+                .availability(availability)
+                .isActive(isActive)
+                .build();
+    }
+
+    public static ProductEntity ProductWithoutDiscount() {
+        return ProductEntity.builder()
+                .id(1L)
+                .name("test name")
+                .productUUID(new GenerateRandomString().generateRandomUuid())
+                .description("test description")
+                .basePrice(setBigDecimalWithScale(100))
+                .amountPriceReduction(setBigDecimalWithScale(0))
+                .finalPrice(setBigDecimalWithScale(100))
+                .discountPercentage(0)
+                .hasDiscount(false)
+                .amount(5)
+                .categoriesEnum(CategoriesEnum.PHONES)
+                .availability(Availability.AVAILABLE)
+                .isActive(true)
+                .build();
+    }
+
+    public static ProductEntity ProductWithoutDiscount(String uuid) {
+        return ProductEntity.builder()
+                .id(1L)
+                .name("test name")
+                .productUUID(uuid)
+                .description("test description")
+                .basePrice(setBigDecimalWithScale(100))
+                .amountPriceReduction(setBigDecimalWithScale(0))
+                .finalPrice(setBigDecimalWithScale(100))
+                .discountPercentage(0)
+                .hasDiscount(false)
+                .amount(5)
+                .categoriesEnum(CategoriesEnum.PHONES)
+                .availability(Availability.AVAILABLE)
+                .isActive(true)
+                .build();
+    }
+
+    public static List<ProductEntity> ProductList() {
         ProductEntity existingProductEntityFirst = ProductEntity
                 .builder()
                 .id(11L)
@@ -133,8 +131,8 @@ public class DataFactoryProduct {
                 .finalPrice(setBigDecimalWithScale(90))
                 .discountPercentage(10)
                 .hasDiscount(true)
-                .amountInStock(5)
-                .categories(Categories.PHONES)
+                .amount(5)
+                .categoriesEnum(CategoriesEnum.PHONES)
                 .availability(Availability.AVAILABLE)
                 .isActive(true)
                 .build();
@@ -150,8 +148,8 @@ public class DataFactoryProduct {
                 .finalPrice(setBigDecimalWithScale(90))
                 .discountPercentage(10)
                 .hasDiscount(true)
-                .amountInStock(5)
-                .categories(Categories.PHONES)
+                .amount(5)
+                .categoriesEnum(CategoriesEnum.PHONES)
                 .availability(Availability.AVAILABLE)
                 .isActive(true)
                 .build();
@@ -167,8 +165,8 @@ public class DataFactoryProduct {
                 .finalPrice(setBigDecimalWithScale(90))
                 .discountPercentage(10)
                 .hasDiscount(true)
-                .amountInStock(5)
-                .categories(Categories.PHONES)
+                .amount(5)
+                .categoriesEnum(CategoriesEnum.PHONES)
                 .availability(Availability.AVAILABLE)
                 .isActive(true)
                 .build();
@@ -176,9 +174,7 @@ public class DataFactoryProduct {
         return Arrays.asList(existingProductEntityFirst, existingProductEntitySecond, existingProductEntityThird);
     }
 
-
-    private static BigDecimal setBigDecimalWithScale(long val) {
+    protected static BigDecimal setBigDecimalWithScale(long val) {
         return BigDecimal.valueOf(val).setScale(2, RoundingMode.HALF_UP);
     }
 }
-

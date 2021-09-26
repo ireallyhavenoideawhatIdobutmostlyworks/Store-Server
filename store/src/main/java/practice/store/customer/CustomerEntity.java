@@ -19,6 +19,7 @@ public class CustomerEntity {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
+    @Column(name = "customer_id", unique = true, nullable = false)
     private Long id;
 
     @NotBlank(message = "'Username' parameter may not be blank.")

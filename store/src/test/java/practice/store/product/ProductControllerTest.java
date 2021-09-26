@@ -16,10 +16,12 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import practice.store.utils.converter.EntitiesConverter;
 import practice.store.utils.values.GenerateRandomString;
-import testdata.DataFactoryProduct;
+import testdata.entity.TestDataProductEntity;
+import testdata.payload.TestDataProductPayload;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -27,13 +29,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@Transactional
 class ProductControllerTest {
 
     @Autowired
@@ -64,8 +66,8 @@ class ProductControllerTest {
                 .apply(SecurityMockMvcConfigurers.springSecurity())
                 .build();
 
-        productPayloadWithDiscount = DataFactoryProduct.createProductPayloadWithDiscount();
-        productPayloadWithoutDiscount = DataFactoryProduct.createProductPayloadWithoutDiscount();
+        productPayloadWithDiscount = TestDataProductPayload.ProductWithDiscount();
+        productPayloadWithoutDiscount = TestDataProductPayload.ProductWithoutDiscount();
     }
 
 
@@ -74,7 +76,7 @@ class ProductControllerTest {
     void get_by_id_when_id_exist_test() throws Exception {
         // given
         String uuid = generateRandomString.generateRandomUuid();
-        ProductEntity productBeforeSave = DataFactoryProduct.createProductEntity(uuid);
+        ProductEntity productBeforeSave = TestDataProductEntity.Product(uuid);
         productRepository.save(productBeforeSave);
 
         ProductPayload payload = converter.convertProduct(productBeforeSave);
@@ -133,7 +135,7 @@ class ProductControllerTest {
         productRepository.deleteAll();
         assertThat(productRepository.findAll()).isEmpty();
 
-        List<ProductEntity> products = DataFactoryProduct.creteProductList();
+        List<ProductEntity> products = TestDataProductEntity.ProductList();
         productRepository.saveAll(products);
         assertThat(productRepository.findAll()).hasSize(products.size());
 
@@ -216,7 +218,7 @@ class ProductControllerTest {
         // then
         assertThat(productRepository.findByProductUUID(uuid))
                 .usingRecursiveComparison()
-                .ignoringFields("id")
+                .ignoringFields("id", "orderProduct")
                 .isEqualTo(productPayloadWithDiscount);
     }
 
@@ -242,7 +244,7 @@ class ProductControllerTest {
         // then
         assertThat(productRepository.findByProductUUID(uuid))
                 .usingRecursiveComparison()
-                .ignoringFields("id")
+                .ignoringFields("id", "orderProduct")
                 .isEqualTo(productPayloadWithoutDiscount);
     }
 
@@ -252,7 +254,7 @@ class ProductControllerTest {
         // given
         String uuid = generateRandomString.generateRandomUuid();
         productPayloadWithDiscount.setProductUUID(uuid);
-        productPayloadWithDiscount.setAmountInStock(3);
+        productPayloadWithDiscount.setAmount(3);
 
 
         // when
@@ -269,7 +271,7 @@ class ProductControllerTest {
         // then
         assertThat(productRepository.findByProductUUID(uuid))
                 .usingRecursiveComparison()
-                .ignoringFields("id", "availability")
+                .ignoringFields("id", "availability", "orderProduct")
                 .isEqualTo(productPayloadWithDiscount);
 
         assertEquals(Availability.AWAITING_FROM_MANUFACTURE, productRepository.findByProductUUID(uuid).getAvailability());
@@ -281,7 +283,7 @@ class ProductControllerTest {
         // given
         String uuid = generateRandomString.generateRandomUuid();
         productPayloadWithDiscount.setProductUUID(uuid);
-        productPayloadWithDiscount.setAmountInStock(0);
+        productPayloadWithDiscount.setAmount(0);
 
         // when
         mvc
@@ -297,7 +299,7 @@ class ProductControllerTest {
         // then
         assertThat(productRepository.findByProductUUID(uuid))
                 .usingRecursiveComparison()
-                .ignoringFields("id", "availability")
+                .ignoringFields("id", "availability", "orderProduct")
                 .isEqualTo(productPayloadWithDiscount);
 
         assertEquals(Availability.NOT_AVAILABLE, productRepository.findByProductUUID(uuid).getAvailability());
@@ -333,8 +335,7 @@ class ProductControllerTest {
         // given
         String uuidExist = "uuid exist test";
         productPayloadWithDiscount.setProductUUID(uuidExist);
-
-        ProductEntity existProduct = DataFactoryProduct.createProductEntity(uuidExist);
+        ProductEntity existProduct = TestDataProductEntity.Product(uuidExist);
         productRepository.save(existProduct);
 
 
@@ -511,6 +512,170 @@ class ProductControllerTest {
         MvcResult mvcResult = mvc
                 .perform(MockMvcRequestBuilders
                         .post(MAIN_ENDPOINT)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(productPayloadWithDiscount))
+                )
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().is(400))
+                .andReturn();
+
+
+        // then
+        assertTrue(mvcResult.getResponse().getContentAsString().contains(EXCEPTION_MESSAGE_FIRST_PART));
+        assertTrue(mvcResult.getResponse().getContentAsString().contains(EXCEPTION_MESSAGE_SECOND_PART));
+    }
+
+    @WithMockUser(username = "username")
+    @Test
+    void edit_product_with_discount_test() throws Exception {
+        // given
+        String uuid = new GenerateRandomString().generateRandomUuid();
+        String newProductName = "Awesome new product name";
+
+        ProductEntity existProduct = TestDataProductEntity.Product(uuid);
+        productRepository.save(existProduct);
+        long id = productRepository.findByProductUUID(uuid).getId();
+
+        ProductPayload productPayloadForEdit = TestDataProductPayload.ProductWithDiscount(id, newProductName, uuid);
+
+
+        // when
+        mvc
+                .perform(MockMvcRequestBuilders
+                        .put(MAIN_ENDPOINT + uuid)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(productPayloadForEdit))
+                )
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().is(204));
+
+
+        // then
+        assertThat(productRepository.findByProductUUID(uuid))
+                .usingRecursiveComparison()
+                .ignoringFields("orderProduct")
+                .isEqualTo(productPayloadForEdit);
+    }
+
+    @WithMockUser(username = "username")
+    @Test
+    void edit_product_without_discount_test() throws Exception {
+        // given
+        String uuid = new GenerateRandomString().generateRandomUuid();
+        String newProductName = "Awesome new product name";
+
+        ProductEntity existProduct = TestDataProductEntity.ProductWithoutDiscount(uuid);
+        productRepository.save(existProduct);
+        long id = productRepository.findByProductUUID(uuid).getId();
+
+        ProductPayload productPayloadForEdit = TestDataProductPayload.ProductWithoutDiscount(id, newProductName, uuid);
+
+
+        // when
+        mvc
+                .perform(MockMvcRequestBuilders
+                        .put(MAIN_ENDPOINT + uuid)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(productPayloadForEdit))
+                )
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().is(204));
+
+
+        // then
+        assertThat(productRepository.findByProductUUID(uuid))
+                .usingRecursiveComparison()
+                .ignoringFields("orderProduct", "amountPriceReduction")
+                .isEqualTo(productPayloadForEdit);
+
+        assertEquals(
+                productRepository.findByProductUUID(uuid).getAmountPriceReduction().stripTrailingZeros(),
+                productPayloadForEdit.getAmountPriceReduction().stripTrailingZeros());
+    }
+
+    @WithMockUser(username = "username")
+    @Test
+    void edit_product_from_with_to_without_discount_test() throws Exception {
+        // given
+        ProductEntity existProduct = TestDataProductEntity.Product();
+        productRepository.save(existProduct);
+
+        String uuid = existProduct.getProductUUID();
+        long idExist = productRepository.findByProductUUID(uuid).getId();
+        assertTrue(productRepository.findByProductUUID(uuid).isHasDiscount());
+
+        ProductPayload productPayloadForEdit = TestDataProductPayload.ProductWithoutDiscount(idExist, uuid);
+
+
+        // when
+        mvc
+                .perform(MockMvcRequestBuilders
+                        .put(MAIN_ENDPOINT + uuid)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(productPayloadForEdit))
+                )
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().is(204));
+
+
+        // then
+        assertThat(productRepository.findByProductUUID(uuid))
+                .usingRecursiveComparison()
+                .ignoringFields("orderProduct", "amountPriceReduction")
+                .isEqualTo(productPayloadForEdit);
+
+        assertFalse(productRepository.findByProductUUID(uuid).isHasDiscount());
+
+        assertEquals(
+                productRepository.findByProductUUID(uuid).getAmountPriceReduction().stripTrailingZeros(),
+                productPayloadForEdit.getAmountPriceReduction().stripTrailingZeros());
+    }
+
+    @WithMockUser(username = "username")
+    @Test
+    void edit_product_from_without_to_with_discount_test() throws Exception {
+        ProductEntity existProduct = TestDataProductEntity.ProductWithoutDiscount();
+        productRepository.save(existProduct);
+
+        String uuid = existProduct.getProductUUID();
+        long idExist = productRepository.findByProductUUID(uuid).getId();
+        assertFalse(productRepository.findByProductUUID(uuid).isHasDiscount());
+
+        ProductPayload productPayloadForEdit = TestDataProductPayload.ProductWithDiscount(idExist, uuid);
+
+
+        // when
+        mvc
+                .perform(MockMvcRequestBuilders
+                        .put(MAIN_ENDPOINT + uuid)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(productPayloadForEdit))
+                )
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().is(204));
+
+
+        // then
+        assertThat(productRepository.findByProductUUID(uuid))
+                .usingRecursiveComparison()
+                .ignoringFields("orderProduct")
+                .isEqualTo(productPayloadForEdit);
+
+        assertTrue(productRepository.findByProductUUID(uuid).isHasDiscount());
+    }
+
+    @WithMockUser(username = "username")
+    @Test
+    void edit_product_when_uuid_not_exist_test() throws Exception {
+        // given
+        ProductEntity existProduct = TestDataProductEntity.Product();
+        productRepository.save(existProduct);
+
+
+        // when
+        MvcResult mvcResult = mvc
+                .perform(MockMvcRequestBuilders
+                        .put(MAIN_ENDPOINT + "uuid not exist")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(productPayloadWithDiscount))
                 )
