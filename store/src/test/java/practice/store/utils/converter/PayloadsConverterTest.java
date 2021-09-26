@@ -10,7 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import practice.store.customer.CustomerEntity;
 import practice.store.customer.CustomerPayload;
 import practice.store.product.Availability;
-import practice.store.product.CategoriesEnum;
+import practice.store.product.Categories;
 import practice.store.product.ProductEntity;
 import practice.store.product.ProductPayload;
 import testdata.payload.TestDataCustomerPayload;
@@ -82,7 +82,7 @@ class PayloadsConverterTest {
                 10,
                 true,
                 5,
-                CategoriesEnum.PHONES,
+                Categories.PHONES,
                 Availability.AVAILABLE,
                 true
         );
