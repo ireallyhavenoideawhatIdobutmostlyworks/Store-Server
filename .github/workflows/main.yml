@@ -32,7 +32,7 @@ jobs:
         with:
           java-version: 11
       - name: run tests
-        run: mvn test -Dtest=CustomerServiceTest
+        run: mvn test -Dtest=CustomerServiceTest  --file pom.xml
 
   integration-tests-customer:
     runs-on: ubuntu-latest
