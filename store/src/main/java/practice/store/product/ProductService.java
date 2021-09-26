@@ -6,6 +6,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import practice.store.exceptions.product.*;
+import practice.store.order.details.OrderProductPayload;
 import practice.store.utils.converter.EntitiesConverter;
 import practice.store.utils.converter.PayloadsConverter;
 import practice.store.utils.numbers.CalculatePrice;
@@ -96,12 +97,17 @@ public class ProductService {
         productRepository.save(existingProduct);
     }
 
+    public void changeAmountBoughtProduct(ProductEntity productEntity, OrderProductPayload orderProductPayload) {
+        productEntity.setAmount(productEntity.getAmount() - orderProductPayload.getAmount());
+        calculateAvailabilityDependsOnProductAmounts(productEntity);
+        productRepository.save(productEntity);
+    }
+
 
     private void isDiscountValueValid(ProductPayload productPayload) {
         checkIfDiscountPercentageIsNotToHigh(productPayload.getDiscountPercentage());
         checkIfDiscountPercentageIsNotToLow(productPayload.getDiscountPercentage());
     }
-
 
     private void setPriceAndAmount(ProductPayload productPayload) {
         BigDecimal finalPrice = calculateFinalPrice.calculateFinalPrice(productPayload.getBasePrice(), productPayload.getDiscountPercentage());
@@ -121,6 +127,13 @@ public class ProductService {
     }
 
     private void calculateAvailabilityDependsOnProductAmounts(ProductPayload product) {
+        if (product.getAmount() == 0)
+            product.setAvailability(Availability.NOT_AVAILABLE);
+        else if (product.getAmount() < 5)
+            product.setAvailability(Availability.AWAITING_FROM_MANUFACTURE);
+    }
+
+    private void calculateAvailabilityDependsOnProductAmounts(ProductEntity product) {
         if (product.getAmount() == 0)
             product.setAvailability(Availability.NOT_AVAILABLE);
         else if (product.getAmount() < 5)

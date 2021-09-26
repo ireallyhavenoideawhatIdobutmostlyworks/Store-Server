@@ -17,6 +17,7 @@ import practice.store.order.details.OrderProductRepository;
 import practice.store.product.Availability;
 import practice.store.product.ProductEntity;
 import practice.store.product.ProductRepository;
+import practice.store.product.ProductService;
 import practice.store.utils.converter.EntitiesConverter;
 import practice.store.utils.converter.PayloadsConverter;
 import practice.store.utils.numbers.CalculatePrice;
@@ -44,6 +45,8 @@ public class OrderService {
     private final GenerateRandomString generateRandomString;
     private final CalculatePrice calculateFinalPrice;
 
+    private final ProductService productService;
+
 
     public void save(OrderPayload orderPayload) {
         checkIfOrderHasProduct(orderPayload.getOrderProductPayloads());
@@ -60,7 +63,7 @@ public class OrderService {
                 .forEach(orderProductPayload -> {
                     ProductEntity productEntity = productRepository.findByProductUUID(orderProductPayload.getProductUUID());
 
-                    changeAmountBoughtProduct(productEntity, orderProductPayload);
+                    productService.changeAmountBoughtProduct(productEntity, orderProductPayload);
                     addOrderProductIntoDatabase(productEntity, orderProductPayload, orderEntity);
                 });
     }
@@ -78,12 +81,6 @@ public class OrderService {
                 .creationDateTime(LocalDateTime.now())
                 .isCancelled(false)
                 .build();
-    }
-
-    private void changeAmountBoughtProduct(ProductEntity productEntity, OrderProductPayload orderProductPayload) {
-        productEntity.setAmount(productEntity.getAmount() - orderProductPayload.getAmount());
-        calculateAvailabilityDependsOnProductAmounts(productEntity);
-        productRepository.save(productEntity);
     }
 
     private void addOrderProductIntoDatabase(ProductEntity productEntity, OrderProductPayload orderProductPayload, OrderEntity orderEntity) {
@@ -110,13 +107,6 @@ public class OrderService {
                         .getContext()
                         .getAuthentication()
                         .getName());
-    }
-
-    private void calculateAvailabilityDependsOnProductAmounts(ProductEntity productEntity) {
-        if (productEntity.getAmount() == 0)
-            productEntity.setAvailability(Availability.NOT_AVAILABLE);
-        else if (productEntity.getAmount() < 5)
-            productEntity.setAvailability(Availability.AWAITING_FROM_MANUFACTURE);
     }
 
     private BigDecimal allProductsPrice(OrderPayload orderPayload) {
