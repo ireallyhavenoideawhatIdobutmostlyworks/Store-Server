@@ -8,7 +8,10 @@ import org.springframework.transaction.annotation.Transactional;
 import practice.store.customer.CustomerEntity;
 import practice.store.customer.CustomerRepository;
 import practice.store.exceptions.customer.CustomerIsNotActiveException;
-import practice.store.exceptions.order.*;
+import practice.store.exceptions.order.OrderDiscountException;
+import practice.store.exceptions.order.OrderDiscountPercentageException;
+import practice.store.exceptions.order.OrderFinalPriceException;
+import practice.store.exceptions.order.OrderMissingProductException;
 import practice.store.exceptions.product.ProductAmountInvalidParameterException;
 import practice.store.exceptions.product.ProductAmountNotEnoughException;
 import practice.store.exceptions.product.ProductUuidNotExistException;
@@ -17,7 +20,6 @@ import practice.store.order.details.OrderProductPayload;
 import practice.store.order.details.OrderProductRepository;
 import practice.store.order.rabbit.mailService.PublisherMailService;
 import practice.store.order.rabbit.pdfService.PublisherPdfService;
-import practice.store.product.Availability;
 import practice.store.product.ProductEntity;
 import practice.store.product.ProductRepository;
 import practice.store.product.ProductService;
@@ -30,10 +32,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Transactional
@@ -81,7 +81,7 @@ public class OrderService {
                 });
 
 
-//        publisherMailService.send(orderEntity);
+        publisherMailService.send(orderEntity);
         publisherPdfService.send(orderEntity, productEntityList);
     }
 
