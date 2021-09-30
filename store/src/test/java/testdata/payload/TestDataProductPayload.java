@@ -46,24 +46,6 @@ public abstract class TestDataProductPayload {
                 .build();
     }
 
-    public static ProductPayload Product(int amount) {
-        return ProductPayload.builder()
-                .id(1L)
-                .name("test name")
-                .productUUID(new GenerateRandomString().generateRandomUuid())
-                .description("test description")
-                .basePrice(setBigDecimalWithScale(100))
-                .amountPriceReduction(setBigDecimalWithScale(10))
-                .finalPrice(setBigDecimalWithScale(90))
-                .discountPercentage(10)
-                .hasDiscount(true)
-                .amount(amount)
-                .categories(Categories.PHONES)
-                .availability(Availability.AVAILABLE)
-                .isActive(true)
-                .build();
-    }
-
     public static ProductPayload ProductWithDiscount(long id, String uuid) {
         return ProductPayload.builder()
                 .id(id)

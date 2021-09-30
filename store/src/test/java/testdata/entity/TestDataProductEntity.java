@@ -1,7 +1,6 @@
 package testdata.entity;
 
 import practice.store.product.Availability;
-
 import practice.store.product.Categories;
 import practice.store.product.ProductEntity;
 import practice.store.utils.values.GenerateRandomString;
@@ -33,6 +32,7 @@ public abstract class TestDataProductEntity {
 
     public static ProductEntity Product(int amount) {
         return ProductEntity.builder()
+                .id(1L)
                 .name("test name")
                 .productUUID(new GenerateRandomString().generateRandomUuid())
                 .description("test description")
