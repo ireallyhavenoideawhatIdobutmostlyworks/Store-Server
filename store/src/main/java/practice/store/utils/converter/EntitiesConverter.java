@@ -10,6 +10,7 @@ import practice.store.order.details.OrderProductPayload;
 import practice.store.product.ProductEntity;
 import practice.store.product.ProductPayload;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -57,17 +58,17 @@ public class EntitiesConverter {
                 .build();
     }
 
-    public OrderProductPayload convertOrderProduct(OrderProductEntity orderProduct) {
-        return OrderProductPayload.builder()
-                .amount(orderProduct.getAmount())
-                .build();
-    }
-
-
-    private Set<OrderProductPayload> convertProductsList(Set<OrderProductEntity> products) {
+    public Set<OrderProductPayload> convertProductsList(Set<OrderProductEntity> products) {
         return products
                 .stream()
                 .map(this::convertOrderProduct)
                 .collect(Collectors.toSet());
+    }
+
+
+    private OrderProductPayload convertOrderProduct(OrderProductEntity orderProduct) {
+        return OrderProductPayload.builder()
+                .amount(orderProduct.getAmount())
+                .build();
     }
 }

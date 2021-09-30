@@ -1,5 +1,6 @@
 package practice.store.order;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,8 @@ import practice.store.exceptions.product.ProductUuidNotExistException;
 import practice.store.order.details.OrderProductEntity;
 import practice.store.order.details.OrderProductPayload;
 import practice.store.order.details.OrderProductRepository;
+import practice.store.order.rabbit.mailService.PublisherMailService;
+import practice.store.order.rabbit.pdfService.PublisherPdfService;
 import practice.store.product.Availability;
 import practice.store.product.ProductEntity;
 import practice.store.product.ProductRepository;
@@ -26,8 +29,11 @@ import practice.store.utils.values.GenerateRandomString;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Transactional
@@ -47,8 +53,13 @@ public class OrderService {
 
     private final ProductService productService;
 
+    private final PublisherMailService publisherMailService;
+    private final PublisherPdfService publisherPdfService;
 
-    public void save(OrderPayload orderPayload) {
+    private List<ProductEntity> productEntityList = new ArrayList<>();
+
+
+    public void save(OrderPayload orderPayload) throws JsonProcessingException {
         checkIfOrderHasProduct(orderPayload.getOrderProductPayloads());
         checkProductExceptions(orderPayload);
         checkIfPriceDiscountCase(orderPayload);
@@ -65,7 +76,13 @@ public class OrderService {
 
                     productService.changeAmountBoughtProduct(productEntity, orderProductPayload);
                     addOrderProductIntoDatabase(productEntity, orderProductPayload, orderEntity);
+
+                    productEntityList.add(productEntity);
                 });
+
+
+//        publisherMailService.send(orderEntity);
+        publisherPdfService.send(orderEntity, productEntityList);
     }
 
 
@@ -74,6 +91,7 @@ public class OrderService {
                 .toBuilder()
                 .id(null)
                 .orderUUID(generateRandomString.generateRandomUuid())
+                .paymentUUID(generateRandomString.generateRandomUuid())
                 .customer(actualLoggedActiveCustomer())
                 .shipmentStatusEnum(ShipmentStatusEnum.SHIPMENT_AWAITING_FOR_ACCEPT)
                 .isPaid(false)
@@ -92,6 +110,7 @@ public class OrderService {
                 .order(orderEntity)
                 .product(productEntity)
                 .build();
+
         orderProductRepository.save(orderProductEntity);
     }
 

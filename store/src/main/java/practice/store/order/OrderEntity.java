@@ -37,6 +37,10 @@ public class OrderEntity {
     @Column
     private String payloadUUID;
 
+    @NotNull(message = "'Payload UUID' parameter may not be empty")
+    @Column
+    private String paymentUUID;
+
     @Column
     private String accountNumber;
 

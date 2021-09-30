@@ -1,5 +1,6 @@
 package practice.store.order;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +25,7 @@ public class OrderController {
 
     @ApiOperation(value = "This method is used to save the order.")
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public ResponseEntity save(@Valid @RequestBody OrderPayload orderPayload) {
+    public ResponseEntity save(@Valid @RequestBody OrderPayload orderPayload) throws JsonProcessingException {
         orderService.save(orderPayload);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
