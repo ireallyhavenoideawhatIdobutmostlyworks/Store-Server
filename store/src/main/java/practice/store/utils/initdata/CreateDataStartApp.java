@@ -90,6 +90,9 @@ public class CreateDataStartApp {
                 .email("first@first.first")
                 .isActive(true)
                 .isCompany(false)
+                .postalCode("11-111")
+                .street("street")
+                .city("city")
                 .build();
         return customerFirst;
     }
@@ -102,6 +105,9 @@ public class CreateDataStartApp {
                 .email(emailSecondCustomer)
                 .isActive(true)
                 .isCompany(true)
+                .postalCode("11-111")
+                .street("street")
+                .city("city")
                 .build();
         return customerSecond;
     }
@@ -114,6 +120,9 @@ public class CreateDataStartApp {
                 .email("third@third.third")
                 .isActive(false)
                 .isCompany(true)
+                .postalCode("11-111")
+                .street("street")
+                .city("city")
                 .build();
         return customerThird;
     }

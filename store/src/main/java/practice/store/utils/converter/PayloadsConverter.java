@@ -30,6 +30,9 @@ public class PayloadsConverter {
                 .email(customerPayload.getEmail())
                 .isActive(customerPayload.isActive())
                 .isCompany(customerPayload.isCompany())
+                .postalCode(customerPayload.getPostalCode())
+                .street(customerPayload.getStreet())
+                .city(customerPayload.getCity())
                 .build();
     }
 

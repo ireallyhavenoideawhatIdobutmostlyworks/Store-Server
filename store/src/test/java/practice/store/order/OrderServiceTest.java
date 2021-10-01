@@ -63,8 +63,8 @@ class OrderServiceTest {
 
         orderService = new OrderService(orderRepository, customerRepository, productRepository, orderProductRepository, payloadsConverter, entitiesConverter, generateRandomString, calculateFinalPrice, productService, publisherMailService, publisherPdfService);
 
-        productFirst = TestDataProductPayload.Product(100);
-        productSecond = TestDataProductPayload.Product(100);
+        productFirst = TestDataProductPayload.ProductWithDiscount();
+        productSecond = TestDataProductPayload.ProductWithDiscount();
 
         orderEntity = TestDataOrderEntity.Order();
         orderPayloadWithDiscount = TestDataOrderPayload.OrderWithDiscount(productFirst.getProductUUID(), productSecond.getProductUUID());

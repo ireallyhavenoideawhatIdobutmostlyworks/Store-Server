@@ -56,7 +56,7 @@ public class OrderService {
     private final PublisherMailService publisherMailService;
     private final PublisherPdfService publisherPdfService;
 
-    private List<ProductEntity> productEntityList = new ArrayList<>();
+
 
 
     public void save(OrderPayload orderPayload) throws JsonProcessingException {
@@ -69,6 +69,8 @@ public class OrderService {
         OrderEntity orderEntity = prepareNewOrder(orderPayload);
         orderRepository.save(orderEntity);
 
+        List<ProductEntity> productEntityList = new ArrayList<>();
+
         orderPayload
                 .getOrderProductPayloads()
                 .forEach(orderProductPayload -> {
@@ -79,7 +81,6 @@ public class OrderService {
 
                     productEntityList.add(productEntity);
                 });
-
 
         publisherMailService.send(orderEntity);
         publisherPdfService.send(orderEntity, productEntityList);

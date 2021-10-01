@@ -16,6 +16,7 @@ import practice.store.order.rabbit.pdfService.detaills.ProductPdfDetails;
 import practice.store.product.ProductEntity;
 import practice.store.utils.converter.EntitiesConverter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 

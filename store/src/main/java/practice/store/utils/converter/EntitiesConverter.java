@@ -23,6 +23,9 @@ public class EntitiesConverter {
                 .email(customerEntity.getEmail())
                 .isActive(customerEntity.isActive())
                 .isCompany(customerEntity.isCompany())
+                .postalCode(customerEntity.getPostalCode())
+                .street(customerEntity.getStreet())
+                .city(customerEntity.getCity())
                 .build();
     }
 

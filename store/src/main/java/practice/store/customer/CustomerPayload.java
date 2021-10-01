@@ -13,4 +13,7 @@ public class CustomerPayload {
     private String email;
     private boolean isActive;
     private boolean isCompany;
+    private String postalCode;
+    private String street;
+    private String city;
 }
