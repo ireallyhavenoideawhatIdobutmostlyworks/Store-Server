@@ -9,6 +9,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import practice.store.customer.CustomerRepository;
 import practice.store.order.details.OrderProductRepository;
+import practice.store.rabbit.services.mail.SenderMailService;
+import practice.store.rabbit.services.pdf.SenderPdfService;
 import practice.store.product.ProductPayload;
 import practice.store.product.ProductRepository;
 import practice.store.product.ProductService;
@@ -50,13 +52,16 @@ class OrderServiceTest {
 
     private ProductService productService;
 
+    private SenderMailService senderMailService;
+    private SenderPdfService senderPdfService;
+
 
     @BeforeEach
     void setUp() {
         entitiesConverter = new EntitiesConverter();
         payloadsConverter = new PayloadsConverter(passwordEncoder);
 
-        orderService = new OrderService(orderRepository, customerRepository, productRepository, orderProductRepository, payloadsConverter, entitiesConverter, generateRandomString, calculateFinalPrice, productService);
+        orderService = new OrderService(orderRepository, customerRepository, productRepository, orderProductRepository, payloadsConverter, entitiesConverter, generateRandomString, calculateFinalPrice, productService, senderMailService, senderPdfService);
 
         productFirst = TestDataProductPayload.ProductWithDiscount();
         productSecond = TestDataProductPayload.ProductWithDiscount();

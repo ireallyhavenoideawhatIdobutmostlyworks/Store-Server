@@ -23,6 +23,9 @@ public class EntitiesConverter {
                 .email(customerEntity.getEmail())
                 .isActive(customerEntity.isActive())
                 .isCompany(customerEntity.isCompany())
+                .postalCode(customerEntity.getPostalCode())
+                .street(customerEntity.getStreet())
+                .city(customerEntity.getCity())
                 .build();
     }
 
@@ -57,17 +60,17 @@ public class EntitiesConverter {
                 .build();
     }
 
-    public OrderProductPayload convertOrderProduct(OrderProductEntity orderProduct) {
-        return OrderProductPayload.builder()
-                .amount(orderProduct.getAmount())
-                .build();
-    }
-
-
-    private Set<OrderProductPayload> convertProductsList(Set<OrderProductEntity> products) {
+    public Set<OrderProductPayload> convertProductsList(Set<OrderProductEntity> products) {
         return products
                 .stream()
                 .map(this::convertOrderProduct)
                 .collect(Collectors.toSet());
+    }
+
+
+    private OrderProductPayload convertOrderProduct(OrderProductEntity orderProduct) {
+        return OrderProductPayload.builder()
+                .amount(orderProduct.getAmount())
+                .build();
     }
 }

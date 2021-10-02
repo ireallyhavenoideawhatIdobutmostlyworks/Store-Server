@@ -42,4 +42,16 @@ public class CustomerEntity {
     @NotNull(message = "'IsCompany' parameter may not be null.")
     @Column
     private boolean isCompany;
+
+    @NotNull(message = "'Postal code' parameter may not be null.")
+    @Column
+    private String postalCode;
+
+    @NotNull(message = "'Street' parameter may not be null.")
+    @Column
+    private String street;
+
+    @NotNull(message = "'City' parameter may not be null.")
+    @Column
+    private String city;
 }

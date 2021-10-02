@@ -85,11 +85,14 @@ public class CreateDataStartApp {
     private CustomerEntity createCustomerFirst() {
         customerFirst = CustomerEntity.builder()
                 .id(1L)
-                .username("first")
+                .username("Stanisław Nowak")
                 .password(passwordEncoder.encode("first"))
                 .email("first@first.first")
                 .isActive(true)
                 .isCompany(false)
+                .postalCode("11-111")
+                .street("Półwiejska 11/1a")
+                .city("Poznań")
                 .build();
         return customerFirst;
     }
@@ -97,11 +100,14 @@ public class CreateDataStartApp {
     private CustomerEntity createCustomerSecond() {
         customerSecond = CustomerEntity.builder()
                 .id(2L)
-                .username("second")
+                .username("Stanisław Nowak")
                 .password(passwordEncoder.encode(passwordSecondCustomer))
                 .email(emailSecondCustomer)
                 .isActive(true)
                 .isCompany(true)
+                .postalCode("11-112")
+                .street("Półwiejska 11/1b")
+                .city("Poznań")
                 .build();
         return customerSecond;
     }
@@ -109,11 +115,14 @@ public class CreateDataStartApp {
     private CustomerEntity createCustomerThirdInactive() {
         customerThird = CustomerEntity.builder()
                 .id(3L)
-                .username("third")
+                .username("Stanisław Nowak")
                 .password(passwordEncoder.encode("third"))
                 .email("third@third.third")
                 .isActive(false)
                 .isCompany(true)
+                .postalCode("11-113")
+                .street("Półwiejska 11/1c")
+                .city("Poznań")
                 .build();
         return customerThird;
     }
@@ -245,6 +254,7 @@ public class CreateDataStartApp {
                 .id(1L)
                 .orderUUID("UUID1")
                 .payloadUUID("UUID1")
+                .paymentUUID("UUID1")
                 .accountNumber("KW81CBKU0000000000001234560101")
                 .isPaid(true)
                 .paymentTypeEnum(PaymentTypeEnum.BANK_CARD)
@@ -265,6 +275,7 @@ public class CreateDataStartApp {
                 .id(2L)
                 .orderUUID("UUID2")
                 .payloadUUID("UUID2")
+                .paymentUUID("UUID2")
                 .accountNumber("KW81CBKU0000000000001234560101")
                 .isPaid(true)
                 .paymentTypeEnum(PaymentTypeEnum.BANK_TRANSFER)
