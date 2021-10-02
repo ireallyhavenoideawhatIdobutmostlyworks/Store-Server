@@ -85,14 +85,14 @@ public class CreateDataStartApp {
     private CustomerEntity createCustomerFirst() {
         customerFirst = CustomerEntity.builder()
                 .id(1L)
-                .username("first")
+                .username("Stanisław Nowak")
                 .password(passwordEncoder.encode("first"))
                 .email("first@first.first")
                 .isActive(true)
                 .isCompany(false)
                 .postalCode("11-111")
-                .street("street")
-                .city("city")
+                .street("Półwiejska 11/1a")
+                .city("Poznań")
                 .build();
         return customerFirst;
     }
@@ -100,14 +100,14 @@ public class CreateDataStartApp {
     private CustomerEntity createCustomerSecond() {
         customerSecond = CustomerEntity.builder()
                 .id(2L)
-                .username("second")
+                .username("Stanisław Nowak")
                 .password(passwordEncoder.encode(passwordSecondCustomer))
                 .email(emailSecondCustomer)
                 .isActive(true)
                 .isCompany(true)
-                .postalCode("11-111")
-                .street("street")
-                .city("city")
+                .postalCode("11-112")
+                .street("Półwiejska 11/1b")
+                .city("Poznań")
                 .build();
         return customerSecond;
     }
@@ -115,14 +115,14 @@ public class CreateDataStartApp {
     private CustomerEntity createCustomerThirdInactive() {
         customerThird = CustomerEntity.builder()
                 .id(3L)
-                .username("third")
+                .username("Stanisław Nowak")
                 .password(passwordEncoder.encode("third"))
                 .email("third@third.third")
                 .isActive(false)
                 .isCompany(true)
-                .postalCode("11-111")
-                .street("street")
-                .city("city")
+                .postalCode("11-113")
+                .street("Półwiejska 11/1c")
+                .city("Poznań")
                 .build();
         return customerThird;
     }

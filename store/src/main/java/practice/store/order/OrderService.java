@@ -57,8 +57,6 @@ public class OrderService {
     private final PublisherPdfService publisherPdfService;
 
 
-
-
     public void save(OrderPayload orderPayload) throws JsonProcessingException {
         checkIfOrderHasProduct(orderPayload.getOrderProductPayloads());
         checkProductExceptions(orderPayload);

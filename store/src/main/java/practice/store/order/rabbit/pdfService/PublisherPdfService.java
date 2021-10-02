@@ -1,9 +1,5 @@
 package practice.store.order.rabbit.pdfService;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,7 +12,6 @@ import practice.store.order.rabbit.pdfService.detaills.ProductPdfDetails;
 import practice.store.product.ProductEntity;
 import practice.store.utils.converter.EntitiesConverter;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,17 +28,14 @@ public class PublisherPdfService {
     private String queueToPdf;
 
 
-    public void send(OrderEntity order, List<ProductEntity> productEntityList) throws JsonProcessingException {
+    public void send(OrderEntity order, List<ProductEntity> productEntityList) {
         CustomerPdfDetails customerPdfDetails = prepareCustomerDetails(order);
         OrderPdfDetails orderPdfDetails = prepareOrderDetails(order);
         List<ProductPdfDetails> productPdfDetailsList = preparePdfDetails(productEntityList);
 
         PublisherPdfPayload payload = preparePublisherPayload(customerPdfDetails, orderPdfDetails, productPdfDetailsList);
 
-        ObjectMapper objectMapper = createObjectMapper();
-        String payloadAsString = objectMapper.writeValueAsString(payload);
-
-        rabbitTemplate.convertAndSend(queueToPdf, payloadAsString);
+        rabbitTemplate.convertAndSend(queueToPdf, payload);
     }
 
 
@@ -60,6 +52,9 @@ public class PublisherPdfService {
                 .builder()
                 .email(order.getCustomer().getEmail())
                 .username(order.getCustomer().getUsername())
+                .city(order.getCustomer().getCity())
+                .street(order.getCustomer().getStreet())
+                .postalCode(order.getCustomer().getPostalCode())
                 .build();
     }
 
@@ -87,11 +82,5 @@ public class PublisherPdfService {
                 .description(product.getDescription())
                 .finalPrice(product.getFinalPrice())
                 .build();
-    }
-
-    private ObjectMapper createObjectMapper() {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
-        return objectMapper;
     }
 }
