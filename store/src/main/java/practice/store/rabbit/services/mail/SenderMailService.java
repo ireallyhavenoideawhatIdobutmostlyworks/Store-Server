@@ -1,4 +1,4 @@
-package practice.store.order.rabbit.mailService;
+package practice.store.rabbit.services.mail;
 
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +9,7 @@ import practice.store.order.OrderEntity;
 
 @PropertySource("classpath:rabbit.properties")
 @Service
-public class PublisherMailService {
+public class SenderMailService {
 
     @Autowired
     private RabbitTemplate rabbitTemplate;
@@ -19,13 +19,13 @@ public class PublisherMailService {
 
 
     public void send(OrderEntity order) {
-        PublisherMailPayload payload = preparePublisherPayload(order);
+        SenderMailPayload payload = preparePublisherPayload(order);
         rabbitTemplate.convertAndSend(queue, payload);
     }
 
 
-    private PublisherMailPayload preparePublisherPayload(OrderEntity order) {
-        return PublisherMailPayload.builder()
+    private SenderMailPayload preparePublisherPayload(OrderEntity order) {
+        return SenderMailPayload.builder()
                 .orderUUID(order.getOrderUUID())
                 .paymentUUID(order.getPaymentUUID())
                 .orderPrice(order.getOrderFinalPrice())

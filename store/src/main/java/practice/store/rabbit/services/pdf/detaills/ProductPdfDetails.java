@@ -1,4 +1,4 @@
-package practice.store.order.rabbit.pdfService.detaills;
+package practice.store.rabbit.services.pdf.detaills;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;

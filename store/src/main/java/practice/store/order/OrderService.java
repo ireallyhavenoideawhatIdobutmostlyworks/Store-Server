@@ -18,8 +18,8 @@ import practice.store.exceptions.product.ProductUuidNotExistException;
 import practice.store.order.details.OrderProductEntity;
 import practice.store.order.details.OrderProductPayload;
 import practice.store.order.details.OrderProductRepository;
-import practice.store.order.rabbit.mailService.PublisherMailService;
-import practice.store.order.rabbit.pdfService.PublisherPdfService;
+import practice.store.rabbit.services.mail.SenderMailService;
+import practice.store.rabbit.services.pdf.SenderPdfService;
 import practice.store.product.ProductEntity;
 import practice.store.product.ProductRepository;
 import practice.store.product.ProductService;
@@ -53,8 +53,8 @@ public class OrderService {
 
     private final ProductService productService;
 
-    private final PublisherMailService publisherMailService;
-    private final PublisherPdfService publisherPdfService;
+    private final SenderMailService senderMailService;
+    private final SenderPdfService senderPdfService;
 
 
     public void save(OrderPayload orderPayload) throws JsonProcessingException {
@@ -80,8 +80,8 @@ public class OrderService {
                     productEntityList.add(productEntity);
                 });
 
-        publisherMailService.send(orderEntity);
-        publisherPdfService.send(orderEntity, productEntityList);
+        senderMailService.send(orderEntity);
+        senderPdfService.send(orderEntity, productEntityList);
     }
 
 

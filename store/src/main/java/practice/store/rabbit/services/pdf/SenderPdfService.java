@@ -1,4 +1,4 @@
-package practice.store.order.rabbit.pdfService;
+package practice.store.rabbit.services.pdf;
 
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -6,9 +6,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import practice.store.order.OrderEntity;
-import practice.store.order.rabbit.pdfService.detaills.CustomerPdfDetails;
-import practice.store.order.rabbit.pdfService.detaills.OrderPdfDetails;
-import practice.store.order.rabbit.pdfService.detaills.ProductPdfDetails;
+import practice.store.rabbit.services.pdf.detaills.CustomerPdfDetails;
+import practice.store.rabbit.services.pdf.detaills.OrderPdfDetails;
+import practice.store.rabbit.services.pdf.detaills.ProductPdfDetails;
 import practice.store.product.ProductEntity;
 import practice.store.utils.converter.EntitiesConverter;
 
@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 @PropertySource("classpath:rabbit.properties")
 @Service
-public class PublisherPdfService {
+public class SenderPdfService {
 
     @Autowired
     private RabbitTemplate rabbitTemplate;
@@ -33,14 +33,14 @@ public class PublisherPdfService {
         OrderPdfDetails orderPdfDetails = prepareOrderDetails(order);
         List<ProductPdfDetails> productPdfDetailsList = preparePdfDetails(productEntityList);
 
-        PublisherPdfPayload payload = preparePublisherPayload(customerPdfDetails, orderPdfDetails, productPdfDetailsList);
+        SenderPdfPayload payload = preparePublisherPayload(customerPdfDetails, orderPdfDetails, productPdfDetailsList);
 
         rabbitTemplate.convertAndSend(queueToPdf, payload);
     }
 
 
-    private PublisherPdfPayload preparePublisherPayload(CustomerPdfDetails customerPdfDetails, OrderPdfDetails orderPdfDetails, List<ProductPdfDetails> productPdfDetailsList) {
-        return PublisherPdfPayload.builder()
+    private SenderPdfPayload preparePublisherPayload(CustomerPdfDetails customerPdfDetails, OrderPdfDetails orderPdfDetails, List<ProductPdfDetails> productPdfDetailsList) {
+        return SenderPdfPayload.builder()
                 .customerPdfDetails(customerPdfDetails)
                 .orderPdfDetails(orderPdfDetails)
                 .productPdfDetailsList(productPdfDetailsList)
