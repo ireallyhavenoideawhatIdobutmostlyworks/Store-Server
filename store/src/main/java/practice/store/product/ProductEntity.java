@@ -1,25 +1,32 @@
 package practice.store.product;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
-import org.hibernate.annotations.SelectBeforeUpdate;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+import practice.store.order.details.OrderProductEntity;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
 
 @Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
+@ToString
 @Entity
-@Data
+@Getter
+@Setter
 @Table(name = "products")
-@SelectBeforeUpdate
 public class ProductEntity {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
+    @Column(name = "product_id", unique = true, nullable = false)
     private Long id;
 
     @NotBlank(message = "'Name' parameter may not be blank")
@@ -38,7 +45,7 @@ public class ProductEntity {
     @Column
     private BigDecimal basePrice;
 
-    @NotNull(message = "'Amount of price reduction' parameter may not be null")
+    @NotNull(message = "'Amount of price reduction' parameter may not be null")  @JsonFormat(shape=JsonFormat.Shape.STRING)
     @Column
     private BigDecimal amountPriceReduction;
 
@@ -54,9 +61,9 @@ public class ProductEntity {
     @Column
     private boolean hasDiscount;
 
-    @NotNull(message = "'Amount in stock' parameter may not be null")
+    @NotNull(message = "'Amount' parameter may not be null")
     @Column
-    private int amountInStock;
+    private int amount;
 
     @NotNull(message = "'Categories' parameter may not be null")
     @Enumerated(EnumType.STRING)
@@ -69,4 +76,8 @@ public class ProductEntity {
     @NotNull(message = "'Is active' parameter may not be null")
     @Column
     private boolean isActive;
+
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Set<OrderProductEntity> orderProduct = new HashSet<>();
 }

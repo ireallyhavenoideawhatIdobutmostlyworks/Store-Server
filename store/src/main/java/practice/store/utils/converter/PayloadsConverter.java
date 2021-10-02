@@ -5,6 +5,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import practice.store.customer.CustomerEntity;
 import practice.store.customer.CustomerPayload;
+import practice.store.order.OrderEntity;
+import practice.store.order.OrderPayload;
+import practice.store.order.details.OrderProductEntity;
+import practice.store.order.details.OrderProductPayload;
 import practice.store.product.ProductEntity;
 import practice.store.product.ProductPayload;
 
@@ -26,6 +30,9 @@ public class PayloadsConverter {
                 .email(customerPayload.getEmail())
                 .isActive(customerPayload.isActive())
                 .isCompany(customerPayload.isCompany())
+                .postalCode(customerPayload.getPostalCode())
+                .street(customerPayload.getStreet())
+                .city(customerPayload.getCity())
                 .build();
     }
 
@@ -40,10 +47,36 @@ public class PayloadsConverter {
                 .amountPriceReduction(productPayload.getAmountPriceReduction())
                 .discountPercentage(productPayload.getDiscountPercentage())
                 .hasDiscount(productPayload.isHasDiscount())
-                .amountInStock(productPayload.getAmountInStock())
+                .amount(productPayload.getAmount())
                 .categories(productPayload.getCategories())
                 .availability(productPayload.getAvailability())
                 .isActive(productPayload.isActive())
                 .build();
+    }
+
+    public OrderProductEntity convertOrderProduct(OrderProductPayload orderProduct) {
+        return OrderProductEntity.builder()
+                .amount(orderProduct.getAmount())
+                .build();
+    }
+
+    public OrderEntity convertOrder(OrderPayload orderPayload) {
+        return OrderEntity.builder()
+                .payloadUUID(orderPayload.getPayloadUUID())
+                .accountNumber(orderPayload.getAccountNumber())
+                .paymentTypeEnum(orderPayload.getPaymentTypeEnum())
+                .orderProduct(convertProductsList(orderPayload.getOrderProductPayloads()))
+                .orderBasePrice(orderPayload.getOrderBasePrice())
+                .orderFinalPrice(orderPayload.getOrderFinalPrice())
+                .hasDiscount(orderPayload.isHasDiscount())
+                .discountPercentage(orderPayload.getDiscountPercentage())
+                .build();
+    }
+
+
+    private Set<OrderProductEntity> convertProductsList(Set<OrderProductPayload> products) {
+        return products.stream()
+                .map(this::convertOrderProduct)
+                .collect(Collectors.toSet());
     }
 }

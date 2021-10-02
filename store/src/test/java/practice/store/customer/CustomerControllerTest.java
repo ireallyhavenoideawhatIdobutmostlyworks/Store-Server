@@ -156,6 +156,7 @@ class CustomerControllerTest {
     @Test
     void get_customers_empty_list_when_list_is_empty() throws Exception {
         // given
+        customerRepository.deleteAll();
         assertTrue(customerRepository.findAll().isEmpty());
 
 

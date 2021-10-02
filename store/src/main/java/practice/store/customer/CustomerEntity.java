@@ -19,6 +19,7 @@ public class CustomerEntity {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
+    @Column(name = "customer_id", unique = true, nullable = false)
     private Long id;
 
     @NotBlank(message = "'Username' parameter may not be blank.")
@@ -41,4 +42,16 @@ public class CustomerEntity {
     @NotNull(message = "'IsCompany' parameter may not be null.")
     @Column
     private boolean isCompany;
+
+    @NotNull(message = "'Postal code' parameter may not be null.")
+    @Column
+    private String postalCode;
+
+    @NotNull(message = "'Street' parameter may not be null.")
+    @Column
+    private String street;
+
+    @NotNull(message = "'City' parameter may not be null.")
+    @Column
+    private String city;
 }

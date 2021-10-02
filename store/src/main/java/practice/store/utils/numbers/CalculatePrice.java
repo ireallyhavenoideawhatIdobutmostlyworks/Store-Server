@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 @Component
-public class CalculatePriceProduct {
+public class CalculatePrice {
 
     /**
      * This is a simple method to calculate product final price.

@@ -10,14 +10,14 @@ import java.math.RoundingMode;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @DisplayName("Calculate product price")
-class CalculatePriceProductTest {
+class CalculatePriceTest {
 
-    private CalculatePriceProduct calculatePriceProduct;
+    private CalculatePrice calculatePrice;
 
 
     @BeforeEach
     void setUp() {
-        calculatePriceProduct = new CalculatePriceProduct();
+        calculatePrice = new CalculatePrice();
     }
 
 
@@ -31,7 +31,7 @@ class CalculatePriceProductTest {
 
 
         // when
-        BigDecimal finalPriceCalculate = calculatePriceProduct.calculateFinalPrice(basePrice, discountPercentage);
+        BigDecimal finalPriceCalculate = calculatePrice.calculateFinalPrice(basePrice, discountPercentage);
 
 
         // then
@@ -48,7 +48,7 @@ class CalculatePriceProductTest {
 
 
         // when
-        BigDecimal finalPriceCalculate = calculatePriceProduct.calculateFinalPrice(basePrice, discountPercentage);
+        BigDecimal finalPriceCalculate = calculatePrice.calculateFinalPrice(basePrice, discountPercentage);
 
 
         // then
