@@ -10,10 +10,8 @@ import java.time.LocalDateTime;
 @Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode
 @Entity
-@Getter
-@Setter
+@Data
 @Table(name = "payment")
 public class PaymentEntity {
 

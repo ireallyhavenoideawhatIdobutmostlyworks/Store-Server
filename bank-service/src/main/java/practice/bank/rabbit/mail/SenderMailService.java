@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
-import practice.bank.payment.PaymentEntity;
 import practice.bank.payment.PaymentResultPayload;
 
 @PropertySource("classpath:rabbitBank.properties")
@@ -19,8 +18,7 @@ public class SenderMailService {
     private String queueFromBankToEmail;
 
 
-    public void send(PaymentEntity paymentEntity) {
-        SenderMailPayload senderMailPayload = prepareSenderPayload(paymentEntity);
+    public void send(SenderMailPayload senderMailPayload) {
         rabbitTemplate.convertAndSend(queueFromBankToEmail, senderMailPayload);
     }
 
@@ -29,17 +27,6 @@ public class SenderMailService {
         rabbitTemplate.convertAndSend(queueFromBankToEmail, senderMailPayload);
     }
 
-
-    private SenderMailPayload prepareSenderPayload(PaymentEntity paymentEntity) {
-        return SenderMailPayload.builder()
-                .orderUUID(paymentEntity.getOrderUUID())
-                .accountNumber(paymentEntity.getAccountNumber())
-                .paymentUUID(paymentEntity.getPaymentUUID())
-                .orderPrice(paymentEntity.getOrderPrice())
-                .paymentType(paymentEntity.getPaymentType())
-                .isPaymentSuccess(paymentEntity.getIsPaymentSuccess())
-                .build();
-    }
 
     private SenderMailPayload prepareSenderPayload(PaymentResultPayload paymentResultPayload) {
         return SenderMailPayload.builder()

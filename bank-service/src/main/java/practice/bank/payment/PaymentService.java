@@ -8,7 +8,9 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import practice.bank.exceptions.PaymentFailureException;
+import practice.bank.rabbit.mail.SenderMailPayload;
 import practice.bank.rabbit.mail.SenderMailService;
+import practice.bank.rabbit.store.SenderStorePayload;
 import practice.bank.rabbit.store.SenderStoreService;
 import practice.bank.utils.GenerateRandomString;
 
@@ -40,8 +42,8 @@ public class PaymentService {
         PaymentEntity paymentEntity = preparePaymentEntity(paymentResultPayload, paymentUUID, true);
         paymentRepository.save(paymentEntity);
 
-        senderStoreService.send(paymentEntity);
-        senderMailService.send(paymentEntity);
+        senderStoreService.send(prepareSenderStorePayload(paymentEntity));
+        senderMailService.send(prepareSenderMailPayload(paymentEntity));
     }
 
 
@@ -76,6 +78,28 @@ public class PaymentService {
                 .isPaymentSuccess(isPaymentSuccess)
                 .processingDate(LocalDateTime.now())
                 .paymentType(paymentResultPayload.getPaymentType())
+                .build();
+    }
+
+    private SenderMailPayload prepareSenderMailPayload(PaymentEntity paymentEntity) {
+        return SenderMailPayload.builder()
+                .orderUUID(paymentEntity.getOrderUUID())
+                .accountNumber(paymentEntity.getAccountNumber())
+                .paymentUUID(paymentEntity.getPaymentUUID())
+                .orderPrice(paymentEntity.getOrderPrice())
+                .paymentType(paymentEntity.getPaymentType())
+                .isPaymentSuccess(paymentEntity.getIsPaymentSuccess())
+                .build();
+    }
+
+    private SenderStorePayload prepareSenderStorePayload(PaymentEntity paymentEntity) {
+        return SenderStorePayload.builder()
+                .orderUUID(paymentEntity.getOrderUUID())
+                .accountNumber(paymentEntity.getAccountNumber())
+                .paymentUUID(paymentEntity.getPaymentUUID())
+                .orderPrice(paymentEntity.getOrderPrice())
+                .isPaymentSuccess(paymentEntity.getIsPaymentSuccess())
+                .paymentType(paymentEntity.getPaymentType())
                 .build();
     }
 }
