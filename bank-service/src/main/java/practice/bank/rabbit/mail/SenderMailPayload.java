@@ -2,13 +2,11 @@ package practice.bank.rabbit.mail;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
-import lombok.Data;
 import practice.bank.payment.PaymentType;
 
 import java.math.BigDecimal;
 
 @Builder
-@Data
 public class SenderMailPayload {
 
     @JsonProperty

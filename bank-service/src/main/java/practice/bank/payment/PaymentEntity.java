@@ -3,6 +3,7 @@ package practice.bank.payment;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -30,6 +31,11 @@ public class PaymentEntity {
     @NotNull(message = "Account number may not be empty")
     @Column
     private String accountNumber;
+
+    @NotNull(message = "'Email' parameter may not be null.")
+    @Column
+    @Email
+    private String email;
 
     @NotNull(message = "Order price may not be null")
     @Column

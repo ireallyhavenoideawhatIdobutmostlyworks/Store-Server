@@ -11,13 +11,13 @@ import org.springframework.stereotype.Service;
 public class SenderStoreService {
 
     @Autowired
-    private RabbitTemplate template;
+    private RabbitTemplate rabbitTemplate;
 
     @Value("${queue.from.bank.to.store}")
     private String queueFromBankToStore;
 
 
     public void send(SenderStorePayload senderStorePayload) {
-        template.convertAndSend(queueFromBankToStore, senderStorePayload);
+        rabbitTemplate.convertAndSend(queueFromBankToStore, senderStorePayload);
     }
 }

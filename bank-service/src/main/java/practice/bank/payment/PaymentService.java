@@ -35,7 +35,7 @@ public class PaymentService {
     public void processingPayment(PaymentResultPayload paymentResultPayload) throws InterruptedException {
         String paymentUUID = generateRandomString.generateRandomUuid();
 
-        delayPaymentProcessSimulation();
+     //   delayPaymentProcessSimulation();
         checkIfPaymentSuccess(paymentResultPayload, paymentUUID);
         checkIfIbanFormatIsValid(paymentResultPayload, paymentUUID);
 
@@ -53,8 +53,7 @@ public class PaymentService {
 
     private void checkIfPaymentSuccess(PaymentResultPayload paymentResultPayload, String paymentUUID) {
         if (!paymentResultPayload.getIsPaymentSuccess()) {
-            paymentRepository.save(preparePaymentEntity(paymentResultPayload, paymentUUID, false));
-            senderMailService.send(paymentResultPayload);
+            saveAndSendIfPaymentIsFail(paymentResultPayload, paymentUUID);
             throw new PaymentFailureException(paymentResultPayload, paymentUUID);
         }
     }
@@ -63,10 +62,15 @@ public class PaymentService {
         try {
             IbanUtil.validate(paymentResultPayload.getAccountNumber());
         } catch (IbanFormatException e) {
-            paymentRepository.save(preparePaymentEntity(paymentResultPayload, paymentUUID, false));
-            senderMailService.send(paymentResultPayload);
+            saveAndSendIfPaymentIsFail(paymentResultPayload, paymentUUID);
             throw new PaymentFailureException(paymentResultPayload, paymentUUID);
         }
+    }
+
+    private void saveAndSendIfPaymentIsFail(PaymentResultPayload paymentResultPayload, String paymentUUID) {
+        PaymentEntity paymentEntity = preparePaymentEntity(paymentResultPayload, paymentUUID, false);
+        paymentRepository.save(paymentEntity);
+        senderMailService.send(prepareSenderMailPayload(paymentEntity));
     }
 
     private PaymentEntity preparePaymentEntity(PaymentResultPayload paymentResultPayload, String paymentUUID, boolean isPaymentSuccess) {
@@ -74,6 +78,7 @@ public class PaymentService {
                 .orderUUID(paymentResultPayload.getOrderUUID())
                 .accountNumber(paymentResultPayload.getAccountNumber())
                 .paymentUUID(paymentUUID)
+                .email(paymentResultPayload.getEmail())
                 .orderPrice(paymentResultPayload.getOrderPrice())
                 .isPaymentSuccess(isPaymentSuccess)
                 .processingDate(LocalDateTime.now())
@@ -86,6 +91,7 @@ public class PaymentService {
                 .orderUUID(paymentEntity.getOrderUUID())
                 .accountNumber(paymentEntity.getAccountNumber())
                 .paymentUUID(paymentEntity.getPaymentUUID())
+                .email(paymentEntity.getEmail())
                 .orderPrice(paymentEntity.getOrderPrice())
                 .paymentType(paymentEntity.getPaymentType())
                 .isPaymentSuccess(paymentEntity.getIsPaymentSuccess())
