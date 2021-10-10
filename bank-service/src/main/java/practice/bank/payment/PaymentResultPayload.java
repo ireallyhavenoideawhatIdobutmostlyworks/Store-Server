@@ -15,5 +15,5 @@ public class PaymentResultPayload {
     private String accountNumber;
     private PaymentType paymentType;
     private String email;
-    private Boolean isPaymentSuccess; // virgin idea - checkbox in frontend to simulate behavior
+    private Boolean isPaymentSuccess; // TODO checkbox on fronted for simulate behavior
 }

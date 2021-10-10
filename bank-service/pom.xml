@@ -38,12 +38,12 @@
 			<version>6.1.5.Final</version>
 		</dependency>
 
-
 		<dependency>
-			<groupId>org.iban4j</groupId>
-			<artifactId>iban4j</artifactId>
-			<version>3.2.3-RELEASE</version>
+			<groupId>commons-validator</groupId>
+			<artifactId>commons-validator</artifactId>
+			<version>1.7</version>
 		</dependency>
+
 
 		<dependency>
 			<groupId>io.springfox</groupId>

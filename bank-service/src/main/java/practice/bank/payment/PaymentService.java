@@ -1,13 +1,11 @@
 package practice.bank.payment;
 
 import lombok.RequiredArgsConstructor;
-import org.iban4j.IbanFormatException;
-import org.iban4j.IbanUtil;
+import org.apache.commons.validator.routines.IBANValidator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import practice.bank.exceptions.PaymentFailureException;
 import practice.bank.rabbit.mail.SenderMailPayload;
 import practice.bank.rabbit.mail.SenderMailService;
 import practice.bank.rabbit.store.SenderStorePayload;
@@ -31,46 +29,33 @@ public class PaymentService {
     private long timeoutSimulation;
 
 
-    @Transactional(noRollbackFor = RuntimeException.class)
-    public void processingPayment(PaymentResultPayload paymentResultPayload) throws InterruptedException {
+    @Transactional
+    public boolean processingPayment(PaymentResultPayload paymentResultPayload) throws InterruptedException {
         String paymentUUID = generateRandomString.generateRandomUuid();
 
-     //   delayPaymentProcessSimulation();
-        checkIfPaymentSuccess(paymentResultPayload, paymentUUID);
-        checkIfIbanFormatIsValid(paymentResultPayload, paymentUUID);
+        delayPaymentProcessSimulation();
 
-        PaymentEntity paymentEntity = preparePaymentEntity(paymentResultPayload, paymentUUID, true);
+        boolean isPaymentSuccess = isPaymentSuccess(paymentResultPayload) && ibanValidator(paymentResultPayload);
+
+        PaymentEntity paymentEntity = preparePaymentEntity(paymentResultPayload, paymentUUID, isPaymentSuccess);
         paymentRepository.save(paymentEntity);
 
         senderStoreService.send(prepareSenderStorePayload(paymentEntity));
         senderMailService.send(prepareSenderMailPayload(paymentEntity));
+
+        return isPaymentSuccess;
     }
 
+    private boolean isPaymentSuccess(PaymentResultPayload paymentResultPayload) {
+        return paymentResultPayload.getIsPaymentSuccess();
+    }
+
+    private boolean ibanValidator(PaymentResultPayload paymentResultPayload) {
+        return new IBANValidator().isValid(paymentResultPayload.getAccountNumber());
+    }
 
     private void delayPaymentProcessSimulation() throws InterruptedException {
         TimeUnit.SECONDS.sleep(timeoutSimulation);
-    }
-
-    private void checkIfPaymentSuccess(PaymentResultPayload paymentResultPayload, String paymentUUID) {
-        if (!paymentResultPayload.getIsPaymentSuccess()) {
-            saveAndSendIfPaymentIsFail(paymentResultPayload, paymentUUID);
-            throw new PaymentFailureException(paymentResultPayload, paymentUUID);
-        }
-    }
-
-    private void checkIfIbanFormatIsValid(PaymentResultPayload paymentResultPayload, String paymentUUID) {
-        try {
-            IbanUtil.validate(paymentResultPayload.getAccountNumber());
-        } catch (IbanFormatException e) {
-            saveAndSendIfPaymentIsFail(paymentResultPayload, paymentUUID);
-            throw new PaymentFailureException(paymentResultPayload, paymentUUID);
-        }
-    }
-
-    private void saveAndSendIfPaymentIsFail(PaymentResultPayload paymentResultPayload, String paymentUUID) {
-        PaymentEntity paymentEntity = preparePaymentEntity(paymentResultPayload, paymentUUID, false);
-        paymentRepository.save(paymentEntity);
-        senderMailService.send(prepareSenderMailPayload(paymentEntity));
     }
 
     private PaymentEntity preparePaymentEntity(PaymentResultPayload paymentResultPayload, String paymentUUID, boolean isPaymentSuccess) {

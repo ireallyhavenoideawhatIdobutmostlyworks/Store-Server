@@ -25,7 +25,10 @@ public class PaymentController {
     @ApiOperation(value = "This method is used to launch payment logic.")
     @RequestMapping(value = "", method = RequestMethod.POST)
     public ResponseEntity save(@Valid @RequestBody PaymentResultPayload paymentResultPayload) throws InterruptedException {
-        paymentService.processingPayment(paymentResultPayload);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        boolean isSuccess = paymentService.processingPayment(paymentResultPayload);
+        if (isSuccess) {
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        } else
+            return new ResponseEntity(HttpStatus.PAYMENT_REQUIRED);
     }
 }
