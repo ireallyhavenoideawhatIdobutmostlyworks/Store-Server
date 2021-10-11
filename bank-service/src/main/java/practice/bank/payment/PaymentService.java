@@ -55,6 +55,7 @@ public class PaymentService {
     }
 
     private void delayPaymentProcessSimulation() throws InterruptedException {
+        // this is poor simulate processing payment :D don't judge me I am only tester, not programmer
         TimeUnit.SECONDS.sleep(timeoutSimulation);
     }
 
