@@ -1,6 +1,5 @@
 package practice.pdfservice.pdf;
 
-import lombok.Getter;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -9,14 +8,17 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import practice.pdfservice.rabbit.store.ConsumerStorePayload;
 
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.time.LocalDateTime;
 
-@PropertySource("classpath:seller.properties")
+@PropertySource({
+        "classpath:seller.properties",
+        "classpath:excel.properties"
+})
 @Service
-@Getter
 public class ExcelService {
 
     @Value("${seller.name}")
@@ -36,15 +38,22 @@ public class ExcelService {
     @Value("${seller.email}")
     private String sellerEmail;
 
-    @Getter
+    @Value("${output.excel.path}")
     private String outputExcelPath;
 
 
-    public void createExcelFile(ConsumerStorePayload consumerStorePayload) throws IOException {
+    public void createExcelFile(ConsumerStorePayload consumerStorePayload) {
         Workbook invoiceAsExcel = new HSSFWorkbook();
-        outputExcelPath = String.format("pdf-service/src/main/resources/docs/%s.xls", consumerStorePayload.getOrderPdfDetails().getOrderUUID());
+        String outputPath = String.format(outputExcelPath, consumerStorePayload.getOrderPdfDetails().getOrderUUID());
 
-        OutputStream os = new FileOutputStream(outputExcelPath);
+        OutputStream os = null;
+        try {
+            os = new FileOutputStream(outputPath);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            // ToDo add logger.error
+        }
+
         Sheet sheet = invoiceAsExcel.createSheet("New Sheet");
 
         createRowsAndCells(sheet);
@@ -53,8 +62,13 @@ public class ExcelService {
         addProductHeader(sheet);
         addProductContent(sheet, consumerStorePayload);
 
-        invoiceAsExcel.write(os);
-        invoiceAsExcel.close();
+        try {
+            invoiceAsExcel.write(os);
+            invoiceAsExcel.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            // ToDo add logger.error
+        }
     }
 
 

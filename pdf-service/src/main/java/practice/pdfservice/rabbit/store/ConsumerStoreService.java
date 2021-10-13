@@ -14,7 +14,6 @@ public class ConsumerStoreService {
 
     @Autowired
     private InvoiceService invoiceService;
-    private ConsumerStorePayload consumerStorePayload;
 
 
     @RabbitListener(queues = "${queue.from.store.to.pdf}")
