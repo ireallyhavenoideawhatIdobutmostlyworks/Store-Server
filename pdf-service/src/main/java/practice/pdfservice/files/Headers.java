@@ -1,4 +1,4 @@
-package practice.pdfservice.pdf;
+package practice.pdfservice.files;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

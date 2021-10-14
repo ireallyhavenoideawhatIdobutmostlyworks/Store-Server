@@ -10,4 +10,6 @@ public class SenderMailPayload {
     private String orderUUID;
     @JsonProperty
     private byte[] fileData;
+    @JsonProperty
+    private String email;
 }

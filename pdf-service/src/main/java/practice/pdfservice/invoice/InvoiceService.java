@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
-import practice.pdfservice.pdf.ExcelService;
-import practice.pdfservice.pdf.PdfService;
+import practice.pdfservice.files.ExcelService;
+import practice.pdfservice.files.PdfService;
 import practice.pdfservice.rabbit.mail.SenderMailService;
 import practice.pdfservice.rabbit.store.ConsumerStorePayload;
 
@@ -28,11 +28,12 @@ public class InvoiceService {
 
     public void create(ConsumerStorePayload consumerStorePayload) throws IOException {
         String orderUUID = consumerStorePayload.getOrderPdfDetails().getOrderUUID();
+        String customerMailAddress = consumerStorePayload.getCustomerPdfDetails().getEmail();
         String pdfPath = String.format(outputPdfPath, orderUUID);
 
         excelService.createExcelFile(consumerStorePayload);
         pdfService.convertExcelToPdf(consumerStorePayload);
 
-        senderMailService.send(pdfPath, orderUUID);
+        senderMailService.send(pdfPath, orderUUID, customerMailAddress);
     }
 }

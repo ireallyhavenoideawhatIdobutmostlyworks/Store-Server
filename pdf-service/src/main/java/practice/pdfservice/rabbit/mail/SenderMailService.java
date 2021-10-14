@@ -22,15 +22,19 @@ public class SenderMailService {
     private String queueFromPdfToEmail;
 
 
-    public void send(String outputPdfPath, String orderUUID) throws IOException {
-        rabbitTemplate.convertAndSend(queueFromPdfToEmail, prepareSenderMailPayload(convertPdfToByte(outputPdfPath), orderUUID));
+    public void send(String outputPdfPath, String orderUUID, String customerMailAddress) throws IOException {
+        byte[] pdfAsBytes = convertPdfToByte(outputPdfPath);
+        SenderMailPayload senderMailPayload = prepareSenderMailPayload(pdfAsBytes, orderUUID, customerMailAddress);
+
+        rabbitTemplate.convertAndSend(queueFromPdfToEmail, senderMailPayload);
     }
 
 
-    private SenderMailPayload prepareSenderMailPayload(byte[] bytes, String orderUUID) {
+    private SenderMailPayload prepareSenderMailPayload(byte[] bytes, String orderUUID, String customerMailAddress) {
         return SenderMailPayload.builder()
                 .orderUUID(orderUUID)
                 .fileData(bytes)
+                .email(customerMailAddress)
                 .build();
     }
 
