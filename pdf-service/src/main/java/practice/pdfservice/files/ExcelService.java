@@ -43,30 +43,23 @@ public class ExcelService {
 
 
     public void createExcelFile(ConsumerStorePayload consumerStorePayload) {
-        Workbook invoiceAsExcel = new HSSFWorkbook();
-        String outputPath = String.format(outputExcelPath, consumerStorePayload.getOrderPdfDetails().getOrderUUID());
+        try (Workbook invoiceAsExcel = new HSSFWorkbook()) {
+            String outputPath = String.format(outputExcelPath, consumerStorePayload.getOrderPdfDetails().getOrderUUID());
 
-        OutputStream os = null;
-        try {
-            os = new FileOutputStream(outputPath);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            // ToDo add logger.error
-        }
+            OutputStream os = new FileOutputStream(outputPath);
+            Sheet sheet = invoiceAsExcel.createSheet("New Sheet");
 
-        Sheet sheet = invoiceAsExcel.createSheet("New Sheet");
-
-        createRowsAndCells(sheet);
-        addHeader(sheet);
-        addSellerAndBuyer(sheet, consumerStorePayload);
-        addProductHeader(sheet);
-        addProductContent(sheet, consumerStorePayload);
-
-        try {
+            createRowsAndCells(sheet);
+            addHeader(sheet);
+            addSellerAndBuyer(sheet, consumerStorePayload);
+            addProductHeader(sheet);
+            addProductContent(sheet, consumerStorePayload);
             invoiceAsExcel.write(os);
             invoiceAsExcel.close();
+
+        } catch (FileNotFoundException e) {
+            // ToDo add logger.error
         } catch (IOException e) {
-            e.printStackTrace();
             // ToDo add logger.error
         }
     }
