@@ -8,7 +8,6 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import practice.pdfservice.rabbit.store.ConsumerStorePayload;
 
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -43,22 +42,18 @@ public class ExcelService {
 
 
     public void createExcelFile(ConsumerStorePayload consumerStorePayload) {
-        try (Workbook invoiceAsExcel = new HSSFWorkbook()) {
-            String outputPath = String.format(outputExcelPath, consumerStorePayload.getOrderPdfDetails().getOrderUUID());
+        String outputPath = String.format(outputExcelPath, consumerStorePayload.getOrderPdfDetails().getOrderUUID());
 
-            OutputStream os = new FileOutputStream(outputPath);
+        try (Workbook invoiceAsExcel = new HSSFWorkbook();
+             OutputStream os = new FileOutputStream(outputPath)) {
+
             Sheet sheet = invoiceAsExcel.createSheet("New Sheet");
-
             createRowsAndCells(sheet);
             addHeader(sheet);
             addSellerAndBuyer(sheet, consumerStorePayload);
             addProductHeader(sheet);
             addProductContent(sheet, consumerStorePayload);
             invoiceAsExcel.write(os);
-            invoiceAsExcel.close();
-
-        } catch (FileNotFoundException e) {
-            // ToDo add logger.error
         } catch (IOException e) {
             // ToDo add logger.error
         }
