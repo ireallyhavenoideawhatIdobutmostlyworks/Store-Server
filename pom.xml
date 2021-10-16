@@ -15,7 +15,10 @@
     </properties>
 
     <modules>
-        <module>store</module>
+        <module>bank-service</module>
+        <module>mail-service</module>
+        <module>pdf-service</module>
+        <module>store-service</module>
     </modules>
 
 </project>
