@@ -7,20 +7,20 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import practice.store.order.OrderEntity;
 
-@PropertySource("classpath:rabbit.properties")
+@PropertySource("classpath:rabbitStore.properties")
 @Service
 public class SenderMailService {
 
     @Autowired
     private RabbitTemplate rabbitTemplate;
 
-    @Value("${queue.to.email}")
-    private String queue;
+    @Value("${queue.from.store.to.email}")
+    private String queueFromStoreToEmail;
 
 
     public void send(OrderEntity order) {
         SenderMailPayload payload = preparePublisherPayload(order);
-        rabbitTemplate.convertAndSend(queue, payload);
+        rabbitTemplate.convertAndSend(queueFromStoreToEmail, payload);
     }
 
 

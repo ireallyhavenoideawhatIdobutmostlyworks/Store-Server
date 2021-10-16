@@ -15,7 +15,7 @@ import practice.store.utils.converter.EntitiesConverter;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@PropertySource("classpath:rabbit.properties")
+@PropertySource("classpath:rabbitStore.properties")
 @Service
 public class SenderPdfService {
 
@@ -24,8 +24,8 @@ public class SenderPdfService {
     @Autowired
     private EntitiesConverter converter;
 
-    @Value("${queue.to.pdf}")
-    private String queueToPdf;
+    @Value("${queue.from.store.to.pdf}")
+    private String queueFromStoreToPdf;
 
 
     public void send(OrderEntity order, List<ProductEntity> productEntityList) {
@@ -35,7 +35,7 @@ public class SenderPdfService {
 
         SenderPdfPayload payload = preparePublisherPayload(customerPdfDetails, orderPdfDetails, productPdfDetailsList);
 
-        rabbitTemplate.convertAndSend(queueToPdf, payload);
+        rabbitTemplate.convertAndSend(queueFromStoreToPdf, payload);
     }
 
 

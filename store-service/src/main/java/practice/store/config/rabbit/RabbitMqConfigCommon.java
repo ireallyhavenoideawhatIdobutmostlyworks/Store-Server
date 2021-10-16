@@ -1,6 +1,6 @@
 package practice.store.config.rabbit;
 
-import org.springframework.amqp.core.*;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -14,18 +14,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
-@PropertySource("classpath:rabbit.properties")
+@PropertySource("classpath:rabbitStore.properties")
 @Configuration
-public class RabbitMqConfig {
+public class RabbitMqConfigCommon {
 
-    @Value("${queue.common}")
-    private String queueCommon;
-    @Value("${queue.from.bank}")
-    private String bankToStoreQueue;
-    @Value("${exchange.common}")
-    private String exchangeCommon;
-    @Value("${routing.key.common}")
-    private String routingKeyNameCommon;
     @Value("${connection.name}")
     private String connectionName;
 
@@ -43,26 +35,6 @@ public class RabbitMqConfig {
         return factory;
     }
 
-    @Bean
-    Queue queueCommon() {
-        return new Queue(queueCommon, true);
-    }
-
-    @Bean
-    Queue queueFromBank() {
-        return new Queue(bankToStoreQueue, true);
-    }
-
-    @Bean
-    DirectExchange exchange() {
-        return new DirectExchange(exchangeCommon);
-    }
-
-    @Bean
-    Binding binding(Queue queue, DirectExchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with(routingKeyNameCommon);
-    }
-
     public AmqpTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
         final RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
         rabbitTemplate.setMessageConverter(jsonMessageConverter());
@@ -74,4 +46,3 @@ public class RabbitMqConfig {
         return () -> cf.setConnectionNameStrategy(f -> connectionName);
     }
 }
-
