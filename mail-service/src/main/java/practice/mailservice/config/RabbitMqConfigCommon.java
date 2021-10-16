@@ -1,6 +1,6 @@
-package practice.store.config.rabbit;
+package practice.mailservice.config;
 
-import org.springframework.amqp.core.*;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
-@PropertySource("classpath:rabbitStore.properties")
+@PropertySource("classpath:rabbitMail.properties")
 @Configuration
 public class RabbitMqConfigCommon {
 
@@ -46,4 +46,3 @@ public class RabbitMqConfigCommon {
         return () -> cf.setConnectionNameStrategy(f -> connectionName);
     }
 }
-
