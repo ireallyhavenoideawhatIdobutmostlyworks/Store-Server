@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import practice.mailservice.rabbit.bank.ConsumerBankPayload;
 import practice.mailservice.rabbit.pdf.ConsumerPdfPayload;
@@ -51,18 +50,9 @@ public class MailService {
     public void sendEmail(ConsumerStorePayload consumerStorePayload) throws MessagingException {
         MimeMessage mail = javaMailSender.createMimeMessage();
 
-        MimeMessageHelper helper = new MimeMessageHelper(mail, true);
-        helper.setTo(consumerStorePayload.getEmail());
-        helper.setFrom(appMailAddress);
-        helper.setSubject(String.format(appMailSubjectNewOrder, consumerStorePayload.getOrderUUID()));
-        helper.setText(String.format(
-                        appMailContentNewOrder,
-                        consumerStorePayload.getOrderUUID(),
-                        consumerStorePayload.getPaymentUUID(),
-                        consumerStorePayload.getOrderPrice(),
-                        consumerStorePayload.getAccountNumber()),
-                false
-        );
+        String content = String.format(appMailContentNewOrder, consumerStorePayload.getOrderUUID(), consumerStorePayload.getPaymentUUID(), consumerStorePayload.getOrderPrice(), consumerStorePayload.getAccountNumber());
+        String subject = String.format(appMailSubjectNewOrder, consumerStorePayload.getOrderUUID());
+        mimeMessageHelperBuilderWithoutAttachment(mail, consumerStorePayload.getEmail(), appMailAddress, subject, content);
 
         javaMailSender.send(mail);
     }
@@ -70,17 +60,9 @@ public class MailService {
     public void sendEmail(ConsumerBankPayload consumerBankPayload) throws MessagingException {
         MimeMessage mail = javaMailSender.createMimeMessage();
 
-        MimeMessageHelper helper = new MimeMessageHelper(mail, true);
-        helper.setTo(consumerBankPayload.getEmail());
-        helper.setFrom(appMailAddress);
-        helper.setSubject(String.format(appMailSubjectStatusOrder, consumerBankPayload.getOrderUUID()));
-        helper.setText(String.format(
-                        appMailContentStatusOrder,
-                        consumerBankPayload.getOrderUUID(),
-                        consumerBankPayload.getPaymentType().toString(),
-                        consumerBankPayload.getIsPaymentSuccess()),
-                false
-        );
+        String content = String.format(appMailContentStatusOrder, consumerBankPayload.getOrderUUID(), consumerBankPayload.getPaymentType().toString(), consumerBankPayload.getIsPaymentSuccess());
+        String subject = String.format(appMailSubjectStatusOrder, consumerBankPayload.getOrderUUID());
+        mimeMessageHelperBuilderWithoutAttachment(mail, consumerBankPayload.getEmail(), appMailAddress, subject, content);
 
         javaMailSender.send(mail);
     }
@@ -91,16 +73,9 @@ public class MailService {
 
         MimeMessage mail = javaMailSender.createMimeMessage();
 
-        MimeMessageHelper helper = new MimeMessageHelper(mail, true);
-        helper.setTo(consumerPdfPayload.getEmail());
-        helper.setFrom(appMailAddress);
-        helper.setSubject(String.format(appMailSubjectInvoice, consumerPdfPayload.getOrderUUID()));
-        helper.addAttachment(consumerPdfPayload.getOrderUUID(), new File(pathToInvoice));
-        helper.setText(String.format(
-                        appMailContentInvoice,
-                        consumerPdfPayload.getOrderUUID()),
-                false
-        );
+        String content = String.format(appMailContentInvoice, consumerPdfPayload.getOrderUUID());
+        String subject = String.format(appMailSubjectInvoice, consumerPdfPayload.getOrderUUID());
+        mimeMessageHelperBuilderWithAttachment(mail, consumerPdfPayload.getEmail(), appMailAddress, subject, content, consumerPdfPayload.getOrderUUID(), new File(pathToInvoice));
 
         javaMailSender.send(mail);
     }
@@ -108,5 +83,24 @@ public class MailService {
 
     private void createPdfInvoice(String pathToInvoice, byte[] invoiceAsByte) throws IOException {
         FileUtils.writeByteArrayToFile(new File(pathToInvoice), invoiceAsByte);
+    }
+
+    private void mimeMessageHelperBuilderWithoutAttachment(MimeMessage mail, String to, String from, String subject, String content) throws MessagingException {
+        new MimeMessageHelperBuilder()
+                .prepareHelper(mail, true)
+                .setTo(to)
+                .setFrom(from)
+                .setSubject(subject)
+                .setContent(content, false);
+    }
+
+    private void mimeMessageHelperBuilderWithAttachment(MimeMessage mail, String to, String from, String subject, String content, String attachmentFilename, File file) throws MessagingException {
+        new MimeMessageHelperBuilder()
+                .prepareHelper(mail, true)
+                .setTo(to)
+                .setFrom(from)
+                .setSubject(subject)
+                .setContent(content, false)
+                .addAttachment(attachmentFilename, file);
     }
 }
