@@ -86,7 +86,7 @@ public class MailService {
     }
 
     private void mimeMessageHelperBuilderWithoutAttachment(MimeMessage mail, String to, String from, String subject, String content) throws MessagingException {
-        new MimeMessageHelperBuilder()
+        new MimeMessageHelperBuilder.Builder()
                 .prepareHelper(mail, true)
                 .setTo(to)
                 .setFrom(from)
@@ -95,7 +95,7 @@ public class MailService {
     }
 
     private void mimeMessageHelperBuilderWithAttachment(MimeMessage mail, String to, String from, String subject, String content, String attachmentFilename, File file) throws MessagingException {
-        new MimeMessageHelperBuilder()
+        new MimeMessageHelperBuilder.Builder()
                 .prepareHelper(mail, true)
                 .setTo(to)
                 .setFrom(from)
