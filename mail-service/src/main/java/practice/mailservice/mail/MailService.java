@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import practice.mailservice.rabbit.bank.ConsumerBankPayload;
 import practice.mailservice.rabbit.pdf.ConsumerPdfPayload;
@@ -50,9 +51,10 @@ public class MailService {
     public void sendEmail(ConsumerStorePayload consumerStorePayload) throws MessagingException {
         MimeMessage mail = javaMailSender.createMimeMessage();
 
-        String content = String.format(appMailContentNewOrder, consumerStorePayload.getOrderUUID(), consumerStorePayload.getPaymentUUID(), consumerStorePayload.getOrderPrice(), consumerStorePayload.getAccountNumber());
+        MimeMessageHelper helper = new MimeMessageHelper(mail, true);
         String subject = String.format(appMailSubjectNewOrder, consumerStorePayload.getOrderUUID());
-        mimeMessageHelperBuilderWithoutAttachment(mail, consumerStorePayload.getEmail(), appMailAddress, subject, content);
+        String content = String.format(appMailContentNewOrder, consumerStorePayload.getOrderUUID(), consumerStorePayload.getPaymentUUID(), consumerStorePayload.getOrderPrice(), consumerStorePayload.getAccountNumber());
+        setEmailDetails(helper, consumerStorePayload.getEmail(), subject, content);
 
         javaMailSender.send(mail);
     }
@@ -60,9 +62,10 @@ public class MailService {
     public void sendEmail(ConsumerBankPayload consumerBankPayload) throws MessagingException {
         MimeMessage mail = javaMailSender.createMimeMessage();
 
-        String content = String.format(appMailContentStatusOrder, consumerBankPayload.getOrderUUID(), consumerBankPayload.getPaymentType().toString(), consumerBankPayload.getIsPaymentSuccess());
+        MimeMessageHelper helper = new MimeMessageHelper(mail, true);
         String subject = String.format(appMailSubjectStatusOrder, consumerBankPayload.getOrderUUID());
-        mimeMessageHelperBuilderWithoutAttachment(mail, consumerBankPayload.getEmail(), appMailAddress, subject, content);
+        String content = String.format(appMailContentStatusOrder, consumerBankPayload.getOrderUUID(), consumerBankPayload.getPaymentType().toString(), consumerBankPayload.getIsPaymentSuccess());
+        setEmailDetails(helper, consumerBankPayload.getEmail(), subject, content);
 
         javaMailSender.send(mail);
     }
@@ -73,9 +76,11 @@ public class MailService {
 
         MimeMessage mail = javaMailSender.createMimeMessage();
 
-        String content = String.format(appMailContentInvoice, consumerPdfPayload.getOrderUUID());
+        MimeMessageHelper helper = new MimeMessageHelper(mail, true);
+        helper.addAttachment(consumerPdfPayload.getOrderUUID(), new File(pathToInvoice));
         String subject = String.format(appMailSubjectInvoice, consumerPdfPayload.getOrderUUID());
-        mimeMessageHelperBuilderWithAttachment(mail, consumerPdfPayload.getEmail(), appMailAddress, subject, content, consumerPdfPayload.getOrderUUID(), new File(pathToInvoice));
+        String content = String.format(appMailContentInvoice, consumerPdfPayload.getOrderUUID());
+        setEmailDetails(helper, consumerPdfPayload.getEmail(), subject, content);
 
         javaMailSender.send(mail);
     }
@@ -85,22 +90,10 @@ public class MailService {
         FileUtils.writeByteArrayToFile(new File(pathToInvoice), invoiceAsByte);
     }
 
-    private void mimeMessageHelperBuilderWithoutAttachment(MimeMessage mail, String to, String from, String subject, String content) throws MessagingException {
-        new MimeMessageHelperBuilder.Builder()
-                .prepareHelper(mail, true)
-                .setTo(to)
-                .setFrom(from)
-                .setSubject(subject)
-                .setContent(content, false);
-    }
-
-    private void mimeMessageHelperBuilderWithAttachment(MimeMessage mail, String to, String from, String subject, String content, String attachmentFilename, File file) throws MessagingException {
-        new MimeMessageHelperBuilder.Builder()
-                .prepareHelper(mail, true)
-                .setTo(to)
-                .setFrom(from)
-                .setSubject(subject)
-                .setContent(content, false)
-                .addAttachment(attachmentFilename, file);
+    private void setEmailDetails(MimeMessageHelper helper, String email, String subject, String content) throws MessagingException {
+        helper.setTo(email);
+        helper.setFrom(appMailAddress);
+        helper.setSubject(subject);
+        helper.setText(content, false);
     }
 }
