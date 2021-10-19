@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project
+		xmlns="http://maven.apache.org/POM/4.0.0"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+        <groupId>org.example</groupId>
+        <artifactId>Store-and-Tests</artifactId>
+        <version>1</version>
+	</parent>
+
+
+	<groupId>practice</groupId>
+	<artifactId>store-service</artifactId>
+	<version>1</version>
+	<name>store-service</name>
+	<packaging>war</packaging>
+
+
+    <properties>
+        <!-- VERSIONS FOR SOURCE DEPENDENCIES -->
+        <jsoup.version>1.13.1</jsoup.version>
+        <jwt.version>0.9.1</jwt.version>
+        <iban4j.version>3.2.3-RELEASE</iban4j.version>
+
+        <!-- VERSIONS FOR TEST DEPENDENCIES -->
+        <spock-core.version>2.0-groovy-3.0</spock-core.version>
+        <spock-spring.version>2.0-groovy-3.0</spock-spring.version>
+        <groovy-all.version>3.0.8</groovy-all.version>
+        <gmavenplus-plugin.version>1.12.1</gmavenplus-plugin.version>
+        <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+        <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
+    </properties>
+
+
+    <dependencies>
+        <!-- SPRING -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
+        <!-- JSOUP -->
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>${jsoup.version}</version>
+        </dependency>
+
+        <!-- JWT -->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>${jwt.version}</version>
+        </dependency>
+
+        <!-- IBAN Validator -->
+        <dependency>
+            <groupId>org.iban4j</groupId>
+            <artifactId>iban4j</artifactId>
+            <version>${iban4j.version}</version>
+        </dependency>
+
+
+        <!-- DEPENDENCIES FOR TESTS -->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.spockframework</groupId>
+            <artifactId>spock-spring</artifactId>
+            <version>${spock-spring.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.spockframework</groupId>
+            <artifactId>spock-core</artifactId>
+            <version>${spock-core.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+            <version>${groovy-all.version}</version>
+            <type>pom</type>
+        </dependency>
+    </dependencies>
+
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <configuration>
+                        <skip>false</skip>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.gmavenplus</groupId>
+                    <artifactId>gmavenplus-plugin</artifactId>
+                    <version>${gmavenplus-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>addSources</goal>
+                                <goal>addTestSources</goal>
+                                <goal>compile</goal>
+                                <goal>compileTests</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+
+                    <configuration>
+                        <testSources>
+                            <testSource>
+                                <directory>${project.basedir}/src/test/groovy</directory>
+                                <includes>
+                                    <include>**/*Spec.java</include>
+                                    <include>**/*Spec.class</include>
+                                    <include>**/*Spec.*</include>
+                                </includes>
+                            </testSource>
+                            <testSource>
+                                <directory>${project.basedir}/src/test/java</directory>
+                                <includes>
+                                    <include>**/*.java</include>
+                                </includes>
+                            </testSource>
+                        </testSources>
+                    </configuration>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${maven-surefire-plugin.version}</version>
+                    <configuration>
+                        <includes>
+                            <include>**/*Test*.*</include>
+                            <include>**/*Spec*.*</include>
+                        </includes>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+
+</project>
