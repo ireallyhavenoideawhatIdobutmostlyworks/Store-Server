@@ -26,22 +26,22 @@ public class MailService {
     @Autowired
     private JavaMailSender javaMailSender;
 
-    @Value("${app.mail.address}")
+    @Value("${mail.address}")
     private String appMailAddress;
 
-    @Value("${app.mail.subject.new.order}")
+    @Value("${mail.subject.new.order}")
     private String appMailSubjectNewOrder;
-    @Value("${app.mail.content.new.order}")
+    @Value("${mail.content.new.order}")
     private String appMailContentNewOrder;
 
-    @Value("${app.mail.subject.status.order}")
+    @Value("${mail.subject.status.order}")
     private String appMailSubjectStatusOrder;
-    @Value("${app.mail.content.status.order}")
+    @Value("${mail.content.status.order}")
     private String appMailContentStatusOrder;
 
-    @Value("${app.mail.subject.invoice}")
+    @Value("${mail.subject.invoice}")
     private String appMailSubjectInvoice;
-    @Value("${app.mail.content.invoice}")
+    @Value("${mail.content.invoice}")
     private String appMailContentInvoice;
 
     @Value("${output.pdf.path}")
