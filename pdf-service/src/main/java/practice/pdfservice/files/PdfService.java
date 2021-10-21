@@ -2,6 +2,7 @@ package practice.pdfservice.files;
 
 import com.spire.xls.FileFormat;
 import com.spire.xls.Workbook;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
@@ -9,6 +10,7 @@ import practice.pdfservice.rabbit.store.ConsumerStorePayload;
 
 @PropertySource("classpath:excel.properties")
 @Service
+@Log4j2
 public class PdfService {
 
     @Value("${output.excel.path}")
@@ -25,5 +27,6 @@ public class PdfService {
         Workbook workbook = new Workbook();
         workbook.loadFromFile(excelPath);
         workbook.saveToFile(pdfPath, FileFormat.PDF);
+        log.info("Convert excel file to pdf file for Order UUID: {}", orderUUID);
     }
 }

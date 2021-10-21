@@ -1,5 +1,6 @@
 package practice.mailservice.utils;
 
+import lombok.extern.log4j.Log4j2;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
@@ -12,6 +13,7 @@ import java.io.IOException;
 
 @PropertySource("classpath:file.properties")
 @Component
+@Log4j2
 public class ClearDocsFolder implements ApplicationRunner {
 
     @Value("${docs.folder.path}")
@@ -21,5 +23,6 @@ public class ClearDocsFolder implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws IOException {
         FileUtils.cleanDirectory(new File(docsFolderPath));
+        log.info("Remove all files from directory: {}", docsFolderPath);
     }
 }
