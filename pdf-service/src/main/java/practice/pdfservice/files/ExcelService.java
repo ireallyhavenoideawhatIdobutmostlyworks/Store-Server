@@ -1,5 +1,6 @@
 package practice.pdfservice.files;
 
+import lombok.extern.log4j.Log4j2;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -18,6 +19,7 @@ import java.time.LocalDateTime;
         "classpath:excel.properties"
 })
 @Service
+@Log4j2
 public class ExcelService {
 
     @Value("${seller.name}")
@@ -42,7 +44,8 @@ public class ExcelService {
 
 
     public void createExcelFile(ConsumerStorePayload consumerStorePayload) {
-        String outputPath = String.format(outputExcelPath, consumerStorePayload.getOrderPdfDetails().getOrderUUID());
+        String orderUuid = consumerStorePayload.getOrderPdfDetails().getOrderUUID();
+        String outputPath = String.format(outputExcelPath, orderUuid);
 
         try (Workbook invoiceAsExcel = new HSSFWorkbook();
              OutputStream os = new FileOutputStream(outputPath)) {
@@ -54,8 +57,9 @@ public class ExcelService {
             addProductHeader(sheet);
             addProductContent(sheet, consumerStorePayload);
             invoiceAsExcel.write(os);
+            log.info("Create excel file with Order UUID: {}", orderUuid);
         } catch (IOException e) {
-            // ToDo add logger.error
+            log.error("{}.{}", e.getMessage(), consumerStorePayload);
         }
     }
 

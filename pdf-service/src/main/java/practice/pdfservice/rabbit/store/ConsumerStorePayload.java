@@ -10,10 +10,10 @@ import practice.pdfservice.rabbit.store.detaills.ProductPdfDetails;
 
 import java.util.List;
 
-@Builder
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
+@Data
 public class ConsumerStorePayload {
 
     private CustomerPdfDetails customerPdfDetails;

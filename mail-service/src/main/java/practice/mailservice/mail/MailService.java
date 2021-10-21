@@ -1,5 +1,6 @@
 package practice.mailservice.mail;
 
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,6 +22,7 @@ import java.io.IOException;
         "classpath:file.properties"
 })
 @Service
+@Log4j2
 public class MailService {
 
     @Autowired
@@ -57,6 +59,7 @@ public class MailService {
         setEmailDetails(helper, consumerStorePayload.getEmail(), subject, content);
 
         javaMailSender.send(mail);
+        log.info("Send email to {} with data based on store-service", consumerStorePayload.getEmail());
     }
 
     public void sendEmail(ConsumerBankPayload consumerBankPayload) throws MessagingException {
@@ -68,6 +71,7 @@ public class MailService {
         setEmailDetails(helper, consumerBankPayload.getEmail(), subject, content);
 
         javaMailSender.send(mail);
+        log.info("Send email to {} with data based on bank-service", consumerBankPayload.getEmail());
     }
 
     public void sendEmail(ConsumerPdfPayload consumerPdfPayload) throws MessagingException, IOException {
@@ -83,11 +87,13 @@ public class MailService {
         setEmailDetails(helper, consumerPdfPayload.getEmail(), subject, content);
 
         javaMailSender.send(mail);
+        log.info("Send email to {} with data and invoice based on pdf-service", consumerPdfPayload.getEmail());
     }
 
 
     private void createPdfInvoice(String pathToInvoice, byte[] invoiceAsByte) throws IOException {
         FileUtils.writeByteArrayToFile(new File(pathToInvoice), invoiceAsByte);
+        log.info("Create invoice as pdf file. Path: {}", pathToInvoice);
     }
 
     private void setEmailDetails(MimeMessageHelper helper, String email, String subject, String content) throws MessagingException {

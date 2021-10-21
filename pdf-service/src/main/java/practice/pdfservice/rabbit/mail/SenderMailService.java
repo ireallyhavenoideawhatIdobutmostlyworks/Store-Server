@@ -1,5 +1,6 @@
 package practice.pdfservice.rabbit.mail;
 
+import lombok.extern.log4j.Log4j2;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,6 +14,7 @@ import java.nio.file.Paths;
 
 @PropertySource("classpath:rabbitPdf.properties")
 @Service
+@Log4j2
 public class SenderMailService {
 
     @Autowired
@@ -26,6 +28,7 @@ public class SenderMailService {
         byte[] pdfAsBytes = convertPdfToByte(outputPdfPath);
         SenderMailPayload senderMailPayload = prepareSenderMailPayload(pdfAsBytes, orderUUID, customerMailAddress);
 
+        log.info("Send mailPayload object to mail-service. Payload: {}", senderMailPayload);
         rabbitTemplate.convertAndSend(queueFromPdfToEmail, senderMailPayload);
     }
 
@@ -40,6 +43,7 @@ public class SenderMailService {
 
     private byte[] convertPdfToByte(String outputPdfPath) throws IOException {
         Path pdfPath = Paths.get(outputPdfPath);
+        log.info("Convert file from {} to array bytes", outputPdfPath);
         return Files.readAllBytes(pdfPath);
     }
 }
