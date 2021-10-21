@@ -93,7 +93,7 @@ public class MailService {
 
     private void createPdfInvoice(String pathToInvoice, byte[] invoiceAsByte) throws IOException {
         FileUtils.writeByteArrayToFile(new File(pathToInvoice), invoiceAsByte);
-        log.info("Create invoice as pdf file");
+        log.info("Create invoice as pdf file. Path: {}", pathToInvoice);
     }
 
     private void setEmailDetails(MimeMessageHelper helper, String email, String subject, String content) throws MessagingException {

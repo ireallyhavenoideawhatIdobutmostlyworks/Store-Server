@@ -59,7 +59,7 @@ public class ExcelService {
             invoiceAsExcel.write(os);
             log.info("Create excel file with Order UUID: {}", orderUuid);
         } catch (IOException e) {
-            log.error(e.getMessage());
+            log.error("{}.{}", e.getMessage(), consumerStorePayload);
         }
     }
 
