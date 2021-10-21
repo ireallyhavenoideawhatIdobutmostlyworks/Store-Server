@@ -1,5 +1,6 @@
 package practice.store.rabbit.services.pdf;
 
+import lombok.extern.log4j.Log4j2;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
 
 @PropertySource("classpath:rabbitStore.properties")
 @Service
+@Log4j2
 public class SenderPdfService {
 
     @Autowired
@@ -33,9 +35,10 @@ public class SenderPdfService {
         OrderPdfDetails orderPdfDetails = prepareOrderDetails(order);
         List<ProductPdfDetails> productPdfDetailsList = preparePdfDetails(productEntityList);
 
-        SenderPdfPayload payload = preparePublisherPayload(customerPdfDetails, orderPdfDetails, productPdfDetailsList);
+        SenderPdfPayload senderMailPayload = preparePublisherPayload(customerPdfDetails, orderPdfDetails, productPdfDetailsList);
 
-        rabbitTemplate.convertAndSend(queueFromStoreToPdf, payload);
+        rabbitTemplate.convertAndSend(queueFromStoreToPdf, senderMailPayload);
+        log.info("Send pdfPayload object to pdf-service. Payload: {}", senderMailPayload);
     }
 
 

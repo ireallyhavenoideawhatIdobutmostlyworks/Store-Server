@@ -1,9 +1,11 @@
 package practice.store.jwt;
 
 import lombok.Builder;
+import lombok.ToString;
 
 import javax.persistence.*;
 
+@ToString
 @Builder
 @Entity
 @Table(name = "tokens_black_list")

@@ -3,10 +3,12 @@ package practice.store.jwt.payload;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 
 @AllArgsConstructor
+@ToString
 @Builder
 @Getter
 public class JwtLoginResponsePayload {

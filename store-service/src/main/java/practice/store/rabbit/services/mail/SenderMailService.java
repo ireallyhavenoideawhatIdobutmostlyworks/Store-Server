@@ -1,5 +1,6 @@
 package practice.store.rabbit.services.mail;
 
+import lombok.extern.log4j.Log4j2;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,6 +10,7 @@ import practice.store.order.OrderEntity;
 
 @PropertySource("classpath:rabbitStore.properties")
 @Service
+@Log4j2
 public class SenderMailService {
 
     @Autowired
@@ -19,8 +21,9 @@ public class SenderMailService {
 
 
     public void send(OrderEntity order) {
-        SenderMailPayload payload = preparePublisherPayload(order);
-        rabbitTemplate.convertAndSend(queueFromStoreToEmail, payload);
+        SenderMailPayload senderMailPayload = preparePublisherPayload(order);
+        rabbitTemplate.convertAndSend(queueFromStoreToEmail, senderMailPayload);
+        log.info("Send mailPayload object to mail-service. Payload: {}", senderMailPayload);
     }
 
 

@@ -1,5 +1,6 @@
 package practice.store.product;
 
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 @PropertySource("classpath:productsDiscountValue.properties")
 @Transactional
 @Service
+@Log4j2
 public class ProductService {
 
     private final ProductRepository productRepository;
@@ -44,15 +46,19 @@ public class ProductService {
     }
 
     public ProductPayload getById(long id) {
+        log.info("Looking for product by id: {}", id);
         return entitiesConverter.convertProduct(productRepository.getById(id));
     }
 
     public List<ProductPayload> getProducts() {
-        return productRepository.
+        List<ProductPayload> productsList = productRepository.
                 findAll()
                 .stream()
                 .map(entitiesConverter::convertProduct)
                 .collect(Collectors.toList());
+
+        log.info("Looking for all customers. List size: {}", productsList.size());
+        return productsList;
     }
 
     public void save(ProductPayload productPayload) {
@@ -77,6 +83,7 @@ public class ProductService {
 
         ProductEntity existingProduct = payloadsConverter.convertProduct(productPayload);
         productRepository.save(existingProduct);
+        log.info("Save new product. Entity details: {}", existingProduct);
     }
 
     public void edit(ProductPayload productPayload, String uuid) {
@@ -95,12 +102,15 @@ public class ProductService {
         productPayload.setId(productRepository.findByProductUUID(uuid).getId());
         ProductEntity existingProduct = payloadsConverter.convertProduct(productPayload);
         productRepository.save(existingProduct);
+        log.info("Edit product. Entity details: {}", existingProduct);
+        // ToDo add new payload for edit or change existing.
     }
 
     public void changeAmountBoughtProduct(ProductEntity productEntity, OrderProductPayload orderProductPayload) {
         productEntity.setAmount(productEntity.getAmount() - orderProductPayload.getAmount());
         calculateAvailabilityDependsOnProductAmounts(productEntity);
         productRepository.save(productEntity);
+        log.info("Change amount bought product. Entity amount: {}, payload amount: {}", productEntity.getAmount(), orderProductPayload.getAmount());
     }
 
 
@@ -127,17 +137,23 @@ public class ProductService {
     }
 
     private void calculateAvailabilityDependsOnProductAmounts(ProductPayload product) {
-        if (product.getAmount() == 0)
+        if (product.getAmount() == 0) {
             product.setAvailability(Availability.NOT_AVAILABLE);
-        else if (product.getAmount() < 5)
+            log.warn("Amount of product is 0. Set availability to: {}", Availability.NOT_AVAILABLE);
+        } else if (product.getAmount() < 5) {
             product.setAvailability(Availability.AWAITING_FROM_MANUFACTURE);
+            log.warn("Amount of product is less than 5. Set availability to: {}", Availability.AWAITING_FROM_MANUFACTURE);
+        }
     }
 
     private void calculateAvailabilityDependsOnProductAmounts(ProductEntity product) {
-        if (product.getAmount() == 0)
+        if (product.getAmount() == 0) {
             product.setAvailability(Availability.NOT_AVAILABLE);
-        else if (product.getAmount() < 5)
+            log.warn("Amount of product is 0. Set availability to: {}", Availability.NOT_AVAILABLE);
+        } else if (product.getAmount() < 5) {
             product.setAvailability(Availability.AWAITING_FROM_MANUFACTURE);
+            log.warn("Amount of product is less than 5. Set availability to: {}", Availability.AWAITING_FROM_MANUFACTURE);
+        }
     }
 
     private void checkIfFinalPriceAndBasePriceAreEquals(BigDecimal finalPrice, BigDecimal basePrice) {
