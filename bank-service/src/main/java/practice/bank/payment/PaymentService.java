@@ -1,6 +1,7 @@
 package practice.bank.payment;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.validator.routines.IBANValidator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -18,6 +19,7 @@ import java.util.concurrent.TimeUnit;
 @PropertySource("classpath:payment.properties")
 @RequiredArgsConstructor
 @Service
+@Log4j2
 public class PaymentService {
 
     private final PaymentRepository paymentRepository;
@@ -32,6 +34,7 @@ public class PaymentService {
     @Transactional
     public boolean processingPayment(PaymentResultPayload paymentResultPayload) throws InterruptedException {
         String paymentUUID = generateRandomString.generateRandomUuid();
+        log.info("Payment UUID: {}", paymentUUID);
 
         delayPaymentProcessSimulation();
 
@@ -47,20 +50,25 @@ public class PaymentService {
     }
 
     private boolean isPaymentSuccess(PaymentResultPayload paymentResultPayload) {
-        return paymentResultPayload.getIsPaymentSuccess();
+        boolean isPaymentSuccess = paymentResultPayload.getIsPaymentSuccess();
+        log.info("Is payment success: {}", isPaymentSuccess);
+        return isPaymentSuccess;
     }
 
     private boolean ibanValidator(PaymentResultPayload paymentResultPayload) {
-        return new IBANValidator().isValid(paymentResultPayload.getAccountNumber());
+        boolean isAccountIbanValid = new IBANValidator().isValid(paymentResultPayload.getAccountNumber());
+        log.info("Is account IBAN valid: {}", isAccountIbanValid);
+        return isAccountIbanValid;
     }
 
     private void delayPaymentProcessSimulation() throws InterruptedException {
         // this is poor simulate processing payment :D don't judge me I am only tester, not programmer
+        log.info("Simulate processing payment for: {} seconds", timeoutSimulation);
         TimeUnit.SECONDS.sleep(timeoutSimulation);
     }
 
     private PaymentEntity preparePaymentEntity(PaymentResultPayload paymentResultPayload, String paymentUUID, boolean isPaymentSuccess) {
-        return PaymentEntity.builder()
+        PaymentEntity paymentEntity = PaymentEntity.builder()
                 .orderUUID(paymentResultPayload.getOrderUUID())
                 .accountNumber(paymentResultPayload.getAccountNumber())
                 .paymentUUID(paymentUUID)
@@ -70,10 +78,13 @@ public class PaymentService {
                 .processingDate(LocalDateTime.now())
                 .paymentType(paymentResultPayload.getPaymentType())
                 .build();
+
+        log.info("Prepare payment entity: {}", paymentEntity);
+        return paymentEntity;
     }
 
     private SenderMailPayload prepareSenderMailPayload(PaymentEntity paymentEntity) {
-        return SenderMailPayload.builder()
+        SenderMailPayload senderMailPayload = SenderMailPayload.builder()
                 .orderUUID(paymentEntity.getOrderUUID())
                 .accountNumber(paymentEntity.getAccountNumber())
                 .paymentUUID(paymentEntity.getPaymentUUID())
@@ -82,10 +93,13 @@ public class PaymentService {
                 .paymentType(paymentEntity.getPaymentType())
                 .isPaymentSuccess(paymentEntity.getIsPaymentSuccess())
                 .build();
+
+        log.info("Prepare sender mail payload: {}", senderMailPayload);
+        return senderMailPayload;
     }
 
     private SenderStorePayload prepareSenderStorePayload(PaymentEntity paymentEntity) {
-        return SenderStorePayload.builder()
+        SenderStorePayload senderStorePayload = SenderStorePayload.builder()
                 .orderUUID(paymentEntity.getOrderUUID())
                 .accountNumber(paymentEntity.getAccountNumber())
                 .paymentUUID(paymentEntity.getPaymentUUID())
@@ -93,5 +107,8 @@ public class PaymentService {
                 .isPaymentSuccess(paymentEntity.getIsPaymentSuccess())
                 .paymentType(paymentEntity.getPaymentType())
                 .build();
+
+        log.info("Prepare sender store payload: {}", senderStorePayload);
+        return senderStorePayload;
     }
 }
