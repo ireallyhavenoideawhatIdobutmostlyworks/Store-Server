@@ -68,7 +68,7 @@ public class OrderService {
 
         OrderEntity orderEntity = prepareNewOrder(orderPayload);
         orderRepository.save(orderEntity);
-        log.info("Save new order. Entity details: {}", orderEntity);
+        log.info("Saved new order. Entity details: {}", orderEntity);
 
         List<ProductEntity> productEntityList = new ArrayList<>();
 
@@ -81,7 +81,7 @@ public class OrderService {
                     addOrderProductIntoDatabase(productEntity, orderProductPayload, orderEntity);
 
                     productEntityList.add(productEntity);
-                    log.info("Edit product. Entity details: {}", productEntity);
+                    log.info("Edited product. Entity details: {}", productEntity);
                 });
 
         senderMailService.send(orderEntity);
@@ -115,13 +115,13 @@ public class OrderService {
                 .build();
 
         orderProductRepository.save(orderProductEntity);
-        log.info("Save orderProduct. Entity details: {}", orderProductEntity);
+        log.info("Saved orderProduct. Entity details: {}", orderProductEntity);
     }
 
     private CustomerEntity actualLoggedActiveCustomer() {
         CustomerEntity actualLoggedCustomer = actualLoggedCustomer();
         checkIfCustomerIsActive(actualLoggedCustomer);
-        log.info("Return actual logged customer. Entity details: {}", actualLoggedCustomer);
+        log.info("Returned actual logged customer. Entity details: {}", actualLoggedCustomer);
         return actualLoggedCustomer;
     }
 

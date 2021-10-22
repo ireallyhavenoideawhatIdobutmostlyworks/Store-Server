@@ -83,7 +83,7 @@ public class ProductService {
 
         ProductEntity existingProduct = payloadsConverter.convertProduct(productPayload);
         productRepository.save(existingProduct);
-        log.info("Save new product. Entity details: {}", existingProduct);
+        log.info("Saved new product. Entity details: {}", existingProduct);
     }
 
     public void edit(ProductPayload productPayload, String uuid) {
@@ -102,7 +102,7 @@ public class ProductService {
         productPayload.setId(productRepository.findByProductUUID(uuid).getId());
         ProductEntity existingProduct = payloadsConverter.convertProduct(productPayload);
         productRepository.save(existingProduct);
-        log.info("Edit product. Entity details: {}", existingProduct);
+        log.info("Edited product. Entity details: {}", existingProduct);
         // ToDo add new payload for edit or change existing.
     }
 
@@ -110,7 +110,7 @@ public class ProductService {
         productEntity.setAmount(productEntity.getAmount() - orderProductPayload.getAmount());
         calculateAvailabilityDependsOnProductAmounts(productEntity);
         productRepository.save(productEntity);
-        log.info("Change amount bought product. Entity amount: {}, payload amount: {}", productEntity.getAmount(), orderProductPayload.getAmount());
+        log.info("Changed amount bought product. Entity amount: {}, payload amount: {}", productEntity.getAmount(), orderProductPayload.getAmount());
     }
 
 
@@ -139,20 +139,20 @@ public class ProductService {
     private void calculateAvailabilityDependsOnProductAmounts(ProductPayload product) {
         if (product.getAmount() == 0) {
             product.setAvailability(Availability.NOT_AVAILABLE);
-            log.warn("Amount of product is 0. Set availability to: {}", Availability.NOT_AVAILABLE);
+            log.warn("Amount of product with UUID:{} is 0. Set availability to: {}", product.getProductUUID(), Availability.NOT_AVAILABLE);
         } else if (product.getAmount() < 5) {
             product.setAvailability(Availability.AWAITING_FROM_MANUFACTURE);
-            log.warn("Amount of product is less than 5. Set availability to: {}", Availability.AWAITING_FROM_MANUFACTURE);
+            log.warn("Amount of product with UUID:{} is less than 5. Set availability to: {}", product.getProductUUID(), Availability.AWAITING_FROM_MANUFACTURE);
         }
     }
 
     private void calculateAvailabilityDependsOnProductAmounts(ProductEntity product) {
         if (product.getAmount() == 0) {
             product.setAvailability(Availability.NOT_AVAILABLE);
-            log.warn("Amount of product is 0. Set availability to: {}", Availability.NOT_AVAILABLE);
+            log.warn("Amount of product with UUID:{} is 0. Set availability to: {}", product.getProductUUID(), Availability.NOT_AVAILABLE);
         } else if (product.getAmount() < 5) {
             product.setAvailability(Availability.AWAITING_FROM_MANUFACTURE);
-            log.warn("Amount of product is less than 5. Set availability to: {}", Availability.AWAITING_FROM_MANUFACTURE);
+            log.warn("Amount of product with UUID:{} is less than 5. Set availability to: {}", product.getProductUUID(), Availability.AWAITING_FROM_MANUFACTURE);
         }
     }
 
