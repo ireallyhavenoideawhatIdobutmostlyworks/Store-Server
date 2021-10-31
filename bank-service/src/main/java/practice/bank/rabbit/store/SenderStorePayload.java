@@ -5,11 +5,12 @@ import lombok.Builder;
 import lombok.ToString;
 import practice.bank.payment.PaymentType;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 @ToString
 @Builder
-public class SenderStorePayload {
+public class SenderStorePayload implements Serializable {
 
     @JsonProperty
     private String orderUUID;
