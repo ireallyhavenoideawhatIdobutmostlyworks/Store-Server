@@ -10,8 +10,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import practice.store.customer.CustomerEntity;
 import practice.store.customer.CustomerRepository;
-import practice.store.exceptions.customer.CustomerEmailExistException;
-import practice.store.exceptions.customer.CustomerEmailNotFoundException;
 import practice.store.exceptions.customer.CustomerIsNotActiveException;
 import practice.store.jwt.payload.JwtLoginResponsePayload;
 import practice.store.jwt.payload.JwtLogoutResponsePayload;
@@ -44,8 +42,6 @@ public class JwtService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) {
-        checkIfCustomerExistByEmail(email);
-
         CustomerEntity customerEntity = customerRepository.findByEmail(email);
 
         checkIfCustomerIsActive(customerEntity);
@@ -101,10 +97,5 @@ public class JwtService implements UserDetailsService {
         return JwtTokenBlackListEntity.builder()
                 .token(token)
                 .build();
-    }
-
-    private void checkIfCustomerExistByEmail(String email) {
-        if (!customerRepository.existsByEmail(email))
-            throw new CustomerEmailNotFoundException(email);
     }
 }
