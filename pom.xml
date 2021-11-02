@@ -43,6 +43,7 @@
         <!-- VERSIONS FOR TEST DEPENDENCIES -->
         <junit-jupiter.version>5.7.0</junit-jupiter.version>
         <mockito-junit-jupiter.version>3.11.2</mockito-junit-jupiter.version>
+        <junit.testcontainers.version>1.16.2</junit.testcontainers.version>
     </properties>
 
 
@@ -139,6 +140,12 @@
 
         <!-- DEPENDENCIES FOR TESTS -->
         <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${junit.testcontainers.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.amqp</groupId>
             <artifactId>spring-rabbit-test</artifactId>
             <scope>test</scope>
@@ -172,7 +179,6 @@
             <version>${mockito-junit-jupiter.version}</version>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
 
 
@@ -203,7 +209,6 @@
             <name>Spring Milestones</name>
             <url>https://repo.spring.io/milestone</url>
         </repository>
-
         <repository>
             <id>spring-snapshots</id>
             <name>Spring Snapshots</name>
@@ -212,7 +217,5 @@
                 <enabled>true</enabled>
             </snapshots>
         </repository>
-
     </repositories>
-
 </project>

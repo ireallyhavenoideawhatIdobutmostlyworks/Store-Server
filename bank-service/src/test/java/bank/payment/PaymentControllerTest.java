@@ -13,6 +13,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import org.testcontainers.containers.GenericContainer;
 import practice.bank.BankApplication;
 import practice.bank.payment.PaymentEntity;
 import practice.bank.payment.PaymentRepository;
@@ -42,6 +43,15 @@ class PaymentControllerTest {
     private GenerateRandomString generateRandomString;
 
     private final String MAIN_ENDPOINT = "/api/payment/";
+
+
+    static {
+        int port = 5672;
+        final GenericContainer rabbitMq = new GenericContainer("rabbitmq:3-management").withExposedPorts(port);
+        rabbitMq.start();
+        System.setProperty("spring.rabbitmq.host", rabbitMq.getContainerIpAddress());
+        System.setProperty("spring.rabbitmq.port", rabbitMq.getMappedPort(port).toString());
+    }
 
 
     @BeforeEach
