@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -18,7 +17,6 @@ import practice.bank.BankApplication;
 import practice.bank.payment.PaymentEntity;
 import practice.bank.payment.PaymentRepository;
 import practice.bank.payment.PaymentResultPayload;
-import practice.bank.utils.GenerateRandomString;
 import testdata.TestData;
 
 import java.time.LocalDateTime;
@@ -33,22 +31,18 @@ class PaymentControllerTest {
 
     @Autowired
     private WebApplicationContext context;
-    @Autowired
-    private ObjectMapper objectMapper;
     private MockMvc mvc;
 
     @Autowired
     private PaymentRepository paymentRepository;
-    @Autowired
-    private GenerateRandomString generateRandomString;
 
-    private final String MAIN_ENDPOINT = "/api/payment/";
-
+    private final String validIbanAccount = "AT611904300234573201";
 
     static {
-        int port = 5672;
+        final int port = 5672;
         final GenericContainer rabbitMq = new GenericContainer("rabbitmq:3-management").withExposedPorts(port);
         rabbitMq.start();
+
         System.setProperty("spring.rabbitmq.host", rabbitMq.getContainerIpAddress());
         System.setProperty("spring.rabbitmq.port", rabbitMq.getMappedPort(port).toString());
     }
@@ -66,18 +60,11 @@ class PaymentControllerTest {
     void processing_payment_with_success() throws Exception {
         // given
         LocalDateTime localDateTimeSendPayload = LocalDateTime.now();
-        PaymentResultPayload payload = TestData.paymentResultPayload("AT611904300234573201", true);
+        PaymentResultPayload payload = TestData.paymentResultPayload(validIbanAccount, true);
 
 
         // when
-        mvc
-                .perform(MockMvcRequestBuilders
-                        .post(MAIN_ENDPOINT)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(payload))
-                )
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(status().is(201));
+        performPostRequest(201, payload);
 
 
         // then
@@ -101,19 +88,11 @@ class PaymentControllerTest {
     void processing_payment_with_fail_when_isSuccess_field_is_false() throws Exception {
         // given
         LocalDateTime localDateTimeSendPayload = LocalDateTime.now();
-        PaymentResultPayload payload = TestData.paymentResultPayload("AT611904300234573201", false);
+        PaymentResultPayload payload = TestData.paymentResultPayload(validIbanAccount, false);
 
 
         // when
-        MvcResult mvcResult = mvc
-                .perform(MockMvcRequestBuilders
-                        .post(MAIN_ENDPOINT)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(payload))
-                )
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(status().is(418))
-                .andReturn();
+        performPostRequest(418, payload);
 
 
         // then
@@ -141,15 +120,7 @@ class PaymentControllerTest {
 
 
         // when
-        MvcResult mvcResult = mvc
-                .perform(MockMvcRequestBuilders
-                        .post(MAIN_ENDPOINT)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(payload))
-                )
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(status().is(418))
-                .andReturn();
+        performPostRequest(418, payload);
 
 
         // then
@@ -167,5 +138,16 @@ class PaymentControllerTest {
         assertNotNull(paymentEntity.getPaymentUUID());
         assertTrue(paymentEntity.getProcessingDate().isAfter(localDateTimeSendPayload));
         assertFalse(paymentEntity.getIsPaymentSuccess());
+    }
+
+
+    private void performPostRequest(int expectStatusCode, PaymentResultPayload payload) throws Exception {
+        mvc
+                .perform(MockMvcRequestBuilders
+                        .post("/api/payment/")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(payload)))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().is(expectStatusCode));
     }
 }
