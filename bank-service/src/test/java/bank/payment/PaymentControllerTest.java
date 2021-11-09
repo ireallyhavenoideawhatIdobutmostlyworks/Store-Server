@@ -57,7 +57,7 @@ class PaymentControllerTest {
 
 
     @Test
-    void processing_payment_with_success() throws Exception {
+    void processingPayment_Succeed() throws Exception {
         // given
         LocalDateTime localDateTimeSendPayload = LocalDateTime.now();
         PaymentResultPayload payload = TestData.paymentResultPayload(validIbanAccount, true);
@@ -85,7 +85,7 @@ class PaymentControllerTest {
     }
 
     @Test
-    void processing_payment_with_fail_when_isSuccess_field_is_false() throws Exception {
+    void processingPayment_Failed_IfIsSuccessFieldIsFalse() throws Exception {
         // given
         LocalDateTime localDateTimeSendPayload = LocalDateTime.now();
         PaymentResultPayload payload = TestData.paymentResultPayload(validIbanAccount, false);
@@ -113,7 +113,7 @@ class PaymentControllerTest {
     }
 
     @Test
-    void processing_payment_with_fail_when_account_number_is_not_iban_valid() throws Exception {
+    void processingPayment_Failed_IfIbanIsInvalid() throws Exception {
         // given
         LocalDateTime localDateTimeSendPayload = LocalDateTime.now();
         PaymentResultPayload payload = TestData.paymentResultPayload("invalid IBAN format", true);
