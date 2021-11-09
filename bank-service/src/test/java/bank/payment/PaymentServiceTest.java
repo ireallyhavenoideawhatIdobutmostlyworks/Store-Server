@@ -1,16 +1,13 @@
 package bank.payment;
 
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import practice.bank.payment.PaymentEntity;
 import practice.bank.payment.PaymentRepository;
 import practice.bank.payment.PaymentResultPayload;
@@ -23,29 +20,20 @@ import testdata.TestData;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @DisplayName("Tests for payment service")
-@ExtendWith(SpringExtension.class)
+@ExtendWith(MockitoExtension.class)
 class PaymentServiceTest {
 
     @Mock
     private PaymentRepository paymentRepository;
-  //  @InjectMocks
     private PaymentService paymentService;
 
     @Mock
     private RabbitTemplate rabbitTemplate;
 
 
-//    @BeforeEach
-//    void setUp() {
-//        SenderStoreService senderStoreService = new SenderStoreService(rabbitTemplate);
-//        SenderMailService senderMailService = new SenderMailService(rabbitTemplate);
-//        paymentService = new PaymentService(paymentRepository, senderStoreService, senderMailService, new GenerateRandomString());
-//    }
-
-    @BeforeAll
-    public void setup() {
+    @BeforeEach
+    void setUp() {
         SenderStoreService senderStoreService = new SenderStoreService(rabbitTemplate);
         SenderMailService senderMailService = new SenderMailService(rabbitTemplate);
         paymentService = new PaymentService(paymentRepository, senderStoreService, senderMailService, new GenerateRandomString());
