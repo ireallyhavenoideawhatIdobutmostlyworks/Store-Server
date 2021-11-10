@@ -17,8 +17,6 @@ import practice.bank.rabbit.store.SenderStoreService;
 import practice.bank.utils.GenerateRandomString;
 import testdata.TestData;
 
-import java.time.LocalDateTime;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -35,18 +33,12 @@ class PaymentServiceTest {
     @Mock
     private RabbitTemplate rabbitTemplate;
 
-    private LocalDateTime localDateTimeSendPayload;
-
-
     @BeforeEach
     void setUp() {
-        // FixMe Zbyszke ma małego
         SenderStoreService senderStoreService = new SenderStoreService(rabbitTemplate);
         SenderMailService senderMailService = new SenderMailService(rabbitTemplate);
         paymentService = new PaymentService(paymentRepository, senderStoreService, senderMailService, new GenerateRandomString());
-        localDateTimeSendPayload = LocalDateTime.now();
     }
-
 
     @DisplayName("Processing payment with success")
     @Test
@@ -62,14 +54,13 @@ class PaymentServiceTest {
 
         // then
         ArgumentCaptor<PaymentEntity> argument = ArgumentCaptor.forClass(PaymentEntity.class);
-        verify(paymentRepository).save(argument.capture());
 
+        verify(paymentRepository).save(argument.capture());
         assertThat(argument.getValue())
                 .usingRecursiveComparison()
                 .ignoringFields("paymentUUID", "processingDate")
                 .isEqualTo(paymentEntity);
 
-        assertTrue(paymentEntity.getProcessingDate().isAfter(localDateTimeSendPayload));
         assertTrue(processPayment);
     }
 
@@ -94,7 +85,6 @@ class PaymentServiceTest {
                 .ignoringFields("paymentUUID", "processingDate", "isPaymentSuccess")
                 .isEqualTo(paymentEntity);
 
-        assertTrue(paymentEntity.getProcessingDate().isAfter(localDateTimeSendPayload));
         assertFalse(argument.getValue().getIsPaymentSuccess());
         assertFalse(processPayment);
     }
@@ -120,7 +110,6 @@ class PaymentServiceTest {
                 .ignoringFields("paymentUUID", "processingDate")
                 .isEqualTo(paymentEntity);
 
-        assertTrue(paymentEntity.getProcessingDate().isAfter(localDateTimeSendPayload));
         assertFalse(processPayment);
     }
 }

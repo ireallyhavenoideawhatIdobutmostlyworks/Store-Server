@@ -3,8 +3,6 @@ package practice.bank.payment;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.validator.routines.IBANValidator;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import practice.bank.rabbit.mail.SenderMailPayload;
@@ -14,9 +12,7 @@ import practice.bank.rabbit.store.SenderStoreService;
 import practice.bank.utils.GenerateRandomString;
 
 import java.time.LocalDateTime;
-import java.util.concurrent.TimeUnit;
 
-@PropertySource("classpath:payment.properties")
 @RequiredArgsConstructor
 @Service
 @Log4j2
@@ -27,16 +23,11 @@ public class PaymentService {
     private final SenderMailService senderMailService;
     private final GenerateRandomString generateRandomString;
 
-    @Value("${timeout.simulation}")
-    private long timeoutSimulation;
-
 
     @Transactional
     public boolean processingPayment(PaymentResultPayload paymentResultPayload) throws InterruptedException {
         String paymentUUID = generateRandomString.generateRandomUuid();
         log.info("Payment UUID: {}", paymentUUID);
-
-        delayPaymentProcessSimulation();
 
         boolean isPaymentSuccess = isPaymentSuccess(paymentResultPayload) && ibanValidator(paymentResultPayload);
 
@@ -49,6 +40,7 @@ public class PaymentService {
         return isPaymentSuccess;
     }
 
+
     private boolean isPaymentSuccess(PaymentResultPayload paymentResultPayload) {
         boolean isPaymentSuccess = paymentResultPayload.getIsPaymentSuccess();
         log.info("Is payment success: {}", isPaymentSuccess);
@@ -59,12 +51,6 @@ public class PaymentService {
         boolean isAccountIbanValid = new IBANValidator().isValid(paymentResultPayload.getAccountNumber());
         log.info("Is account IBAN valid: {}", isAccountIbanValid);
         return isAccountIbanValid;
-    }
-
-    private void delayPaymentProcessSimulation() throws InterruptedException {
-        // this is poor simulate processing payment :D don't judge me I am only tester, not programmer
-        log.info("Simulate processing payment for: {} seconds", timeoutSimulation);
-        TimeUnit.SECONDS.sleep(timeoutSimulation);
     }
 
     private PaymentEntity preparePaymentEntity(PaymentResultPayload paymentResultPayload, String paymentUUID, boolean isPaymentSuccess) {
