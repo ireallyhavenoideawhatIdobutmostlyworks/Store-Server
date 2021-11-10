@@ -19,8 +19,6 @@ import practice.bank.payment.PaymentRepository;
 import practice.bank.payment.PaymentResultPayload;
 import testdata.TestData;
 
-import java.time.LocalDateTime;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -59,8 +57,6 @@ class PaymentControllerTest {
     @Test
     void processingPayment_Succeed() throws Exception {
         // given
-        // ToDo change variable name
-        LocalDateTime localDateTimeSendPayload = LocalDateTime.now();
         PaymentResultPayload payload = TestData.paymentResultPayload(validIbanAccount, true);
 
 
@@ -81,14 +77,12 @@ class PaymentControllerTest {
                 payload.getOrderPrice().stripTrailingZeros());
 
         assertNotNull(paymentEntity.getPaymentUUID());
-        assertTrue(paymentEntity.getProcessingDate().isAfter(localDateTimeSendPayload));
         assertTrue(paymentEntity.getIsPaymentSuccess());
     }
 
     @Test
     void processingPayment_Failed_IfIsSuccessFieldIsFalse() throws Exception {
         // given
-        LocalDateTime localDateTimeSendPayload = LocalDateTime.now();
         PaymentResultPayload payload = TestData.paymentResultPayload(validIbanAccount, false);
 
 
@@ -109,14 +103,12 @@ class PaymentControllerTest {
                 payload.getOrderPrice().stripTrailingZeros());
 
         assertNotNull(paymentEntity.getPaymentUUID());
-        assertTrue(paymentEntity.getProcessingDate().isAfter(localDateTimeSendPayload));
         assertFalse(paymentEntity.getIsPaymentSuccess());
     }
 
     @Test
     void processingPayment_Failed_IfIbanIsInvalid() throws Exception {
         // given
-        LocalDateTime localDateTimeSendPayload = LocalDateTime.now();
         PaymentResultPayload payload = TestData.paymentResultPayload("invalid IBAN format", true);
 
 
@@ -137,7 +129,6 @@ class PaymentControllerTest {
                 payload.getOrderPrice().stripTrailingZeros());
 
         assertNotNull(paymentEntity.getPaymentUUID());
-        assertTrue(paymentEntity.getProcessingDate().isAfter(localDateTimeSendPayload));
         assertFalse(paymentEntity.getIsPaymentSuccess());
     }
 
