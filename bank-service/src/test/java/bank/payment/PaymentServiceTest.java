@@ -17,7 +17,11 @@ import practice.bank.rabbit.store.SenderStoreService;
 import practice.bank.utils.GenerateRandomString;
 import testdata.TestData;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.time.LocalDateTime;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.verify;
 
 @DisplayName("Tests for payment service")
@@ -31,12 +35,16 @@ class PaymentServiceTest {
     @Mock
     private RabbitTemplate rabbitTemplate;
 
+    private LocalDateTime localDateTimeSendPayload;
+
 
     @BeforeEach
     void setUp() {
+        // FixMe Zbyszke ma małego
         SenderStoreService senderStoreService = new SenderStoreService(rabbitTemplate);
         SenderMailService senderMailService = new SenderMailService(rabbitTemplate);
         paymentService = new PaymentService(paymentRepository, senderStoreService, senderMailService, new GenerateRandomString());
+        localDateTimeSendPayload = LocalDateTime.now();
     }
 
 
@@ -55,13 +63,13 @@ class PaymentServiceTest {
         // then
         ArgumentCaptor<PaymentEntity> argument = ArgumentCaptor.forClass(PaymentEntity.class);
         verify(paymentRepository).save(argument.capture());
-        assertEquals(paymentEntity.getOrderUUID(), argument.getValue().getOrderUUID());
-        assertEquals(paymentEntity.getAccountNumber(), argument.getValue().getAccountNumber());
-        assertEquals(paymentEntity.getEmail(), argument.getValue().getEmail());
-        assertEquals(paymentEntity.getOrderPrice(), argument.getValue().getOrderPrice());
-        assertEquals(paymentEntity.getIsPaymentSuccess(), argument.getValue().getIsPaymentSuccess());
-        assertEquals(paymentEntity.getPaymentType(), argument.getValue().getPaymentType());
 
+        assertThat(argument.getValue())
+                .usingRecursiveComparison()
+                .ignoringFields("paymentUUID", "processingDate")
+                .isEqualTo(paymentEntity);
+
+        assertTrue(paymentEntity.getProcessingDate().isAfter(localDateTimeSendPayload));
         assertTrue(processPayment);
     }
 
@@ -80,13 +88,14 @@ class PaymentServiceTest {
         // then
         ArgumentCaptor<PaymentEntity> argument = ArgumentCaptor.forClass(PaymentEntity.class);
         verify(paymentRepository).save(argument.capture());
-        assertEquals(paymentEntity.getOrderUUID(), argument.getValue().getOrderUUID());
-        assertEquals(paymentEntity.getAccountNumber(), argument.getValue().getAccountNumber());
-        assertEquals(paymentEntity.getEmail(), argument.getValue().getEmail());
-        assertEquals(paymentEntity.getOrderPrice(), argument.getValue().getOrderPrice());
-        assertEquals(paymentEntity.getIsPaymentSuccess(), !argument.getValue().getIsPaymentSuccess());
-        assertEquals(paymentEntity.getPaymentType(), argument.getValue().getPaymentType());
 
+        assertThat(argument.getValue())
+                .usingRecursiveComparison()
+                .ignoringFields("paymentUUID", "processingDate", "isPaymentSuccess")
+                .isEqualTo(paymentEntity);
+
+        assertTrue(paymentEntity.getProcessingDate().isAfter(localDateTimeSendPayload));
+        assertFalse(argument.getValue().getIsPaymentSuccess());
         assertFalse(processPayment);
     }
 
@@ -105,13 +114,13 @@ class PaymentServiceTest {
         // then
         ArgumentCaptor<PaymentEntity> argument = ArgumentCaptor.forClass(PaymentEntity.class);
         verify(paymentRepository).save(argument.capture());
-        assertEquals(paymentEntity.getOrderUUID(), argument.getValue().getOrderUUID());
-        assertEquals(paymentEntity.getAccountNumber(), argument.getValue().getAccountNumber());
-        assertEquals(paymentEntity.getEmail(), argument.getValue().getEmail());
-        assertEquals(paymentEntity.getOrderPrice(), argument.getValue().getOrderPrice());
-        assertEquals(paymentEntity.getIsPaymentSuccess(), argument.getValue().getIsPaymentSuccess());
-        assertEquals(paymentEntity.getPaymentType(), argument.getValue().getPaymentType());
 
+        assertThat(argument.getValue())
+                .usingRecursiveComparison()
+                .ignoringFields("paymentUUID", "processingDate")
+                .isEqualTo(paymentEntity);
+
+        assertTrue(paymentEntity.getProcessingDate().isAfter(localDateTimeSendPayload));
         assertFalse(processPayment);
     }
 }
