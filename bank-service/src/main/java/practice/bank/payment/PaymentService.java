@@ -25,7 +25,7 @@ public class PaymentService {
 
 
     @Transactional
-    public boolean processingPayment(PaymentResultPayload paymentResultPayload) throws InterruptedException {
+    public boolean processingPayment(PaymentResultPayload paymentResultPayload) {
         String paymentUUID = generateRandomString.generateRandomUuid();
         log.info("Payment UUID: {}", paymentUUID);
 

@@ -2,12 +2,14 @@ package practice.bank.rabbit.store;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import practice.bank.payment.PaymentType;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+@EqualsAndHashCode
 @ToString
 @Builder
 public class SenderStorePayload implements Serializable {

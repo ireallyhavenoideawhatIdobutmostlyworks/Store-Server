@@ -13,7 +13,6 @@
         <version>2.5.5</version>
     </parent>
 
-
     <modules>
         <module>bank-service</module>
         <module>mail-service</module>
@@ -21,13 +20,11 @@
         <module>store-service</module>
     </modules>
 
-
     <groupId>org.example</groupId>
     <artifactId>Store-and-Tests</artifactId>
     <version>1</version>
     <name>store-and-tests</name>
     <packaging>pom</packaging>
-
 
     <properties>
         <!-- VERSIONS FOR PROJECT -->
@@ -45,7 +42,6 @@
         <mockito-junit-jupiter.version>3.11.2</mockito-junit-jupiter.version>
         <junit.testcontainers.version>1.16.2</junit.testcontainers.version>
     </properties>
-
 
     <dependencies>
         <!-- Spring -->
@@ -181,7 +177,6 @@
         </dependency>
     </dependencies>
 
-
     <build>
         <pluginManagement>
             <plugins>
@@ -201,7 +196,6 @@
             </plugins>
         </pluginManagement>
     </build>
-
 
     <repositories>
         <repository>
