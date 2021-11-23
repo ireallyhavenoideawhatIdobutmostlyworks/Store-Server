@@ -1,15 +1,18 @@
 package practice.bank.rabbit.store;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Builder;
-import lombok.ToString;
+import lombok.*;
 import practice.bank.payment.PaymentType;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode
 @ToString
 @Builder
-public class SenderStorePayload {
+public class SenderStorePayload implements Serializable {
 
     @JsonProperty
     private String orderUUID;

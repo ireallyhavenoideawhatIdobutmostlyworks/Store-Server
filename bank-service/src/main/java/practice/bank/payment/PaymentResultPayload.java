@@ -10,7 +10,6 @@ import java.math.BigDecimal;
 public class PaymentResultPayload {
 
     private String orderUUID;
-    private String paymentUUID;
     private BigDecimal orderPrice;
     private String accountNumber;
     private PaymentType paymentType;
