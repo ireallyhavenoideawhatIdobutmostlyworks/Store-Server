@@ -136,6 +136,7 @@ public class ProductService {
             throw new ProductUuidCanNotChangeException();
     }
 
+    // ToDo create service for calculate availability
     private void calculateAvailabilityDependsOnProductAmounts(ProductPayload product) {
         if (product.getAmount() == 0) {
             product.setAvailability(Availability.NOT_AVAILABLE);
@@ -146,6 +147,7 @@ public class ProductService {
         }
     }
 
+    // ToDo create service for calculate availability
     private void calculateAvailabilityDependsOnProductAmounts(ProductEntity product) {
         if (product.getAmount() == 0) {
             product.setAvailability(Availability.NOT_AVAILABLE);
