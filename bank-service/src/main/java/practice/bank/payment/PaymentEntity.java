@@ -1,6 +1,9 @@
 package practice.bank.payment;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -9,7 +12,8 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Builder(toBuilder = true)
-
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Data
 @Table(name = "payment")
