@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -46,14 +45,8 @@ class PaymentControllerTest {
 
     @Autowired
     private RabbitTemplate rabbitTemplate;
-    @Autowired
-    private RabbitAdmin rabbitAdmin;
 
-    private final String queueNameStore = "queue.from.bank.to.store";
-    private final String queueNameEmail = "queue.from.bank.to.email";
     private final String validIban = "AT611904300234573201";
-    private final int amountOfActiveQueues = 1;
-
     private PaymentResultPayload paymentResultPayload;
 
 
@@ -62,7 +55,7 @@ class PaymentControllerTest {
         rabbitMq.start();
 
         System.setProperty("spring.rabbitmq.host", rabbitMq.getContainerIpAddress());
-        System.setProperty("spring.rabbitmq.port", rabbitMq.getMappedPort(port).toString());
+        System.setProperty("spring.rabbitmq.port", rabbitMq.getMappedPort(5672).toString());
     }
 
     @BeforeEach
@@ -182,11 +175,13 @@ class PaymentControllerTest {
     }
 
     private SenderStorePayload queueStoreBody() throws JsonProcessingException {
+        String queueNameStore = "queue.from.bank.to.store";
         String queueBody = new String(Objects.requireNonNull(rabbitTemplate.receive(queueNameStore)).getBody(), StandardCharsets.UTF_8);
         return new ObjectMapper().readValue(queueBody, SenderStorePayload.class);
     }
 
     private SenderMailPayload queueMailBody() throws JsonProcessingException {
+        String queueNameEmail = "queue.from.bank.to.email";
         String queueBody = new String(Objects.requireNonNull(rabbitTemplate.receive(queueNameEmail)).getBody(), StandardCharsets.UTF_8);
         return new ObjectMapper().readValue(queueBody, SenderMailPayload.class);
     }
