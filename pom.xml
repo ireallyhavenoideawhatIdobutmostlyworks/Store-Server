@@ -40,6 +40,7 @@
         <!-- VERSIONS FOR TEST DEPENDENCIES -->
         <junit-jupiter.version>5.7.0</junit-jupiter.version>
         <mockito-junit-jupiter.version>3.11.2</mockito-junit-jupiter.version>
+        <mockito-inline.version>4.1.0</mockito-inline.version>
         <junit.testcontainers.version>1.16.2</junit.testcontainers.version>
     </properties>
 
@@ -175,6 +176,13 @@
             <version>${mockito-junit-jupiter.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-inline</artifactId>
+            <version>${mockito-inline.version}</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
