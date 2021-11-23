@@ -58,8 +58,7 @@ class PaymentControllerTest {
 
 
     static {
-        final int port = 5672;
-        final GenericContainer rabbitMq = new GenericContainer("rabbitmq:3-management").withExposedPorts(port);
+        final GenericContainer rabbitMq = new GenericContainer("rabbitmq:3-management").withExposedPorts(5672);
         rabbitMq.start();
 
         System.setProperty("spring.rabbitmq.host", rabbitMq.getContainerIpAddress());
@@ -91,11 +90,6 @@ class PaymentControllerTest {
         assertAll(
                 () -> assertNotNull(paymentEntity.getPaymentUUID()),
                 () -> assertTrue(paymentEntity.getIsPaymentSuccess()),
-
-                () -> assertEquals(queueNameStore, queueName(queueNameStore)),
-                () -> assertEquals(queueNameEmail, queueName(queueNameEmail)),
-                () -> assertEquals(queueMessageCount(queueNameStore), amountOfActiveQueues),
-                () -> assertEquals(queueMessageCount(queueNameEmail), amountOfActiveQueues),
 
                 () -> assertThat(paymentEntity)
                         .usingRecursiveComparison()
@@ -129,11 +123,6 @@ class PaymentControllerTest {
                 () -> assertNotNull(paymentEntity.getPaymentUUID()),
                 () -> assertFalse(paymentEntity.getIsPaymentSuccess()),
 
-                () -> assertEquals(queueNameStore, queueName(queueNameStore)),
-                () -> assertEquals(queueNameEmail, queueName(queueNameEmail)),
-                () -> assertEquals(queueMessageCount(queueNameStore), amountOfActiveQueues),
-                () -> assertEquals(queueMessageCount(queueNameEmail), amountOfActiveQueues),
-
                 () -> assertThat(paymentEntity)
                         .usingRecursiveComparison()
                         .ignoringFields("id", "email", "processingDate")
@@ -165,10 +154,6 @@ class PaymentControllerTest {
         assertAll(
                 () -> assertNotNull(paymentEntity.getPaymentUUID()),
                 () -> assertFalse(paymentEntity.getIsPaymentSuccess()),
-                () -> assertEquals(queueNameStore, queueName(queueNameStore)),
-                () -> assertEquals(queueNameEmail, queueName(queueNameEmail)),
-                () -> assertEquals(queueMessageCount(queueNameStore), amountOfActiveQueues),
-                () -> assertEquals(queueMessageCount(queueNameEmail), amountOfActiveQueues),
 
                 () -> assertThat(paymentEntity)
                         .usingRecursiveComparison()
@@ -194,14 +179,6 @@ class PaymentControllerTest {
                         .content(new ObjectMapper().writeValueAsString(payload)))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().is(expectStatusCode));
-    }
-
-    private String queueName(String queue) {
-        return Objects.requireNonNull(rabbitAdmin.getQueueInfo(queue)).getName();
-    }
-
-    private int queueMessageCount(String queue) {
-        return Objects.requireNonNull(rabbitAdmin.getQueueInfo(queue)).getMessageCount();
     }
 
     private SenderStorePayload queueStoreBody() throws JsonProcessingException {
