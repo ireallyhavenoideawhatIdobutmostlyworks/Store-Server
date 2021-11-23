@@ -62,7 +62,7 @@ class PaymentControllerTest {
         rabbitMq.start();
 
         System.setProperty("spring.rabbitmq.host", rabbitMq.getContainerIpAddress());
-        System.setProperty("spring.rabbitmq.port", rabbitMq.getMappedPort(port).toString());
+        System.setProperty("spring.rabbitmq.port", rabbitMq.getMappedPort(5672).toString());
     }
 
     @BeforeEach
