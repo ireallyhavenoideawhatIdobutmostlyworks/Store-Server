@@ -175,14 +175,12 @@ class PaymentControllerTest {
     }
 
     private SenderStorePayload queueStoreBody() throws JsonProcessingException {
-        String queueNameStore = "queue.from.bank.to.store";
-        String queueBody = new String(Objects.requireNonNull(rabbitTemplate.receive(queueNameStore)).getBody(), StandardCharsets.UTF_8);
+        String queueBody = new String(Objects.requireNonNull(rabbitTemplate.receive("queue.from.bank.to.store")).getBody(), StandardCharsets.UTF_8);
         return new ObjectMapper().readValue(queueBody, SenderStorePayload.class);
     }
 
     private SenderMailPayload queueMailBody() throws JsonProcessingException {
-        String queueNameEmail = "queue.from.bank.to.email";
-        String queueBody = new String(Objects.requireNonNull(rabbitTemplate.receive(queueNameEmail)).getBody(), StandardCharsets.UTF_8);
+        String queueBody = new String(Objects.requireNonNull(rabbitTemplate.receive("queue.from.bank.to.email")).getBody(), StandardCharsets.UTF_8);
         return new ObjectMapper().readValue(queueBody, SenderMailPayload.class);
     }
 }
