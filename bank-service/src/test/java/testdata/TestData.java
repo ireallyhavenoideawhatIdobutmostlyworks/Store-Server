@@ -8,6 +8,7 @@ import practice.bank.rabbit.store.SenderStorePayload;
 import practice.bank.utils.GenerateRandomString;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 
 public abstract class TestData {
@@ -15,7 +16,7 @@ public abstract class TestData {
     public static PaymentResultPayload paymentResultPayload() {
         return PaymentResultPayload.builder()
                 .orderUUID(new GenerateRandomString().generateRandomUuid())
-                .orderPrice(BigDecimal.valueOf(999))
+                .orderPrice(BigDecimal.valueOf(999).setScale(2, RoundingMode.CEILING))
                 .accountNumber("accountNumber")
                 .paymentType(PaymentType.BLIK)
                 .email("some@testpayload.email")

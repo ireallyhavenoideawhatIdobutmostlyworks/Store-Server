@@ -11,6 +11,7 @@ import practice.bank.rabbit.store.SenderStorePayload;
 import practice.bank.rabbit.store.SenderStoreService;
 import practice.bank.utils.GenerateRandomString;
 
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 
 @RequiredArgsConstructor
@@ -59,7 +60,7 @@ public class PaymentService {
                 .accountNumber(paymentResultPayload.getAccountNumber())
                 .paymentUUID(paymentUUID)
                 .email(paymentResultPayload.getEmail())
-                .orderPrice(paymentResultPayload.getOrderPrice())
+                .orderPrice(paymentResultPayload.getOrderPrice().setScale(2, RoundingMode.CEILING))
                 .isPaymentSuccess(isPaymentSuccess)
                 .processingDate(LocalDateTime.now())
                 .paymentType(paymentResultPayload.getPaymentType())

@@ -38,8 +38,8 @@ class PaymentServiceTest {
 
     private final static String simpleUuid = new GenerateRandomString().generateRandomUuid();
 
-    private final String queueStoreTestLogic = "queue.store.test.logic";
-    private final String queueMailTestLogic = "queue.mail.test.logic";
+    private final String queueNameStore = "queue.from.bank.to.store";
+    private final String queueNameEmail = "queue.from.bank.to.email";
     private final String validIban = "AT611904300234573201";
 
     private PaymentResultPayload paymentResultPayload;
@@ -58,8 +58,8 @@ class PaymentServiceTest {
         SenderMailService senderMailService = new SenderMailService(rabbitTemplate);
         paymentService = new PaymentService(paymentRepository, senderStoreService, senderMailService, new GenerateRandomString());
 
-        ReflectionTestUtils.setField(senderStoreService, "queueFromBankToStore", queueStoreTestLogic);
-        ReflectionTestUtils.setField(senderMailService, "queueFromBankToEmail", queueMailTestLogic);
+        ReflectionTestUtils.setField(senderStoreService, "queueFromBankToStore", queueNameStore);
+        ReflectionTestUtils.setField(senderMailService, "queueFromBankToEmail", queueNameEmail);
 
         paymentResultPayload = TestData.paymentResultPayload();
     }
@@ -81,8 +81,8 @@ class PaymentServiceTest {
         ArgumentCaptor<PaymentEntity> argument = ArgumentCaptor.forClass(PaymentEntity.class);
         assertAll(
                 () -> verify(paymentRepository).save(argument.capture()),
-                () -> verify(rabbitTemplate, times(1)).convertAndSend(queueStoreTestLogic, TestData.prepareSenderStorePayload(paymentEntity)),
-                () -> verify(rabbitTemplate, times(1)).convertAndSend(queueMailTestLogic, TestData.prepareSenderMailPayload(paymentEntity)),
+                () -> verify(rabbitTemplate, times(1)).convertAndSend(queueNameStore, TestData.prepareSenderStorePayload(paymentEntity)),
+                () -> verify(rabbitTemplate, times(1)).convertAndSend(queueNameEmail, TestData.prepareSenderMailPayload(paymentEntity)),
 
                 () -> assertThat(argument.getValue())
                         .usingRecursiveComparison()
@@ -109,8 +109,8 @@ class PaymentServiceTest {
         ArgumentCaptor<PaymentEntity> argument = ArgumentCaptor.forClass(PaymentEntity.class);
         assertAll(
                 () -> verify(paymentRepository).save(argument.capture()),
-                () -> verify(rabbitTemplate, times(1)).convertAndSend(queueStoreTestLogic, TestData.prepareSenderStorePayload(paymentEntity)),
-                () -> verify(rabbitTemplate, times(1)).convertAndSend(queueMailTestLogic, TestData.prepareSenderMailPayload(paymentEntity)),
+                () -> verify(rabbitTemplate, times(1)).convertAndSend(queueNameStore, TestData.prepareSenderStorePayload(paymentEntity)),
+                () -> verify(rabbitTemplate, times(1)).convertAndSend(queueNameEmail, TestData.prepareSenderMailPayload(paymentEntity)),
 
                 () -> assertThat(argument.getValue())
                         .usingRecursiveComparison()
@@ -138,8 +138,8 @@ class PaymentServiceTest {
         ArgumentCaptor<PaymentEntity> argument = ArgumentCaptor.forClass(PaymentEntity.class);
         assertAll(
                 () -> verify(paymentRepository).save(argument.capture()),
-                () -> verify(rabbitTemplate, times(1)).convertAndSend(queueStoreTestLogic, TestData.prepareSenderStorePayload(paymentEntity)),
-                () -> verify(rabbitTemplate, times(1)).convertAndSend(queueMailTestLogic, TestData.prepareSenderMailPayload(paymentEntity)),
+                () -> verify(rabbitTemplate, times(1)).convertAndSend(queueNameStore, TestData.prepareSenderStorePayload(paymentEntity)),
+                () -> verify(rabbitTemplate, times(1)).convertAndSend(queueNameEmail, TestData.prepareSenderMailPayload(paymentEntity)),
 
                 () -> assertThat(argument.getValue())
                         .usingRecursiveComparison()
