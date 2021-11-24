@@ -2,6 +2,7 @@ package practice.store.jwt;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,6 +19,7 @@ import java.io.IOException;
 
 @RequiredArgsConstructor
 @Component
+@Log4j2
 public class JwtRequestFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
@@ -40,12 +42,12 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             try {
                 username = jwtTokenUtil.getUsernameFromToken(jwtToken);
             } catch (IllegalArgumentException e) {
-                logger.error("Unable to get JWT Token.");
+                log.error("Unable to get JWT Token.");
             } catch (ExpiredJwtException e) {
-                logger.error("JWT Token has expired.");
+                log.error("JWT Token has expired.");
             }
         } else {
-            logger.warn("JWT Token does not begin with Bearer String.");
+            log.warn("JWT Token does not begin with Bearer String.");
         }
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {

@@ -16,11 +16,8 @@ import java.util.Set;
 @Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode
-@ToString
+@Data
 @Entity
-@Getter
-@Setter
 @Table(name = "orders")
 public class OrderEntity {
 

@@ -1,6 +1,7 @@
 package practice.store.jwt;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.core.userdetails.User;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 @PropertySource("classpath:jwt.properties")
 @RequiredArgsConstructor
 @Service
+@Log4j2
 public class JwtService implements UserDetailsService {
 
     private final CustomerRepository customerRepository;
@@ -44,6 +46,7 @@ public class JwtService implements UserDetailsService {
 
         checkIfCustomerIsActive(customerEntity);
 
+        log.info("Load user with email: {}", customerEntity.getEmail());
         return new User(
                 customerEntity.getEmail(),
                 customerEntity.getPassword(),
@@ -52,12 +55,15 @@ public class JwtService implements UserDetailsService {
     }
 
     public JwtLoginResponsePayload buildResponseLogin(UserDetails userDetails) {
-        return JwtLoginResponsePayload.builder()
+        JwtLoginResponsePayload jwtLoginResponsePayload = JwtLoginResponsePayload.builder()
                 .jwtToken(generateToken(userDetails))
                 .minutesTokenValid(jwtTokenValidityToMinutesN)
                 .timestamp(LocalDateTime.now())
                 .responseID(generateRandomString.generateRandomUuid())
                 .build();
+
+        log.info("Login response: {}", jwtLoginResponsePayload);
+        return jwtLoginResponsePayload;
     }
 
     public JwtLogoutResponsePayload buildResponseLogout() {
@@ -71,12 +77,14 @@ public class JwtService implements UserDetailsService {
     public void addTokenToBlackListRepository() {
         JwtTokenBlackListEntity jwtTokenBlackListEntity = buildTokenEntityForBlackList(token);
 
+        log.info("Add token to blacklist. Token: {}", jwtTokenBlackListEntity);
         jwtTokenBlackListRepository.save(jwtTokenBlackListEntity);
     }
 
 
     private String generateToken(UserDetails userDetails) {
         token = jwtTokenUtil.generateToken(userDetails);
+        log.info("Generate token. Token: {}", token);
         return token;
     }
 

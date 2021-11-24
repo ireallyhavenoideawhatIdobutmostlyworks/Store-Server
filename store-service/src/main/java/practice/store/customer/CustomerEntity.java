@@ -10,10 +10,8 @@ import javax.validation.constraints.NotNull;
 @Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode
 @Entity
-@Getter
-@Setter
+@Data
 @Table(name = "customers")
 public class CustomerEntity {
 

@@ -2,6 +2,7 @@ package practice.store.order;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,6 +39,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 @Transactional
 @Service
+@Log4j2
 public class OrderService {
 
     private final OrderRepository orderRepository;
@@ -66,6 +68,7 @@ public class OrderService {
 
         OrderEntity orderEntity = prepareNewOrder(orderPayload);
         orderRepository.save(orderEntity);
+        log.info("Saved new order. Entity details: {}", orderEntity);
 
         List<ProductEntity> productEntityList = new ArrayList<>();
 
@@ -78,6 +81,7 @@ public class OrderService {
                     addOrderProductIntoDatabase(productEntity, orderProductPayload, orderEntity);
 
                     productEntityList.add(productEntity);
+                    log.info("Edited product. Entity details: {}", productEntity);
                 });
 
         senderMailService.send(orderEntity);
@@ -111,11 +115,13 @@ public class OrderService {
                 .build();
 
         orderProductRepository.save(orderProductEntity);
+        log.info("Saved orderProduct. Entity details: {}", orderProductEntity);
     }
 
     private CustomerEntity actualLoggedActiveCustomer() {
         CustomerEntity actualLoggedCustomer = actualLoggedCustomer();
         checkIfCustomerIsActive(actualLoggedCustomer);
+        log.info("Returned actual logged customer. Entity details: {}", actualLoggedCustomer);
         return actualLoggedCustomer;
     }
 

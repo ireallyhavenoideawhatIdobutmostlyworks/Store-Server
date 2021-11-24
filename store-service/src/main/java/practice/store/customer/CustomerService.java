@@ -1,6 +1,7 @@
 package practice.store.customer;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import practice.store.exceptions.customer.CustomerEmailExistException;
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Transactional
 @Service
+@Log4j2
 public class CustomerService {
 
     private final CustomerRepository customerRepository;
@@ -23,15 +25,19 @@ public class CustomerService {
 
 
     public CustomerPayload getById(long id) {
+        log.info("Looking for customer by id: {}", id);
         return entitiesConverter.convertCustomer(customerRepository.getById(id));
     }
 
     public List<CustomerPayload> getList() {
-        return customerRepository
+        List<CustomerPayload> customersList = customerRepository
                 .findAll()
                 .stream()
                 .map(entitiesConverter::convertCustomer)
                 .collect(Collectors.toList());
+
+        log.info("Looking for all customers. List size: {}", customersList.size());
+        return customersList;
     }
 
     public void save(CustomerPayload customerPayload) {
@@ -41,6 +47,7 @@ public class CustomerService {
 
         CustomerEntity customerEntity = payloadsConverter.convertCustomer(customerPayload);
         customerRepository.save(customerEntity);
+        log.info("Saved new customer. Entity details: {}", customerEntity);
     }
 
     public void edit(CustomerPayload customerPayload, long id) {
@@ -50,6 +57,8 @@ public class CustomerService {
 
         CustomerEntity existingCustomer = payloadsConverter.convertCustomer(customerPayload);
         customerRepository.save(existingCustomer);
+        log.info("Edited customer. Entity details: {}", existingCustomer);
+        // ToDo add new payload for edit or change existing.
     }
 
     public void deleteCustomer(long id) {
@@ -57,6 +66,7 @@ public class CustomerService {
         existingCustomer.setActive(false);
 
         customerRepository.save(existingCustomer);
+        log.info("Marked customer as inactive. Entity details: {}", existingCustomer);
     }
 
 
