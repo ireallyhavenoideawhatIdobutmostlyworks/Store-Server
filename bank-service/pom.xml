@@ -13,13 +13,11 @@
 		<version>1</version>
 	</parent>
 
-
 	<groupId>practice</groupId>
 	<artifactId>bank-service</artifactId>
 	<version>1</version>
 	<name>bank-service</name>
 	<packaging>war</packaging>
-
 
 	<build>
 		<pluginManagement>

@@ -182,7 +182,6 @@
             <version>${mockito-inline.version}</version>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
 
     <build>

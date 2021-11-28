@@ -66,7 +66,7 @@ class PaymentServiceTest {
 
     @DisplayName("Processing payment with success")
     @Test
-    void should_add_payment_with_correct_data() {
+    void processingPayment_Succeed() {
         // given
         paymentResultPayload.setAccountNumber(validIban);
         paymentResultPayload.setIsPaymentSuccess(true);
@@ -94,7 +94,7 @@ class PaymentServiceTest {
 
     @DisplayName("Fail payment if account format is not IBAN valid")
     @Test
-    void should_payment_be_false_when_account_number_is_incorrect() {
+    void processingPayment_Failed_IfIbanIsInvalid() {
         // given
         paymentResultPayload.setAccountNumber("Invalid IBAN");
         paymentResultPayload.setIsPaymentSuccess(true);
@@ -123,7 +123,7 @@ class PaymentServiceTest {
 
     @DisplayName("Fail payment if isPaymentSuccess is false")
     @Test
-    void should_payment_be_false_when_isPaymentSuccess_field_is_false() {
+    void processingPayment_Failed_IfIsSuccessFieldIsFalse() {
         // given
         paymentResultPayload.setAccountNumber(validIban);
         paymentResultPayload.setIsPaymentSuccess(false);
