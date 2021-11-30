@@ -13,19 +13,17 @@
 		<version>1</version>
 	</parent>
 
-
 	<groupId>practice</groupId>
 	<artifactId>mail-service</artifactId>
 	<version>1</version>
 	<name>mail-service</name>
 	<packaging>war</packaging>
 
-
 	<properties>
 		<!-- VERSIONS FOR SOURCE DEPENDENCIES -->
 		<commons-io.version>2.7</commons-io.version>
+		<apache.commons.email.version>1.5</apache.commons.email.version>
 	</properties>
-
 
 	<dependencies>
 		<!-- Spring -->
@@ -40,8 +38,15 @@
 			<artifactId>commons-io</artifactId>
 			<version>${commons-io.version}</version>
 		</dependency>
-	</dependencies>
 
+
+		<!-- DEPENDENCIES FOR TESTS -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-email</artifactId>
+			<version>${apache.commons.email.version}</version>
+		</dependency>
+	</dependencies>
 
 	<build>
 		<pluginManagement>
