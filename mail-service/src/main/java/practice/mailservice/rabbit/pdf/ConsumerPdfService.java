@@ -17,7 +17,7 @@ public class ConsumerPdfService {
     private final MailService mailService;
 
 
-    @RabbitListener(queues = "${queue.from.pdf.to.email}")
+    @RabbitListener(id = "pdf", queues = "${queue.from.pdf.to.email}")
     public void receivedMessage(ConsumerPdfPayload consumerPdfPayload) throws MessagingException, IOException {
         log.info("Consume pdfPayload object from pdf-service. Payload: {}", consumerPdfPayload);
         mailService.sendEmail(consumerPdfPayload);

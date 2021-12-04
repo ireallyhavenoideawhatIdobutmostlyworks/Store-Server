@@ -38,6 +38,7 @@ class MailServiceTest {
     @Mock
     private JavaMailSender javaMailSender;
     private MimeMessageHelper helper;
+
     private final String mailAddress = "your@awesome.store";
     private final String mailSubjectNewOrder = "New order %s";
     private final String mailContentNewOrder = "Status for order. Details %s %s %.2f %s";
@@ -86,11 +87,10 @@ class MailServiceTest {
     @Test
     void sendEmail_basedOnDataFromPdf_succeed() throws Exception {
         // given
-        ConsumerPdfPayload consumerPdfPayload = TestData.consumerPdfPayload();
-        String testFileName = "testFile";
+        String testFileName = "testFileUnitTest";
+        ConsumerPdfPayload consumerPdfPayload = TestData.consumerPdfPayload( outputPdfPath, testFileName);
         String subject = String.format(mailSubjectInvoice, consumerPdfPayload.getOrderUUID());
         String content = String.format(mailContentInvoice, consumerPdfPayload.getOrderUUID());
-        consumerPdfPayload.setFileData(convertPdfToByte(createPdfFile(testFileName).getPath()));
         addAttachment(consumerPdfPayload.getOrderUUID(), consumerPdfPayload.getFileData());
         setEmailDetails(helper, consumerPdfPayload.getEmail(), subject, content);
 
@@ -112,8 +112,6 @@ class MailServiceTest {
                 () -> assertEquals(parser(argument).getAttachmentList().get(0).getName(), String.format("%s.pdf", consumerPdfPayload.getOrderUUID())),
                 () -> assertEquals(parser(argument).getAttachmentList().get(0).getContentType(), "application/pdf")
         );
-
-        deleteFiles(consumerPdfPayload.getOrderUUID(), testFileName);
     }
 
     @DisplayName("Send email with data from Store-Service")
@@ -178,21 +176,5 @@ class MailServiceTest {
         ReflectionTestUtils.setField(mailService, "mailSubjectInvoice", mailSubjectInvoice);
         ReflectionTestUtils.setField(mailService, "mailContentInvoice", mailContentInvoice);
         ReflectionTestUtils.setField(mailService, "outputPdfPath", outputPdfPath);
-    }
-
-    private byte[] convertPdfToByte(String outputPdfPath) throws IOException {
-        Path pdfPath = Paths.get(outputPdfPath);
-        return Files.readAllBytes(pdfPath);
-    }
-
-    private File createPdfFile(String testFileName) throws IOException {
-        File file = new File(String.format(outputPdfPath, testFileName));
-        file.createNewFile();
-        return file;
-    }
-
-    private void deleteFiles(String payloadPdfName, String pdfTestFileName) {
-        new File(String.format(outputPdfPath, payloadPdfName)).deleteOnExit();
-        new File(String.format(outputPdfPath, pdfTestFileName)).deleteOnExit();
     }
 }

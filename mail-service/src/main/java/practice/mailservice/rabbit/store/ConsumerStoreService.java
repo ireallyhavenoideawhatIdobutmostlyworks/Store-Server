@@ -16,7 +16,7 @@ public class ConsumerStoreService {
     private final MailService mailService;
 
 
-    @RabbitListener(queues = "${queue.from.store.to.email}")
+    @RabbitListener(id = "store", queues = "${queue.from.store.to.email}")
     public void receivedMessage(ConsumerStorePayload consumerStorePayload) throws MessagingException {
         log.info("Consume storePayload object from store-service. Payload: {}", consumerStorePayload);
         mailService.sendEmail(consumerStorePayload);

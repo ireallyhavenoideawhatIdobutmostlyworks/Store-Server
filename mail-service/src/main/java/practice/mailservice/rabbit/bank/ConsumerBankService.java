@@ -16,7 +16,7 @@ public class ConsumerBankService {
     private final MailService mailService;
 
 
-    @RabbitListener(queues = "${queue.from.bank.to.email}")
+    @RabbitListener(id = "bank", queues = "${queue.from.bank.to.email}")
     public void receivedMessage(ConsumerBankPayload consumerBankPayload) throws MessagingException {
         log.info("Consume bankPayload object from bank-service. Payload: {}", consumerBankPayload);
         mailService.sendEmail(consumerBankPayload);
