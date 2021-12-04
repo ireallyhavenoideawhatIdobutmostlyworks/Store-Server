@@ -28,7 +28,7 @@ import java.util.concurrent.TimeUnit;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = RabbitMqConfigTest.class)
+@SpringBootTest(classes = RabbitMqConfigTest.class)
 @PropertySource("classpath:rabbitMail.properties")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @RabbitListenerTest(capture = true)
@@ -60,27 +60,12 @@ class MailIntegrationTest {
     private String routingKeyFromStoreToEmail;
 
     private GreenMail greenMail;
+    private final String senderEmail = "your@awesome.store";
 
 
     static {
-        final GenericContainer rabbitMq = new GenericContainer("rabbitmq:3-management")
-                .withExposedPorts(5672);
-        rabbitMq.start();
-
-        System.setProperty("spring.rabbitmq.host", rabbitMq.getContainerIpAddress());
-        System.setProperty("spring.rabbitmq.port", rabbitMq.getMappedPort(5672).toString());
-
-//        final GenericContainer mail = new GenericContainer("mailhog/mailhog")
-//                .withEnv("host", "localhost")
-//                .withEnv("port", "8025");
-////                .withExposedPorts(1025, 8025)
-////                .waitingFor(Wait.forHttp("/"));
-//
-//        mail.start();
-//        System.setProperty("spring.mail.host", mail.getContainerIpAddress());
-//        System.setProperty("spring.mail.port", mail.getMappedPort(1025).toString());
-
-
+        runRabbitMqContainer();
+        runMailHogContainer();
     }
 
     @BeforeEach
@@ -88,12 +73,10 @@ class MailIntegrationTest {
         MockMvcBuilders
                 .webAppContextSetup(context)
                 .build();
-
     }
 
     @BeforeAll
     public void setGreenMail() {
-
         greenMail = new GreenMail(new ServerSetup(1025, "localhost", "smtp"));
         greenMail.start();
     }
@@ -123,7 +106,6 @@ class MailIntegrationTest {
         String subjectReceivedMessage = messages[0].getSubject();
         String contentReceivedMessage = mailContent(messages[0]);
 
-        String senderEmail = "your@awesome.store";
         String recipientEmail = consumerBankPayload.getEmail();
         String subjectEmail = String.format("Status for order %s", consumerBankPayload.getOrderUUID());
         String contentEmail = String.format(
@@ -165,7 +147,6 @@ class MailIntegrationTest {
         String contentReceivedMessage = mailContent(messages[0]);
         int attachmentReceivedMessageAmount = mailAttachmentName(messages[0]);
 
-        String senderEmail = "your@awesome.store";
         String recipientEmail = consumerPdfPayload.getEmail();
         String subjectEmail = String.format("Invoice for order %s", consumerPdfPayload.getOrderUUID());
         String contentEmail = String.format("Invoice for order. Details %s", consumerPdfPayload.getOrderUUID());
@@ -203,7 +184,6 @@ class MailIntegrationTest {
         String subjectReceivedMessage = messages[0].getSubject();
         String contentReceivedMessage = mailContent(messages[0]);
 
-        String senderEmail = "your@awesome.store";
         String recipientEmail = consumerStorePayload.getEmail();
         String subjectEmail = String.format("New order %s", consumerStorePayload.getOrderUUID());
         String contentEmail = String.format(
@@ -238,5 +218,20 @@ class MailIntegrationTest {
     private Object listenerInvocation(String listenerID, long wait, TimeUnit unit) throws InterruptedException {
         RabbitListenerTestHarness.InvocationData invocationData = harness.getNextInvocationDataFor(listenerID, wait, unit);
         return invocationData.getArguments()[0];
+    }
+
+    private static void runRabbitMqContainer() {
+        int port = 5672;
+        final GenericContainer rabbitMq = new GenericContainer("rabbitmq:3-management").withExposedPorts(port);
+        rabbitMq.start();
+        System.setProperty("spring.rabbitmq.host", rabbitMq.getContainerIpAddress());
+        System.setProperty("spring.rabbitmq.port", rabbitMq.getMappedPort(port).toString());
+    }
+
+    private static void runMailHogContainer() {
+        final GenericContainer mail = new GenericContainer("mailhog/mailhog")
+                .withEnv("host", "localhost")
+                .withEnv("port", "8025");
+        mail.start();
     }
 }
