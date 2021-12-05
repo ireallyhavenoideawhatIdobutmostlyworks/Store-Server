@@ -1,4 +1,4 @@
-package practice.mailservice.mail;
+package practice.mailservice.config;
 
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;

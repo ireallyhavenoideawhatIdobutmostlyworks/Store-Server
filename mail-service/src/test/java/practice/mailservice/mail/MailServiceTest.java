@@ -22,9 +22,6 @@ import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -88,7 +85,7 @@ class MailServiceTest {
     void sendEmail_basedOnDataFromPdf_succeed() throws Exception {
         // given
         String testFileName = "testFileUnitTest";
-        ConsumerPdfPayload consumerPdfPayload = TestData.consumerPdfPayload( outputPdfPath, testFileName);
+        ConsumerPdfPayload consumerPdfPayload = TestData.consumerPdfPayload(outputPdfPath, testFileName);
         String subject = String.format(mailSubjectInvoice, consumerPdfPayload.getOrderUUID());
         String content = String.format(mailContentInvoice, consumerPdfPayload.getOrderUUID());
         addAttachment(consumerPdfPayload.getOrderUUID(), consumerPdfPayload.getFileData());
