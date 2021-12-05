@@ -131,7 +131,7 @@ class MailIntegrationTest {
     @Test
     void sendEmail_basedOnDataFromPdf_succeed() throws Exception {
         // given
-        ConsumerPdfPayload consumerPdfPayload = TestData.consumerPdfPayload("src/test/java/practice/mailservice/testfiles/%s.pdf", "testFile");
+        ConsumerPdfPayload consumerPdfPayload = TestData.consumerPdfPayload("src/test/java/practice/mailservice/testfiles/%s.pdf", "inputTestFile");
 
 
         // when
