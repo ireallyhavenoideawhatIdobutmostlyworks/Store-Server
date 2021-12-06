@@ -12,9 +12,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.test.util.ReflectionTestUtils;
-import practice.mailservice.rabbit.bank.ConsumerBankPayload;
-import practice.mailservice.rabbit.pdf.ConsumerPdfPayload;
-import practice.mailservice.rabbit.store.ConsumerStorePayload;
+import practice.mailservice.rabbit.payloads.bank.ConsumerBankPayload;
+import practice.mailservice.rabbit.payloads.pdf.ConsumerPdfPayload;
+import practice.mailservice.rabbit.payloads.store.ConsumerStorePayload;
 import practice.mailservice.testdata.TestData;
 
 import javax.mail.MessagingException;

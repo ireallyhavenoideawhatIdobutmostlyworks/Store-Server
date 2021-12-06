@@ -17,9 +17,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.testcontainers.containers.GenericContainer;
 import practice.mailservice.config.RabbitMqConfigTest;
-import practice.mailservice.rabbit.bank.ConsumerBankPayload;
-import practice.mailservice.rabbit.pdf.ConsumerPdfPayload;
-import practice.mailservice.rabbit.store.ConsumerStorePayload;
+import practice.mailservice.rabbit.payloads.bank.ConsumerBankPayload;
+import practice.mailservice.rabbit.payloads.pdf.ConsumerPdfPayload;
+import practice.mailservice.rabbit.payloads.store.ConsumerStorePayload;
 import practice.mailservice.testdata.TestData;
 
 import javax.mail.Message;

@@ -8,9 +8,9 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
-import practice.mailservice.rabbit.bank.ConsumerBankPayload;
-import practice.mailservice.rabbit.pdf.ConsumerPdfPayload;
-import practice.mailservice.rabbit.store.ConsumerStorePayload;
+import practice.mailservice.rabbit.payloads.bank.ConsumerBankPayload;
+import practice.mailservice.rabbit.payloads.pdf.ConsumerPdfPayload;
+import practice.mailservice.rabbit.payloads.store.ConsumerStorePayload;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;

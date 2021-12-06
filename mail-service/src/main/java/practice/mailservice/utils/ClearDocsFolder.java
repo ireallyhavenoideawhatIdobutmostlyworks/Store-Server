@@ -22,7 +22,7 @@ public class ClearDocsFolder implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws IOException {
-        FileUtils.cleanDirectory(new File("src/main/resources/docs"));
-        log.info("Removed all files from directory: {}", "src/main/resources/docs");
+        FileUtils.cleanDirectory(new File(docsFolderPath));
+        log.info("Removed all files from directory: {}", docsFolderPath);
     }
 }

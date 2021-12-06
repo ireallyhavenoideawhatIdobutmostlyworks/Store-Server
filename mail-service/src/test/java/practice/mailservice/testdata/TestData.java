@@ -1,9 +1,9 @@
 package practice.mailservice.testdata;
 
-import practice.mailservice.rabbit.bank.ConsumerBankPayload;
-import practice.mailservice.rabbit.bank.PaymentType;
-import practice.mailservice.rabbit.pdf.ConsumerPdfPayload;
-import practice.mailservice.rabbit.store.ConsumerStorePayload;
+import practice.mailservice.rabbit.payloads.bank.ConsumerBankPayload;
+import practice.mailservice.rabbit.payloads.bank.PaymentType;
+import practice.mailservice.rabbit.payloads.pdf.ConsumerPdfPayload;
+import practice.mailservice.rabbit.payloads.store.ConsumerStorePayload;
 
 import java.io.File;
 import java.io.IOException;
