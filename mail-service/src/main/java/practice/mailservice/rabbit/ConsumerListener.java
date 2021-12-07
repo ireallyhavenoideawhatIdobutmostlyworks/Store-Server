@@ -21,6 +21,8 @@ import java.io.IOException;
 @Log4j2
 public class ConsumerListener {
 
+    private final String CONSUME_MESSAGE = "Consume {} object from {}-service. Payload: {}";
+
     private final MailContext mailContext;
     private final MailBank mailBank;
     private final MailStore mailStore;
@@ -29,21 +31,21 @@ public class ConsumerListener {
 
     @RabbitListener(id = "bank", queues = "${queue.from.bank.to.email}")
     public void receivedMessage(ConsumerBankPayload consumerBankPayload) throws MessagingException, IOException {
-        log.info("Consume bankPayload object from bank-service. Payload: {}", consumerBankPayload);
+        log.info(CONSUME_MESSAGE, "bankPayload", "bank", consumerBankPayload);
         mailContext.setMailContext(mailBank);
         mailContext.sendEmail(consumerBankPayload);
     }
 
     @RabbitListener(id = "store", queues = "${queue.from.store.to.email}")
     public void receivedMessage(ConsumerStorePayload consumerStorePayload) throws MessagingException, IOException {
-        log.info("Consume storePayload object from store-service. Payload: {}", consumerStorePayload);
+        log.info(CONSUME_MESSAGE, "storePayload", "store", consumerStorePayload);
         mailContext.setMailContext(mailStore);
         mailContext.sendEmail(consumerStorePayload);
     }
 
     @RabbitListener(id = "pdf", queues = "${queue.from.pdf.to.email}")
     public void receivedMessage(ConsumerPdfPayload consumerPdfPayload) throws MessagingException, IOException {
-        log.info("Consume pdfPayload object from pdf-service. Payload: {}", consumerPdfPayload);
+        log.info(CONSUME_MESSAGE, "pdfPayload", "pdf", consumerPdfPayload);
         mailContext.setMailContext(mailPdf);
         mailContext.sendEmail(consumerPdfPayload);
     }

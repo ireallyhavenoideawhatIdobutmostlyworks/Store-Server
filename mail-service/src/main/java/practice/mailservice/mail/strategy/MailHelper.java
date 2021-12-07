@@ -23,6 +23,10 @@ public class MailHelper extends MailSender {
     @Value("${mail.address}")
     private String mailAddress;
 
+    protected final String CASTED_MESSAGE = "Casted from ConsumerPayload to: '{}'";
+    protected final String PREPARED_MESSAGE = "Prepared mail content";
+    protected final String SENT_MESSAGE = "Sent email to {} with data and invoice based on {}-service";
+
     private MimeMessage mail;
     private MimeMessageHelper helper;
 

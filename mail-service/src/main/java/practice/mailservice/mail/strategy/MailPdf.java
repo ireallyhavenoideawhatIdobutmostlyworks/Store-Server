@@ -30,13 +30,13 @@ public class MailPdf extends MailHelper implements MailStrategy {
     @Override
     public void sendEmail(ConsumerPayload consumerPayload) throws MessagingException, IOException {
         ConsumerPdfPayload consumerPdfPayload = (ConsumerPdfPayload) consumerPayload;
-        log.info("Casted 'ConsumerPayload'");
+        log.info(CASTED_MESSAGE, "consumerPdfPayload");
 
         String content = String.format(
                 mailContentInvoice,
                 consumerPdfPayload.getOrderUUID()
         );
-        log.info("Prepared mail content");
+        log.info(PREPARED_MESSAGE);
 
         String pathToInvoice = String.format(outputPdfPath, consumerPdfPayload.getOrderUUID());
         createPdfInvoice(pathToInvoice, consumerPdfPayload.getFileData());
@@ -51,7 +51,7 @@ public class MailPdf extends MailHelper implements MailStrategy {
                 .setAttachmentIfExist(true, consumerPdfPayload.getOrderUUID(), pathToInvoice)
                 .sendEmail();
 
-        log.info("Sent email to {} with data and invoice based on pdf-service", consumerPdfPayload.getEmail());
+        log.info(SENT_MESSAGE, consumerPdfPayload.getEmail(), "pdf");
     }
 
 

@@ -2,12 +2,14 @@ package practice.mailservice.mail.strategy;
 
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import practice.mailservice.rabbit.payloads.ConsumerPayload;
 import practice.mailservice.rabbit.payloads.store.ConsumerStorePayload;
 
 import javax.mail.MessagingException;
 
+@PropertySource("classpath:mail.properties")
 @Service
 @Log4j2
 public class MailStore extends MailHelper implements MailStrategy {
@@ -21,7 +23,7 @@ public class MailStore extends MailHelper implements MailStrategy {
     @Override
     public void sendEmail(ConsumerPayload consumerPayload) throws MessagingException {
         ConsumerStorePayload consumerStorePayload = (ConsumerStorePayload) consumerPayload;
-        log.info("Casted 'ConsumerPayload'");
+        log.info(CASTED_MESSAGE, "consumerStorePayload");
 
         String content = String.format(
                 mailContentNewOrder,
@@ -30,7 +32,7 @@ public class MailStore extends MailHelper implements MailStrategy {
                 consumerStorePayload.getOrderPrice(),
                 consumerStorePayload.getAccountNumber()
         );
-        log.info("Prepared mail content");
+        log.info(PREPARED_MESSAGE);
 
         setMimeMessage()
                 .setMimeMessageHelper()
@@ -41,6 +43,6 @@ public class MailStore extends MailHelper implements MailStrategy {
                 .setAttachmentIfExist(false, null, null)
                 .sendEmail();
 
-        log.info("Sent email to {} with data based on store-service", consumerStorePayload.getEmail());
+        log.info(SENT_MESSAGE, consumerStorePayload.getEmail(), "store");
     }
 }

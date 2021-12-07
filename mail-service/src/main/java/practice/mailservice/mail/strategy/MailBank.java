@@ -9,7 +9,7 @@ import practice.mailservice.rabbit.payloads.bank.ConsumerBankPayload;
 
 import javax.mail.MessagingException;
 
-@PropertySource("classpath:file.properties")
+@PropertySource("classpath:mail.properties")
 @Service
 @Log4j2
 public class MailBank extends MailHelper implements MailStrategy {
@@ -23,7 +23,7 @@ public class MailBank extends MailHelper implements MailStrategy {
     @Override
     public void sendEmail(ConsumerPayload consumerPayload) throws MessagingException {
         ConsumerBankPayload consumerBankPayload = (ConsumerBankPayload) consumerPayload;
-        log.info("Casted 'ConsumerPayload'");
+        log.info(CASTED_MESSAGE, "consumerBankPayload");
 
         String content = String.format(
                 mailContentStatusOrder,
@@ -31,7 +31,7 @@ public class MailBank extends MailHelper implements MailStrategy {
                 consumerBankPayload.getPaymentType().toString(),
                 consumerBankPayload.getIsPaymentSuccess()
         );
-        log.info("Prepared mail content");
+        log.info(PREPARED_MESSAGE);
 
         setMimeMessage()
                 .setMimeMessageHelper()
@@ -42,6 +42,6 @@ public class MailBank extends MailHelper implements MailStrategy {
                 .setAttachmentIfExist(false, null, null)
                 .sendEmail();
 
-        log.info("Sent email to {} with data based on bank-service", consumerBankPayload.getEmail());
+        log.info(SENT_MESSAGE, consumerBankPayload.getEmail(), "bank");
     }
 }
