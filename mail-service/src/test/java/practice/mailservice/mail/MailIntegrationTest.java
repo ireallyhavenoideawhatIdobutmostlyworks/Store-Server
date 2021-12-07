@@ -5,7 +5,6 @@ import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
 import org.apache.commons.mail.util.MimeMessageParser;
 import org.junit.jupiter.api.*;
-import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.test.RabbitListenerTest;
 import org.springframework.amqp.rabbit.test.RabbitListenerTestHarness;
@@ -40,8 +39,6 @@ class MailIntegrationTest {
 
     @Autowired
     private RabbitTemplate rabbitTemplate;
-    @Autowired
-    private RabbitAdmin rabbitAdmin;
     @Autowired
     private RabbitListenerTestHarness harness;
 
