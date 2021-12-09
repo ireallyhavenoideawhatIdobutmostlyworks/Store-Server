@@ -4,6 +4,7 @@ import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.stereotype.Service;
 import practice.mailservice.rabbit.payloads.ConsumerPayload;
 import practice.mailservice.rabbit.payloads.pdf.ConsumerPdfPayload;
 
@@ -15,6 +16,7 @@ import java.io.IOException;
         "classpath:mail.properties",
         "classpath:file.properties"
 })
+@Service
 @Log4j2
 public class MailPdf extends MailHelper implements MailStrategy {
 

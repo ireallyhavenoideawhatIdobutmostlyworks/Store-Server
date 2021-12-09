@@ -4,11 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
-import practice.mailservice.mail.MailService;
-import practice.mailservice.mail.strategy.MailBank;
-import practice.mailservice.mail.strategy.MailContext;
-import practice.mailservice.mail.strategy.MailPdf;
-import practice.mailservice.mail.strategy.MailStore;
+import practice.mailservice.mail.strategy.MailStrategy;
+import practice.mailservice.mail.strategy.MailStrategyFactory;
+import practice.mailservice.mail.strategy.MailType;
 import practice.mailservice.rabbit.payloads.bank.ConsumerBankPayload;
 import practice.mailservice.rabbit.payloads.pdf.ConsumerPdfPayload;
 import practice.mailservice.rabbit.payloads.store.ConsumerStorePayload;
@@ -22,31 +20,30 @@ import java.io.IOException;
 public class ConsumerListener {
 
     private final String CONSUME_MESSAGE = "Consume {} object from {}-service. Payload: {}";
-
-    private final MailContext mailContext;
-    private final MailBank mailBank;
-    private final MailStore mailStore;
-    private final MailPdf mailPdf;
+    private final MailStrategyFactory mailStrategyFactory;
 
 
     @RabbitListener(id = "bank", queues = "${queue.from.bank.to.email}")
     public void receivedMessage(ConsumerBankPayload consumerBankPayload) throws MessagingException, IOException {
         log.info(CONSUME_MESSAGE, "bankPayload", "bank", consumerBankPayload);
-        mailContext.setMailContext(mailBank);
-        mailContext.sendEmail(consumerBankPayload);
+
+        MailStrategy mailStrategy = mailStrategyFactory.getStrategy(MailType.BANK);
+        mailStrategy.sendEmail(consumerBankPayload);
     }
 
     @RabbitListener(id = "store", queues = "${queue.from.store.to.email}")
     public void receivedMessage(ConsumerStorePayload consumerStorePayload) throws MessagingException, IOException {
         log.info(CONSUME_MESSAGE, "storePayload", "store", consumerStorePayload);
-        mailContext.setMailContext(mailStore);
-        mailContext.sendEmail(consumerStorePayload);
+
+        MailStrategy mailStrategy = mailStrategyFactory.getStrategy(MailType.STORE);
+        mailStrategy.sendEmail(consumerStorePayload);
     }
 
     @RabbitListener(id = "pdf", queues = "${queue.from.pdf.to.email}")
     public void receivedMessage(ConsumerPdfPayload consumerPdfPayload) throws MessagingException, IOException {
         log.info(CONSUME_MESSAGE, "pdfPayload", "pdf", consumerPdfPayload);
-        mailContext.setMailContext(mailPdf);
-        mailContext.sendEmail(consumerPdfPayload);
+
+        MailStrategy mailStrategy = mailStrategyFactory.getStrategy(MailType.PDF);
+        mailStrategy.sendEmail(consumerPdfPayload);
     }
 }
