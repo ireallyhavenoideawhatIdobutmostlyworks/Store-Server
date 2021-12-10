@@ -1,7 +1,7 @@
 package practice.mailservice.mail.strategy;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -13,62 +13,62 @@ import javax.mail.internet.MimeMessage;
 import java.io.File;
 
 @PropertySource("classpath:mail.properties")
+@RequiredArgsConstructor
 @Component
 @Log4j2
-public class MailHelper extends MailSender {
+class MailHelper {
 
-    @Autowired
-    protected JavaMailSender javaMailSender;
+    private final JavaMailSender javaMailSender;
 
     @Value("${mail.address}")
     private String mailAddress;
 
-    protected final String CASTED_MESSAGE = "Casted from ConsumerPayload to: '{}'";
-    protected final String PREPARED_MESSAGE = "Prepared mail content";
-    protected final String SENT_MESSAGE = "Sent email to {} with data and invoice based on {}-service";
+    final String CASTED_MESSAGE = "Casted from ConsumerPayload to: '{}' payload";
+    final String PREPARED_MESSAGE = "Prepared mail content";
+    final String SENT_MESSAGE = "Sent email to {} with data and invoice based on {}-service";
 
     private MimeMessage mail;
     private MimeMessageHelper helper;
 
 
-    protected MailHelper setMimeMessage() {
+    MailHelper setMimeMessage() {
         mail = javaMailSender.createMimeMessage();
         log.info("Created 'MimeMessage' object");
         return this;
     }
 
-    protected MailHelper setMimeMessageHelper() throws MessagingException {
+    MailHelper setMimeMessageHelper() throws MessagingException {
         helper = new MimeMessageHelper(mail, true);
         log.info("Created 'MimeMessageHelper' object");
         return this;
     }
 
-    protected MailHelper setRecipient(String email) throws MessagingException {
+    MailHelper setRecipient(String email) throws MessagingException {
         helper.setTo(email);
         log.info("Set recipient: {}", email);
         return this;
     }
 
-    protected MailHelper setFrom() throws MessagingException {
+    MailHelper setFrom() throws MessagingException {
         helper.setFrom(mailAddress);
         log.info("Set sender: {}", mailAddress);
         return this;
     }
 
-    protected MailHelper setSubject(String subject, String orderUuid) throws MessagingException {
+    MailHelper setSubject(String subject, String orderUuid) throws MessagingException {
         String mailSubject = setMailSubject(subject, orderUuid);
         helper.setSubject(mailSubject);
         log.info("Set subject: {}", mailSubject);
         return this;
     }
 
-    protected MailHelper setContent(String content, boolean html) throws MessagingException {
+    MailHelper setContent(String content, boolean html) throws MessagingException {
         helper.setText(content, html);
         log.info("Set content: {}", content);
         return this;
     }
 
-    protected MailHelper setAttachmentIfExist(boolean hasAttachment, String orderUUID, String pathToInvoice) throws MessagingException {
+    MailHelper setAttachmentIfExist(boolean hasAttachment, String orderUUID, String pathToInvoice) throws MessagingException {
         if (hasAttachment)
             helper.addAttachment(orderUUID, new File(pathToInvoice));
 
@@ -76,8 +76,8 @@ public class MailHelper extends MailSender {
         return this;
     }
 
-    protected void sendEmail() {
-        sendEmail(javaMailSender, mail);
+    void sendEmail() {
+        javaMailSender.send(mail);
         log.info("Sent complete email to recipient address");
     }
 

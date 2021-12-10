@@ -1,5 +1,6 @@
 package practice.mailservice.mail.strategy;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -10,9 +11,12 @@ import practice.mailservice.rabbit.payloads.bank.ConsumerBankPayload;
 import javax.mail.MessagingException;
 
 @PropertySource("classpath:mail.properties")
+@RequiredArgsConstructor
 @Service
 @Log4j2
-public class MailBank extends MailHelper implements MailStrategy {
+class MailBank implements MailStrategy {
+
+    private final MailHelper mailHelper;
 
     @Value("${mail.subject.status.order}")
     private String mailSubjectStatusOrder;
@@ -23,7 +27,7 @@ public class MailBank extends MailHelper implements MailStrategy {
     @Override
     public void sendEmail(ConsumerPayload consumerPayload) throws MessagingException {
         ConsumerBankPayload consumerBankPayload = (ConsumerBankPayload) consumerPayload;
-        log.info(CASTED_MESSAGE, "consumerBankPayload");
+        log.info(mailHelper.CASTED_MESSAGE, MailType.BANK);
 
         String content = String.format(
                 mailContentStatusOrder,
@@ -31,9 +35,9 @@ public class MailBank extends MailHelper implements MailStrategy {
                 consumerBankPayload.getPaymentType().toString(),
                 consumerBankPayload.getIsPaymentSuccess()
         );
-        log.info(PREPARED_MESSAGE);
+        log.info(mailHelper.PREPARED_MESSAGE);
 
-        setMimeMessage()
+        mailHelper.setMimeMessage()
                 .setMimeMessageHelper()
                 .setRecipient(consumerBankPayload.getEmail())
                 .setFrom()
@@ -42,6 +46,6 @@ public class MailBank extends MailHelper implements MailStrategy {
                 .setAttachmentIfExist(false, null, null)
                 .sendEmail();
 
-        log.info(SENT_MESSAGE, consumerBankPayload.getEmail(), "bank");
+        log.info(mailHelper.SENT_MESSAGE, consumerBankPayload.getEmail(), MailType.BANK);
     }
 }

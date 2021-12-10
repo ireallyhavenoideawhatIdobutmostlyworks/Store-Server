@@ -1,5 +1,6 @@
 package practice.mailservice.mail.strategy;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -10,9 +11,12 @@ import practice.mailservice.rabbit.payloads.store.ConsumerStorePayload;
 import javax.mail.MessagingException;
 
 @PropertySource("classpath:mail.properties")
+@RequiredArgsConstructor
 @Service
 @Log4j2
-public class MailStore extends MailHelper implements MailStrategy {
+class MailStore implements MailStrategy {
+
+    private final MailHelper mailHelper;
 
     @Value("${mail.subject.new.order}")
     private String mailSubjectNewOrder;
@@ -23,7 +27,7 @@ public class MailStore extends MailHelper implements MailStrategy {
     @Override
     public void sendEmail(ConsumerPayload consumerPayload) throws MessagingException {
         ConsumerStorePayload consumerStorePayload = (ConsumerStorePayload) consumerPayload;
-        log.info(CASTED_MESSAGE, "consumerStorePayload");
+        log.info(mailHelper.CASTED_MESSAGE, MailType.STORE);
 
         String content = String.format(
                 mailContentNewOrder,
@@ -32,9 +36,9 @@ public class MailStore extends MailHelper implements MailStrategy {
                 consumerStorePayload.getOrderPrice(),
                 consumerStorePayload.getAccountNumber()
         );
-        log.info(PREPARED_MESSAGE);
+        log.info(mailHelper.PREPARED_MESSAGE);
 
-        setMimeMessage()
+        mailHelper.setMimeMessage()
                 .setMimeMessageHelper()
                 .setRecipient(consumerStorePayload.getEmail())
                 .setFrom()
@@ -43,6 +47,6 @@ public class MailStore extends MailHelper implements MailStrategy {
                 .setAttachmentIfExist(false, null, null)
                 .sendEmail();
 
-        log.info(SENT_MESSAGE, consumerStorePayload.getEmail(), "store");
+        log.info(mailHelper.SENT_MESSAGE, consumerStorePayload.getEmail(), MailType.STORE);
     }
 }

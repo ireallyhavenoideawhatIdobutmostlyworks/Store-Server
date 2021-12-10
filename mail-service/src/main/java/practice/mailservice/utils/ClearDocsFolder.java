@@ -14,7 +14,7 @@ import java.io.IOException;
 @PropertySource("classpath:file.properties")
 @Component
 @Log4j2
-public class ClearDocsFolder implements ApplicationRunner {
+class ClearDocsFolder implements ApplicationRunner {
 
     @Value("${docs.folder.path}")
     private String docsFolderPath;

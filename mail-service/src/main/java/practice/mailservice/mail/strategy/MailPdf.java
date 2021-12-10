@@ -1,5 +1,6 @@
 package practice.mailservice.mail.strategy;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,9 +17,12 @@ import java.io.IOException;
         "classpath:mail.properties",
         "classpath:file.properties"
 })
+@RequiredArgsConstructor
 @Service
 @Log4j2
-public class MailPdf extends MailHelper implements MailStrategy {
+class MailPdf implements MailStrategy {
+
+    private final MailHelper mailHelper;
 
     @Value("${output.pdf.path}")
     private String outputPdfPath;
@@ -32,19 +36,19 @@ public class MailPdf extends MailHelper implements MailStrategy {
     @Override
     public void sendEmail(ConsumerPayload consumerPayload) throws MessagingException, IOException {
         ConsumerPdfPayload consumerPdfPayload = (ConsumerPdfPayload) consumerPayload;
-        log.info(CASTED_MESSAGE, "consumerPdfPayload");
+        log.info(mailHelper.CASTED_MESSAGE, MailType.PDF);
 
         String content = String.format(
                 mailContentInvoice,
                 consumerPdfPayload.getOrderUUID()
         );
-        log.info(PREPARED_MESSAGE);
+        log.info(mailHelper.PREPARED_MESSAGE);
 
         String pathToInvoice = String.format(outputPdfPath, consumerPdfPayload.getOrderUUID());
         createPdfInvoice(pathToInvoice, consumerPdfPayload.getFileData());
         log.info("Created invoice as pdf document. Invoice path: {}", pathToInvoice);
 
-        setMimeMessage()
+        mailHelper.setMimeMessage()
                 .setMimeMessageHelper()
                 .setRecipient(consumerPdfPayload.getEmail())
                 .setFrom()
@@ -53,7 +57,7 @@ public class MailPdf extends MailHelper implements MailStrategy {
                 .setAttachmentIfExist(true, consumerPdfPayload.getOrderUUID(), pathToInvoice)
                 .sendEmail();
 
-        log.info(SENT_MESSAGE, consumerPdfPayload.getEmail(), "pdf");
+        log.info(mailHelper.SENT_MESSAGE, consumerPdfPayload.getEmail(), MailType.PDF);
     }
 
 

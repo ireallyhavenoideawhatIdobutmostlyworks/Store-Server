@@ -1,10 +1,10 @@
 package practice.mailservice.mail.strategy;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Component
 @Log4j2
 public class MailStrategyFactory {
