@@ -5,11 +5,12 @@ import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
-import practice.mailservice.rabbit.payloads.ConsumerPayload;
 import practice.mailservice.rabbit.payloads.pdf.ConsumerPdfPayload;
 
 import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 import java.io.File;
 import java.io.IOException;
 
@@ -20,9 +21,10 @@ import java.io.IOException;
 @RequiredArgsConstructor
 @Service
 @Log4j2
-class MailPdf implements MailStrategy {
+public
+class MailPdf implements MailStrategy<ConsumerPdfPayload> {
 
-    private final MailHelper mailHelper;
+    private final JavaMailSender javaMailSender;
 
     @Value("${output.pdf.path}")
     private String outputPdfPath;
@@ -31,33 +33,32 @@ class MailPdf implements MailStrategy {
     private String mailSubjectInvoice;
     @Value("${mail.content.invoice}")
     private String mailContentInvoice;
+    @Value("${mail.address}")
+    private String mailAddress;
 
 
     @Override
-    public void sendEmail(ConsumerPayload consumerPayload) throws MessagingException, IOException {
-        ConsumerPdfPayload consumerPdfPayload = (ConsumerPdfPayload) consumerPayload;
-        log.info(mailHelper.CASTED_MESSAGE, MailType.PDF);
-
+    public void sendEmail(ConsumerPdfPayload consumerPdfPayload) throws IOException, MessagingException {
         String content = String.format(
                 mailContentInvoice,
                 consumerPdfPayload.getOrderUUID()
         );
-        log.info(mailHelper.PREPARED_MESSAGE);
+        log.info("Prepared mail content");
 
         String pathToInvoice = String.format(outputPdfPath, consumerPdfPayload.getOrderUUID());
         createPdfInvoice(pathToInvoice, consumerPdfPayload.getFileData());
         log.info("Created invoice as pdf document. Invoice path: {}", pathToInvoice);
 
-        mailHelper.setMimeMessage()
-                .setMimeMessageHelper()
-                .setRecipient(consumerPdfPayload.getEmail())
-                .setFrom()
-                .setSubject(mailSubjectInvoice, consumerPdfPayload.getOrderUUID())
-                .setContent(content, false)
-                .setAttachmentIfExist(true, consumerPdfPayload.getOrderUUID(), pathToInvoice)
-                .sendEmail();
+        MimeMessage mail = new MailBuilder(javaMailSender)
+                .withSender(mailAddress)
+                .withRecipient(consumerPdfPayload.getEmail())
+                .withContent(content, false)
+                .withSubject(mailSubjectInvoice, consumerPdfPayload.getOrderUUID())
+                .withAttachmentIfExist(true, consumerPdfPayload.getOrderUUID(), pathToInvoice)
+                .build();
 
-        log.info(mailHelper.SENT_MESSAGE, consumerPdfPayload.getEmail(), MailType.PDF);
+        javaMailSender.send(mail);
+        log.info("Sent email to {} with data and invoice based on {}-service", consumerPdfPayload.getEmail(), MailType.PDF);
     }
 
 

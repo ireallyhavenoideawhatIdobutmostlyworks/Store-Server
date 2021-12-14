@@ -17,13 +17,13 @@ import java.io.IOException;
 @RequiredArgsConstructor
 @Service
 @Log4j2
-class ConsumerListener {
+public class ConsumerListener {
 
     private final String CONSUME_MESSAGE = "Consume payload from {}-service. Payload details: {}";
     private final MailStrategyFactory mailStrategyFactory;
 
 
-    @RabbitListener(id = "${bank.id}", queues = "${queue.from.bank.to.email}")
+    @RabbitListener(id = "bank", queues = "${queue.from.bank.to.email}")
     void receivedMessage(ConsumerBankPayload consumerBankPayload) throws MessagingException, IOException {
         log.info(CONSUME_MESSAGE, MailType.BANK, consumerBankPayload);
 
@@ -31,7 +31,7 @@ class ConsumerListener {
         mailStrategy.sendEmail(consumerBankPayload);
     }
 
-    @RabbitListener(id = "${store.id}", queues = "${queue.from.store.to.email}")
+    @RabbitListener(id = "store", queues = "${queue.from.store.to.email}")
     void receivedMessage(ConsumerStorePayload consumerStorePayload) throws MessagingException, IOException {
         log.info(CONSUME_MESSAGE, MailType.STORE, consumerStorePayload);
 
@@ -39,7 +39,7 @@ class ConsumerListener {
         mailStrategy.sendEmail(consumerStorePayload);
     }
 
-    @RabbitListener(id = "${pdf.id}", queues = "${queue.from.pdf.to.email}")
+    @RabbitListener(id = "pdf", queues = "${queue.from.pdf.to.email}")
     void receivedMessage(ConsumerPdfPayload consumerPdfPayload) throws MessagingException, IOException {
         log.info(CONSUME_MESSAGE, MailType.PDF, consumerPdfPayload);
 

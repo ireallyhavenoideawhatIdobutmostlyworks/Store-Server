@@ -41,8 +41,6 @@ class MailIntegrationTest {
     @Autowired
     private RabbitTemplate rabbitTemplate;
     @Autowired
-    private RabbitAdmin rabbitAdmin;
-    @Autowired
     private RabbitListenerTestHarness harness;
 
     @Value("${exchange.from.bank.to.email}")

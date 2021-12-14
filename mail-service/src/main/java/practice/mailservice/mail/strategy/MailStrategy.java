@@ -1,11 +1,9 @@
 package practice.mailservice.mail.strategy;
 
-import practice.mailservice.rabbit.payloads.ConsumerPayload;
-
 import javax.mail.MessagingException;
 import java.io.IOException;
 
-public interface MailStrategy {
+public interface MailStrategy<T> {
 
-    void sendEmail(ConsumerPayload consumerPayload) throws MessagingException, IOException;
+    void sendEmail(T t) throws MessagingException, IOException;
 }
