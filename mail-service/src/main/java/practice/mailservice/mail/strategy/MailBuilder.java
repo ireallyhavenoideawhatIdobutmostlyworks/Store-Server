@@ -27,9 +27,8 @@ public class MailBuilder {
         return this;
     }
 
-    MailBuilder withSubject(String subject, String orderUuid) throws MessagingException {
-        String mailSubject = setMailSubject(subject, orderUuid);
-        mimeMessageHelper.setSubject(mailSubject);
+    MailBuilder withSubject(String subject) throws MessagingException {
+        mimeMessageHelper.setSubject(subject);
         return this;
     }
 
@@ -38,18 +37,12 @@ public class MailBuilder {
         return this;
     }
 
-    MailBuilder withAttachmentIfExist(boolean hasAttachment, String orderUUID, String pathToInvoice) throws MessagingException {
-        if (hasAttachment)
-            mimeMessageHelper.addAttachment(orderUUID, new File(pathToInvoice));
+    MailBuilder withAttachmentIfExist(String orderUUID, String pathToInvoice) throws MessagingException {
+        mimeMessageHelper.addAttachment(orderUUID, new File(pathToInvoice));
         return this;
     }
 
     public MimeMessage build() {
         return mimeMessage;
-    }
-
-
-    private String setMailSubject(String subject, String orderUuid) {
-        return String.format(subject, orderUuid);
     }
 }

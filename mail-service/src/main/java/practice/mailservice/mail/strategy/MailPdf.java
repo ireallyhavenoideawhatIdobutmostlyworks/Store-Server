@@ -21,8 +21,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 @Service
 @Log4j2
-public
-class MailPdf implements MailStrategy<ConsumerPdfPayload> {
+public class MailPdf implements MailStrategy<ConsumerPdfPayload> {
 
     private final JavaMailSender javaMailSender;
 
@@ -43,6 +42,7 @@ class MailPdf implements MailStrategy<ConsumerPdfPayload> {
                 mailContentInvoice,
                 consumerPdfPayload.getOrderUUID()
         );
+        String subject = String.format(mailSubjectInvoice, consumerPdfPayload.getOrderUUID());
         log.info("Prepared mail content");
 
         String pathToInvoice = String.format(outputPdfPath, consumerPdfPayload.getOrderUUID());
@@ -53,8 +53,8 @@ class MailPdf implements MailStrategy<ConsumerPdfPayload> {
                 .withSender(mailAddress)
                 .withRecipient(consumerPdfPayload.getEmail())
                 .withContent(content, false)
-                .withSubject(mailSubjectInvoice, consumerPdfPayload.getOrderUUID())
-                .withAttachmentIfExist(true, consumerPdfPayload.getOrderUUID(), pathToInvoice)
+                .withSubject(subject)
+                .withAttachmentIfExist(consumerPdfPayload.getOrderUUID(), pathToInvoice)
                 .build();
 
         javaMailSender.send(mail);

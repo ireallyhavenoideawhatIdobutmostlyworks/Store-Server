@@ -15,8 +15,7 @@ import javax.mail.internet.MimeMessage;
 @RequiredArgsConstructor
 @Service
 @Log4j2
-public
-class MailBank implements MailStrategy<ConsumerBankPayload> {
+public class MailBank implements MailStrategy<ConsumerBankPayload> {
 
     private final JavaMailSender javaMailSender;
 
@@ -36,14 +35,14 @@ class MailBank implements MailStrategy<ConsumerBankPayload> {
                 consumerBankPayload.getPaymentType().toString(),
                 consumerBankPayload.getIsPaymentSuccess()
         );
+        String subject = String.format(mailSubjectStatusOrder, consumerBankPayload.getOrderUUID());
         log.info("Prepared mail content");
 
         MimeMessage mail = new MailBuilder(javaMailSender)
                 .withSender(mailAddress)
                 .withRecipient(consumerBankPayload.getEmail())
                 .withContent(content, false)
-                .withSubject(mailSubjectStatusOrder, consumerBankPayload.getOrderUUID())
-                .withAttachmentIfExist(false, null, null)
+                .withSubject(subject)
                 .build();
 
         javaMailSender.send(mail);

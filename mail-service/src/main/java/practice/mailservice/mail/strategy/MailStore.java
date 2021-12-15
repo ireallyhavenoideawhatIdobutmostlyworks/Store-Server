@@ -15,8 +15,7 @@ import javax.mail.internet.MimeMessage;
 @RequiredArgsConstructor
 @Service
 @Log4j2
-public
-class MailStore implements MailStrategy<ConsumerStorePayload> {
+public class MailStore implements MailStrategy<ConsumerStorePayload> {
 
     private final JavaMailSender javaMailSender;
 
@@ -37,14 +36,14 @@ class MailStore implements MailStrategy<ConsumerStorePayload> {
                 consumerStorePayload.getOrderPrice(),
                 consumerStorePayload.getAccountNumber()
         );
+        String subject = String.format(mailSubjectNewOrder, consumerStorePayload.getOrderUUID());
         log.info("Prepared mail content");
 
         MimeMessage mail = new MailBuilder(javaMailSender)
                 .withSender(mailAddress)
                 .withRecipient(consumerStorePayload.getEmail())
                 .withContent(content, false)
-                .withSubject(mailSubjectNewOrder, consumerStorePayload.getOrderUUID())
-                .withAttachmentIfExist(false, null, null)
+                .withSubject(subject)
                 .build();
 
         javaMailSender.send(mail);

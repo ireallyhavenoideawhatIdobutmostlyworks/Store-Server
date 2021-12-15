@@ -9,8 +9,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -63,13 +61,11 @@ class MailServiceTest {
         mailPdf = new MailPdf(javaMailSender);
         mailStrategyFactory = new MailStrategyFactory(mailBank, mailStore, mailPdf);
 
-        setMimeMessageDetails();
         setValueForFields();
     }
 
 
     @DisplayName("Check if throw exception about unknown mail type")
-    @MockitoSettings(strictness = Strictness.LENIENT)
     @Test
     void getStrategy_unknownType_throwIllegalArgumentException() {
         // given
@@ -87,7 +83,6 @@ class MailServiceTest {
     }
 
     @DisplayName("Get instance of MailBank class from strategy factor")
-    @MockitoSettings(strictness = Strictness.LENIENT)
     @Test
     void getStrategy_mailBankType_instanceOfMailBankClass() {
         // when
@@ -99,7 +94,6 @@ class MailServiceTest {
     }
 
     @DisplayName("Get instance of StoreBank class from strategy factor")
-    @MockitoSettings(strictness = Strictness.LENIENT)
     @Test
     void getStrategy_mailStoreType_instanceOfMailStoreClass() {
         // when
@@ -111,7 +105,6 @@ class MailServiceTest {
     }
 
     @DisplayName("Get instance of PdfBank class from strategy factor")
-    @MockitoSettings(strictness = Strictness.LENIENT)
     @Test
     void getStrategy_mailPdfType_instanceOfMailPdfClass() {
         // when
@@ -126,6 +119,7 @@ class MailServiceTest {
     @Test
     void sendEmail_basedOnDataFromBank_succeed() throws MessagingException {
         // given
+        setMimeMessageDetails();
         ConsumerBankPayload consumerBankPayload = TestData.consumerBankPayload();
         String subject = String.format(mailSubjectStatusOrder, consumerBankPayload.getOrderUUID());
         String content = String.format(mailContentStatusOrder, consumerBankPayload.getOrderUUID(), consumerBankPayload.getPaymentType().toString(), consumerBankPayload.getIsPaymentSuccess());
@@ -153,6 +147,7 @@ class MailServiceTest {
     @Test
     void sendEmail_basedOnDataFromPdf_succeed() throws IOException, MessagingException {
         // given
+        setMimeMessageDetails();
         String testFileName = "testFileUnitTest";
         ConsumerPdfPayload consumerPdfPayload = TestData.consumerPdfPayload(outputPdfPath, testFileName);
         String subject = String.format(mailSubjectInvoice, consumerPdfPayload.getOrderUUID());
@@ -184,6 +179,7 @@ class MailServiceTest {
     @Test
     void sendEmail_basedOnDataFromStore_succeed() throws MessagingException {
         // given
+        setMimeMessageDetails();
         ConsumerStorePayload consumerStorePayload = TestData.consumerStorePayload();
         String subject = String.format(mailSubjectNewOrder, consumerStorePayload.getOrderUUID());
         String content = String.format(mailContentNewOrder, consumerStorePayload.getOrderUUID(), consumerStorePayload.getPaymentUUID(), consumerStorePayload.getOrderPrice(), consumerStorePayload.getAccountNumber());
