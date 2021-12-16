@@ -4,8 +4,10 @@ import com.icegreen.greenmail.store.FolderException;
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
 import org.apache.commons.mail.util.MimeMessageParser;
-import org.junit.jupiter.api.*;
-import org.springframework.amqp.rabbit.core.RabbitAdmin;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.test.RabbitListenerTest;
 import org.springframework.amqp.rabbit.test.RabbitListenerTestHarness;
@@ -31,7 +33,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(classes = RabbitMqConfigTest.class)
 @PropertySource("classpath:rabbitMail.properties")
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @RabbitListenerTest(capture = true)
 class MailIntegrationTest {
 
@@ -58,13 +59,19 @@ class MailIntegrationTest {
     @Value("${routing.key.from.store.to.email}")
     private String routingKeyFromStoreToEmail;
 
-    private GreenMail greenMail;
     private final String senderEmail = "your@awesome.store";
+    private static GreenMail greenMail;
 
-
-    static {
+    @BeforeAll
+    public static void setGreenMail() {
         runRabbitMqContainer();
         runMailHogContainer();
+        runGreenMail();
+    }
+
+    @AfterEach
+    public void setDown() throws FolderException {
+        greenMail.purgeEmailFromAllMailboxes();
     }
 
     @BeforeEach
@@ -72,17 +79,6 @@ class MailIntegrationTest {
         MockMvcBuilders
                 .webAppContextSetup(context)
                 .build();
-    }
-
-    @BeforeAll
-    public void setGreenMail() {
-        greenMail = new GreenMail(new ServerSetup(1025, "localhost", "smtp"));
-        greenMail.start();
-    }
-
-    @AfterEach
-    public void setDown() throws FolderException {
-        greenMail.purgeEmailFromAllMailboxes();
     }
 
 
@@ -232,5 +228,10 @@ class MailIntegrationTest {
                 .withEnv("host", "localhost")
                 .withEnv("port", "8025");
         mail.start();
+    }
+
+    private static void runGreenMail() {
+        greenMail = new GreenMail(new ServerSetup(1025, "localhost", "smtp"));
+        greenMail.start();
     }
 }
