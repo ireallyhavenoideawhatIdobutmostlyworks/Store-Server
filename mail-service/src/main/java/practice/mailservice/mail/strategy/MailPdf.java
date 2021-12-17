@@ -38,12 +38,7 @@ public class MailPdf implements MailStrategy<ConsumerPdfPayload> {
 
     @Override
     public void sendEmail(ConsumerPdfPayload consumerPdfPayload) throws IOException, MessagingException {
-        String content = String.format(
-                mailContentInvoice,
-                consumerPdfPayload.getOrderUUID()
-        );
-        String subject = String.format(mailSubjectInvoice, consumerPdfPayload.getOrderUUID());
-        log.info("Prepared mail content");
+        log.info("Prepare mail content, subject, invoice and MimeMessage");
 
         String pathToInvoice = String.format(outputPdfPath, consumerPdfPayload.getOrderUUID());
         createPdfInvoice(pathToInvoice, consumerPdfPayload.getFileData());
@@ -52,8 +47,8 @@ public class MailPdf implements MailStrategy<ConsumerPdfPayload> {
         MimeMessage mail = new MailBuilder(javaMailSender)
                 .withSender(mailAddress)
                 .withRecipient(consumerPdfPayload.getEmail())
-                .withContent(content, false)
-                .withSubject(subject)
+                .withContent(makeContent(consumerPdfPayload))
+                .withSubject(makeSubject(consumerPdfPayload))
                 .withAttachmentIfExist(consumerPdfPayload.getOrderUUID(), pathToInvoice)
                 .build();
 
@@ -64,5 +59,13 @@ public class MailPdf implements MailStrategy<ConsumerPdfPayload> {
 
     private void createPdfInvoice(String pathToInvoice, byte[] invoiceAsByte) throws IOException {
         FileUtils.writeByteArrayToFile(new File(pathToInvoice), invoiceAsByte);
+    }
+
+    private String makeContent(ConsumerPdfPayload consumerPdfPayload) {
+        return String.format(mailContentInvoice, consumerPdfPayload.getOrderUUID());
+    }
+
+    private String makeSubject(ConsumerPdfPayload consumerPdfPayload) {
+        return String.format(mailSubjectInvoice, consumerPdfPayload.getOrderUUID());
     }
 }

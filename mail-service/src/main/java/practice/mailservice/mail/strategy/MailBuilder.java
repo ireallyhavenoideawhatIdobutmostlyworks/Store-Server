@@ -32,8 +32,8 @@ public class MailBuilder {
         return this;
     }
 
-    MailBuilder withContent(String content, boolean html) throws MessagingException {
-        mimeMessageHelper.setText(content, html);
+    MailBuilder withContent(String content) throws MessagingException {
+        mimeMessageHelper.setText(content);
         return this;
     }
 

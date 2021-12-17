@@ -29,24 +29,30 @@ public class MailStore implements MailStrategy<ConsumerStorePayload> {
 
     @Override
     public void sendEmail(ConsumerStorePayload consumerStorePayload) throws MessagingException {
-        String content = String.format(
+        log.info("Prepare mail content, subject and MimeMessage");
+
+        MimeMessage mail = new MailBuilder(javaMailSender)
+                .withSender(mailAddress)
+                .withRecipient(consumerStorePayload.getEmail())
+                .withContent(makeContent(consumerStorePayload))
+                .withSubject(makeSubject(consumerStorePayload))
+                .build();
+
+        javaMailSender.send(mail);
+        log.info("Sent email to {} with data and invoice based on {}-service", consumerStorePayload.getEmail(), MailType.STORE);
+    }
+
+    private String makeContent(ConsumerStorePayload consumerStorePayload) {
+        return String.format(
                 mailContentNewOrder,
                 consumerStorePayload.getOrderUUID(),
                 consumerStorePayload.getPaymentUUID(),
                 consumerStorePayload.getOrderPrice(),
                 consumerStorePayload.getAccountNumber()
         );
-        String subject = String.format(mailSubjectNewOrder, consumerStorePayload.getOrderUUID());
-        log.info("Prepared mail content");
+    }
 
-        MimeMessage mail = new MailBuilder(javaMailSender)
-                .withSender(mailAddress)
-                .withRecipient(consumerStorePayload.getEmail())
-                .withContent(content, false)
-                .withSubject(subject)
-                .build();
-
-        javaMailSender.send(mail);
-        log.info("Sent email to {} with data and invoice based on {}-service", consumerStorePayload.getEmail(), MailType.STORE);
+    private String makeSubject(ConsumerStorePayload consumerStorePayload) {
+        return String.format(mailSubjectNewOrder, consumerStorePayload.getOrderUUID());
     }
 }

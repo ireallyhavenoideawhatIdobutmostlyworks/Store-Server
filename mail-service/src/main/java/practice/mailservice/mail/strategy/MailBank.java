@@ -29,23 +29,30 @@ public class MailBank implements MailStrategy<ConsumerBankPayload> {
 
     @Override
     public void sendEmail(ConsumerBankPayload consumerBankPayload) throws MessagingException {
-        String content = String.format(
+        log.info("Prepare mail content, subject and MimeMessage");
+
+        MimeMessage mail = new MailBuilder(javaMailSender)
+                .withSender(mailAddress)
+                .withRecipient(consumerBankPayload.getEmail())
+                .withContent(makeContent(consumerBankPayload))
+                .withSubject(makeSubject(consumerBankPayload))
+                .build();
+
+        javaMailSender.send(mail);
+        log.info("Sent email to {} with data and invoice based on {}-service", consumerBankPayload.getEmail(), MailType.BANK);
+    }
+
+
+    private String makeContent(ConsumerBankPayload consumerBankPayload) {
+        return String.format(
                 mailContentStatusOrder,
                 consumerBankPayload.getOrderUUID(),
                 consumerBankPayload.getPaymentType().toString(),
                 consumerBankPayload.getIsPaymentSuccess()
         );
-        String subject = String.format(mailSubjectStatusOrder, consumerBankPayload.getOrderUUID());
-        log.info("Prepared mail content");
+    }
 
-        MimeMessage mail = new MailBuilder(javaMailSender)
-                .withSender(mailAddress)
-                .withRecipient(consumerBankPayload.getEmail())
-                .withContent(content, false)
-                .withSubject(subject)
-                .build();
-
-        javaMailSender.send(mail);
-        log.info("Sent email to {} with data and invoice based on {}-service", consumerBankPayload.getEmail(), MailType.BANK);
+    private String makeSubject(ConsumerBankPayload consumerBankPayload) {
+        return String.format(mailSubjectStatusOrder, consumerBankPayload.getOrderUUID());
     }
 }
