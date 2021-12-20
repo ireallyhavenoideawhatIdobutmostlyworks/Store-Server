@@ -34,15 +34,15 @@ public class MailStore implements MailStrategy<ConsumerStorePayload> {
         MimeMessage mail = new MailBuilder(javaMailSender)
                 .withSender(mailAddress)
                 .withRecipient(consumerStorePayload.getEmail())
-                .withContent(makeContent(consumerStorePayload))
-                .withSubject(makeSubject(consumerStorePayload))
+                .withContent(prepareContent(consumerStorePayload))
+                .withSubject(prepareSubject(consumerStorePayload))
                 .build();
 
         javaMailSender.send(mail);
         log.info("Sent email to {} with data and invoice based on {}-service", consumerStorePayload.getEmail(), MailType.STORE);
     }
 
-    private String makeContent(ConsumerStorePayload consumerStorePayload) {
+    private String prepareContent(ConsumerStorePayload consumerStorePayload) {
         return String.format(
                 mailContentNewOrder,
                 consumerStorePayload.getOrderUUID(),
@@ -52,7 +52,7 @@ public class MailStore implements MailStrategy<ConsumerStorePayload> {
         );
     }
 
-    private String makeSubject(ConsumerStorePayload consumerStorePayload) {
+    private String prepareSubject(ConsumerStorePayload consumerStorePayload) {
         return String.format(mailSubjectNewOrder, consumerStorePayload.getOrderUUID());
     }
 }

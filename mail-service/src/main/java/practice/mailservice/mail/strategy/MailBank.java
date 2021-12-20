@@ -34,8 +34,8 @@ public class MailBank implements MailStrategy<ConsumerBankPayload> {
         MimeMessage mail = new MailBuilder(javaMailSender)
                 .withSender(mailAddress)
                 .withRecipient(consumerBankPayload.getEmail())
-                .withContent(makeContent(consumerBankPayload))
-                .withSubject(makeSubject(consumerBankPayload))
+                .withContent(prepareContent(consumerBankPayload))
+                .withSubject(prepareSubject(consumerBankPayload))
                 .build();
 
         javaMailSender.send(mail);
@@ -43,7 +43,7 @@ public class MailBank implements MailStrategy<ConsumerBankPayload> {
     }
 
 
-    private String makeContent(ConsumerBankPayload consumerBankPayload) {
+    private String prepareContent(ConsumerBankPayload consumerBankPayload) {
         return String.format(
                 mailContentStatusOrder,
                 consumerBankPayload.getOrderUUID(),
@@ -52,7 +52,7 @@ public class MailBank implements MailStrategy<ConsumerBankPayload> {
         );
     }
 
-    private String makeSubject(ConsumerBankPayload consumerBankPayload) {
+    private String prepareSubject(ConsumerBankPayload consumerBankPayload) {
         return String.format(mailSubjectStatusOrder, consumerBankPayload.getOrderUUID());
     }
 }
