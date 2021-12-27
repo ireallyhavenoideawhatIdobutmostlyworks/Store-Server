@@ -1,4 +1,4 @@
-package practice.mailservice.rabbit.bank;
+package practice.mailservice.rabbit.payloads.bank;
 
 public enum PaymentType {
 

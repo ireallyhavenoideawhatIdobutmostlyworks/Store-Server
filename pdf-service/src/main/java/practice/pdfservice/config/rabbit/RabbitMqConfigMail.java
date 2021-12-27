@@ -32,7 +32,7 @@ public class RabbitMqConfigMail {
     }
 
     @Bean
-    Binding bindingFromStoreToEmail() {
+    Binding bindingFromPdfToEmail() {
         return BindingBuilder.bind(queueFromPdfToEmail()).to(exchangeFromPdfToEmail()).with(routingKeyFromPdfToEmail);
     }
 }

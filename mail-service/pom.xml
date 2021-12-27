@@ -23,6 +23,7 @@
 		<!-- VERSIONS FOR SOURCE DEPENDENCIES -->
 		<commons-io.version>2.7</commons-io.version>
 		<apache.commons.email.version>1.5</apache.commons.email.version>
+		<greenmail-junit5.version>1.6.1</greenmail-junit5.version>
 	</properties>
 
 	<dependencies>
@@ -46,6 +47,14 @@
 			<artifactId>commons-email</artifactId>
 			<version>${apache.commons.email.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>com.icegreen</groupId>
+			<artifactId>greenmail-junit5</artifactId>
+			<version>${greenmail-junit5.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+
 	</dependencies>
 
 	<build>

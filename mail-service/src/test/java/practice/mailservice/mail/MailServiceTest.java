@@ -12,9 +12,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.test.util.ReflectionTestUtils;
-import practice.mailservice.rabbit.bank.ConsumerBankPayload;
-import practice.mailservice.rabbit.pdf.ConsumerPdfPayload;
-import practice.mailservice.rabbit.store.ConsumerStorePayload;
+import practice.mailservice.mail.strategy.*;
+import practice.mailservice.rabbit.payloads.bank.ConsumerBankPayload;
+import practice.mailservice.rabbit.payloads.pdf.ConsumerPdfPayload;
+import practice.mailservice.rabbit.payloads.store.ConsumerStorePayload;
 import practice.mailservice.testdata.TestData;
 
 import javax.mail.MessagingException;
@@ -22,10 +23,9 @@ import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
@@ -34,10 +34,16 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class MailServiceTest {
 
-    private MailService mailService;
     @Mock
     private JavaMailSender javaMailSender;
     private MimeMessageHelper helper;
+
+    private MailStrategyFactory mailStrategyFactory;
+
+    private MailBank mailBank;
+    private MailStore mailStore;
+    private MailPdf mailPdf;
+
     private final String mailAddress = "your@awesome.store";
     private final String mailSubjectNewOrder = "New order %s";
     private final String mailContentNewOrder = "Status for order. Details %s %s %.2f %s";
@@ -50,16 +56,70 @@ class MailServiceTest {
 
     @BeforeEach
     void setUp() throws MessagingException {
-        mailService = new MailService(javaMailSender);
+        mailBank = new MailBank(javaMailSender);
+        mailStore = new MailStore(javaMailSender);
+        mailPdf = new MailPdf(javaMailSender);
+        mailStrategyFactory = new MailStrategyFactory(mailBank, mailStore, mailPdf);
 
         setValueForFields();
-        setMimeMessageDetails();
+    }
+
+
+    @DisplayName("Check if throw exception about unknown mail type")
+    @Test
+    void getStrategy_unknownType_throwIllegalArgumentException() {
+        // given
+        MailType mailType = MailType.FAKE;
+
+
+        // when
+        Throwable exception = catchThrowable(() -> mailStrategyFactory.getStrategy(mailType));
+
+
+        // then
+        assertThat(exception)
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(String.format("Unknown type: %s", mailType));
+    }
+
+    @DisplayName("Get instance of MailBank class from strategy factor")
+    @Test
+    void getStrategy_mailBankType_instanceOfMailBankClass() {
+        // when
+        MailStrategy mailStrategy = mailStrategyFactory.getStrategy(MailType.BANK);
+
+
+        // then
+        assertThat(mailStrategy).isInstanceOf(MailBank.class);
+    }
+
+    @DisplayName("Get instance of StoreBank class from strategy factor")
+    @Test
+    void getStrategy_mailStoreType_instanceOfMailStoreClass() {
+        // when
+        MailStrategy mailStrategy = mailStrategyFactory.getStrategy(MailType.STORE);
+
+
+        // then
+        assertThat(mailStrategy).isInstanceOf(MailStore.class);
+    }
+
+    @DisplayName("Get instance of PdfBank class from strategy factor")
+    @Test
+    void getStrategy_mailPdfType_instanceOfMailPdfClass() {
+        // when
+        MailStrategy mailStrategy = mailStrategyFactory.getStrategy(MailType.PDF);
+
+
+        // then
+        assertThat(mailStrategy).isInstanceOf(MailPdf.class);
     }
 
     @DisplayName("Send email with data from Bank-Service")
     @Test
-    void sendEmail_basedOnDataFromBank_succeed() throws Exception {
+    void sendEmail_basedOnDataFromBank_succeed() throws MessagingException {
         // given
+        setMimeMessageDetails();
         ConsumerBankPayload consumerBankPayload = TestData.consumerBankPayload();
         String subject = String.format(mailSubjectStatusOrder, consumerBankPayload.getOrderUUID());
         String content = String.format(mailContentStatusOrder, consumerBankPayload.getOrderUUID(), consumerBankPayload.getPaymentType().toString(), consumerBankPayload.getIsPaymentSuccess());
@@ -67,7 +127,7 @@ class MailServiceTest {
 
 
         // when
-        mailService.sendEmail(consumerBankPayload);
+        mailBank.sendEmail(consumerBankPayload);
 
 
         // then
@@ -80,23 +140,24 @@ class MailServiceTest {
                 () -> assertEquals(parser(argument).getSubject(), subject),
                 () -> assertEquals(parser(argument).getPlainContent(), content)
         );
+
     }
 
     @DisplayName("Send email with data from Pdf-Service")
     @Test
-    void sendEmail_basedOnDataFromPdf_succeed() throws Exception {
+    void sendEmail_basedOnDataFromPdf_succeed() throws IOException, MessagingException {
         // given
-        ConsumerPdfPayload consumerPdfPayload = TestData.consumerPdfPayload();
-        String testFileName = "testFile";
+        setMimeMessageDetails();
+        String testFileName = "testFileUnitTest";
+        ConsumerPdfPayload consumerPdfPayload = TestData.consumerPdfPayload(outputPdfPath, testFileName);
         String subject = String.format(mailSubjectInvoice, consumerPdfPayload.getOrderUUID());
         String content = String.format(mailContentInvoice, consumerPdfPayload.getOrderUUID());
-        consumerPdfPayload.setFileData(convertPdfToByte(createPdfFile(testFileName).getPath()));
         addAttachment(consumerPdfPayload.getOrderUUID(), consumerPdfPayload.getFileData());
         setEmailDetails(helper, consumerPdfPayload.getEmail(), subject, content);
 
 
         // when
-        mailService.sendEmail(consumerPdfPayload);
+        mailPdf.sendEmail(consumerPdfPayload);
 
 
         // then
@@ -112,14 +173,13 @@ class MailServiceTest {
                 () -> assertEquals(parser(argument).getAttachmentList().get(0).getName(), String.format("%s.pdf", consumerPdfPayload.getOrderUUID())),
                 () -> assertEquals(parser(argument).getAttachmentList().get(0).getContentType(), "application/pdf")
         );
-
-        deleteFiles(consumerPdfPayload.getOrderUUID(), testFileName);
     }
 
     @DisplayName("Send email with data from Store-Service")
     @Test
-    void sendEmail_basedOnDataFromStore_succeed() throws Exception {
+    void sendEmail_basedOnDataFromStore_succeed() throws MessagingException {
         // given
+        setMimeMessageDetails();
         ConsumerStorePayload consumerStorePayload = TestData.consumerStorePayload();
         String subject = String.format(mailSubjectNewOrder, consumerStorePayload.getOrderUUID());
         String content = String.format(mailContentNewOrder, consumerStorePayload.getOrderUUID(), consumerStorePayload.getPaymentUUID(), consumerStorePayload.getOrderPrice(), consumerStorePayload.getAccountNumber());
@@ -127,7 +187,7 @@ class MailServiceTest {
 
 
         // when
-        mailService.sendEmail(consumerStorePayload);
+        mailStore.sendEmail(consumerStorePayload);
 
 
         // then
@@ -170,29 +230,17 @@ class MailServiceTest {
     }
 
     private void setValueForFields() {
-        ReflectionTestUtils.setField(mailService, "mailAddress", mailAddress);
-        ReflectionTestUtils.setField(mailService, "mailSubjectNewOrder", mailSubjectNewOrder);
-        ReflectionTestUtils.setField(mailService, "mailContentNewOrder", mailContentNewOrder);
-        ReflectionTestUtils.setField(mailService, "mailSubjectStatusOrder", mailSubjectStatusOrder);
-        ReflectionTestUtils.setField(mailService, "mailContentStatusOrder", mailContentStatusOrder);
-        ReflectionTestUtils.setField(mailService, "mailSubjectInvoice", mailSubjectInvoice);
-        ReflectionTestUtils.setField(mailService, "mailContentInvoice", mailContentInvoice);
-        ReflectionTestUtils.setField(mailService, "outputPdfPath", outputPdfPath);
-    }
+        ReflectionTestUtils.setField(mailStore, "mailAddress", mailAddress);
+        ReflectionTestUtils.setField(mailStore, "mailSubjectNewOrder", mailSubjectNewOrder);
+        ReflectionTestUtils.setField(mailStore, "mailContentNewOrder", mailContentNewOrder);
 
-    private byte[] convertPdfToByte(String outputPdfPath) throws IOException {
-        Path pdfPath = Paths.get(outputPdfPath);
-        return Files.readAllBytes(pdfPath);
-    }
+        ReflectionTestUtils.setField(mailBank, "mailAddress", mailAddress);
+        ReflectionTestUtils.setField(mailBank, "mailSubjectStatusOrder", mailSubjectStatusOrder);
+        ReflectionTestUtils.setField(mailBank, "mailContentStatusOrder", mailContentStatusOrder);
 
-    private File createPdfFile(String testFileName) throws IOException {
-        File file = new File(String.format(outputPdfPath, testFileName));
-        file.createNewFile();
-        return file;
-    }
-
-    private void deleteFiles(String payloadPdfName, String pdfTestFileName) {
-        new File(String.format(outputPdfPath, payloadPdfName)).deleteOnExit();
-        new File(String.format(outputPdfPath, pdfTestFileName)).deleteOnExit();
+        ReflectionTestUtils.setField(mailPdf, "mailAddress", mailAddress);
+        ReflectionTestUtils.setField(mailPdf, "mailSubjectInvoice", mailSubjectInvoice);
+        ReflectionTestUtils.setField(mailPdf, "mailContentInvoice", mailContentInvoice);
+        ReflectionTestUtils.setField(mailPdf, "outputPdfPath", outputPdfPath);
     }
 }
