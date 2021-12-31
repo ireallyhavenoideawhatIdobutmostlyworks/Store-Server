@@ -25,9 +25,9 @@ public abstract class TestData {
                 .build();
     }
 
-    public static ConsumerBankPayload consumerBankPayload() {
+    public static ConsumerBankPayload consumerBankPayload(String orderUUID) {
         return ConsumerBankPayload.builder()
-                .orderUUID("orderBankUUID")
+                .orderUUID(orderUUID)
                 .paymentUUID("paymentBankUUID")
                 .orderPrice(BigDecimal.valueOf(100).setScale(2, RoundingMode.CEILING))
                 .accountNumber("bankAccountNumber")
@@ -39,7 +39,7 @@ public abstract class TestData {
 
     public static ConsumerPdfPayload consumerPdfPayload(String outputPdfPath, String testFileName) throws IOException {
         return ConsumerPdfPayload.builder()
-                .orderUUID("orderPdfUUID")
+                .orderUUID(testFileName)
                 .email("pdf@test.email")
                 .fileData(convertPdfToByte(createPdfFile(outputPdfPath, testFileName).getPath()))
                 .build();

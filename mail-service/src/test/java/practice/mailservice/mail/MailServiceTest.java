@@ -2,9 +2,7 @@ package practice.mailservice.mail;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.mail.util.MimeMessageParser;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
@@ -22,6 +20,7 @@ import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
 import java.io.File;
 import java.io.IOException;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -43,22 +42,29 @@ class MailServiceTest {
     private final String mailContentStatusOrder = "Status for order. Details %s %s %b";
     private final String mailSubjectInvoice = "Invoice for order %s";
     private final String mailContentInvoice = "Invoice for order. Details %s";
-    private final String outputPdfPath = "src/test/java/practice/mailservice/testfiles/%s.pdf";
+
+    private static final String outputDir = "src/test/java/practice/mailservice/testfiles/";
+    private final String outputPdfPath = outputDir + "%s.pdf";
+    private String fileName;
 
 
     @BeforeEach
-    void setUp() throws MessagingException {
+    void setUp() throws MessagingException, IOException {
         mailService = new MailService(javaMailSender);
 
         setValueForFields();
         setMimeMessageDetails();
+
+        FileUtils.cleanDirectory(new File(outputDir));
+        createTestFile();
     }
+
 
     @DisplayName("Send email with data from Bank-Service")
     @Test
     void sendEmail_basedOnDataFromBank_succeed() throws Exception {
         // given
-        ConsumerBankPayload consumerBankPayload = TestData.consumerBankPayload();
+        ConsumerBankPayload consumerBankPayload = TestData.consumerBankPayload(fileName);
         String subject = String.format(mailSubjectStatusOrder, consumerBankPayload.getOrderUUID());
         String content = String.format(mailContentStatusOrder, consumerBankPayload.getOrderUUID(), consumerBankPayload.getPaymentType().toString(), consumerBankPayload.getIsPaymentSuccess());
         setEmailDetails(helper, consumerBankPayload.getEmail(), subject, content);
@@ -84,8 +90,7 @@ class MailServiceTest {
     @Test
     void sendEmail_basedOnDataFromPdf_succeed() throws Exception {
         // given
-        String testFileName = "testFileUnitTest";
-        ConsumerPdfPayload consumerPdfPayload = TestData.consumerPdfPayload(outputPdfPath, testFileName);
+        ConsumerPdfPayload consumerPdfPayload = TestData.consumerPdfPayload(outputPdfPath, fileName);
         String subject = String.format(mailSubjectInvoice, consumerPdfPayload.getOrderUUID());
         String content = String.format(mailContentInvoice, consumerPdfPayload.getOrderUUID());
         addAttachment(consumerPdfPayload.getOrderUUID(), consumerPdfPayload.getFileData());
@@ -173,5 +178,11 @@ class MailServiceTest {
         ReflectionTestUtils.setField(mailService, "mailSubjectInvoice", mailSubjectInvoice);
         ReflectionTestUtils.setField(mailService, "mailContentInvoice", mailContentInvoice);
         ReflectionTestUtils.setField(mailService, "outputPdfPath", outputPdfPath);
+    }
+
+    private void createTestFile() throws IOException {
+        fileName = UUID.randomUUID().toString();
+        String filePath = String.format(outputPdfPath, fileName);
+        new File(filePath).createNewFile();
     }
 }

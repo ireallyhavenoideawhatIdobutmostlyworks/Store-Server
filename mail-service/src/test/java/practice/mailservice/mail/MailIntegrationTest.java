@@ -3,8 +3,12 @@ package practice.mailservice.mail;
 import com.icegreen.greenmail.store.FolderException;
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.mail.util.MimeMessageParser;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.test.RabbitListenerTest;
 import org.springframework.amqp.rabbit.test.RabbitListenerTestHarness;
@@ -23,6 +27,9 @@ import practice.mailservice.testdata.TestData;
 
 import javax.mail.Message;
 import javax.mail.internet.MimeMessage;
+import java.io.File;
+import java.io.IOException;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -30,7 +37,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(classes = RabbitMqConfigTest.class)
 @PropertySource("classpath:rabbitMail.properties")
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @RabbitListenerTest(capture = true)
 class MailIntegrationTest {
 
@@ -57,26 +63,29 @@ class MailIntegrationTest {
     @Value("${routing.key.from.store.to.email}")
     private String routingKeyFromStoreToEmail;
 
-    private GreenMail greenMail;
+    private static GreenMail greenMail;
     private final String senderEmail = "your@awesome.store";
 
+    private final String outputDir = "docs/";
+    private final String outputPdfPath = outputDir + "%s.pdf";
+    private String fileName;
 
-    static {
+
+    @BeforeAll
+    public static void setGreenMail() {
         runRabbitMqContainer();
         runMailHogContainer();
+        runGreenMail();
     }
 
     @BeforeEach
-    public void setup() {
+    public void setup() throws IOException {
         MockMvcBuilders
                 .webAppContextSetup(context)
                 .build();
-    }
 
-    @BeforeAll
-    public void setGreenMail() {
-        greenMail = new GreenMail(new ServerSetup(1025, "localhost", "smtp"));
-        greenMail.start();
+        FileUtils.cleanDirectory(new File(outputDir));
+        createTestFile();
     }
 
     @AfterEach
@@ -88,7 +97,7 @@ class MailIntegrationTest {
     @Test
     void sendEmail_basedOnDataFromBank_succeed() throws Exception {
         // given
-        ConsumerBankPayload consumerBankPayload = TestData.consumerBankPayload();
+        ConsumerBankPayload consumerBankPayload = TestData.consumerBankPayload(fileName);
 
 
         // when
@@ -128,7 +137,7 @@ class MailIntegrationTest {
     @Test
     void sendEmail_basedOnDataFromPdf_succeed() throws Exception {
         // given
-        ConsumerPdfPayload consumerPdfPayload = TestData.consumerPdfPayload("src/test/java/practice/mailservice/testfiles/%s.pdf", "inputTestFile");
+        ConsumerPdfPayload consumerPdfPayload = TestData.consumerPdfPayload(outputPdfPath, fileName);
 
 
         // when
@@ -231,5 +240,16 @@ class MailIntegrationTest {
                 .withEnv("host", "localhost")
                 .withEnv("port", "8025");
         mail.start();
+    }
+
+    private static void runGreenMail() {
+        greenMail = new GreenMail(new ServerSetup(1025, "localhost", "smtp"));
+        greenMail.start();
+    }
+
+    private void createTestFile() throws IOException {
+        fileName = UUID.randomUUID().toString();
+        String filePath = String.format(outputPdfPath, fileName);
+        new File(filePath).createNewFile();
     }
 }
