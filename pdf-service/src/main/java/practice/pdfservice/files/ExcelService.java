@@ -34,10 +34,6 @@ public class ExcelService {
     private String sellerStreet;
     @Value("${seller.street.number}")
     private String sellerStreetNumber;
-    @Value("${seller.mobile.number}")
-    private String sellerMobileNumber;
-    @Value("${seller.email}")
-    private String sellerEmail;
 
     @Value("${output.excel.path}")
     private String outputExcelPath;
@@ -59,7 +55,7 @@ public class ExcelService {
             invoiceAsExcel.write(os);
             log.info("Create excel file with Order UUID: {}", orderUuid);
         } catch (IOException e) {
-            log.error("{}.{}", e.getMessage(), consumerStorePayload);
+            log.error("{}, path: {}", e.getMessage(), outputPath);
         }
     }
 

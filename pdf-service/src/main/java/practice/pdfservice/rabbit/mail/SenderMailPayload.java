@@ -1,15 +1,17 @@
 package practice.pdfservice.rabbit.mail;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
+@Data
 public class SenderMailPayload {
 
-    @JsonProperty
     private String orderUUID;
-    @JsonProperty
     private byte[] fileData;
-    @JsonProperty
     private String email;
 }

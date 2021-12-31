@@ -55,7 +55,7 @@ class MailServiceTest {
 
 
     @BeforeEach
-    void setUp() throws MessagingException {
+    void setUp() {
         mailBank = new MailBank(javaMailSender);
         mailStore = new MailStore(javaMailSender);
         mailPdf = new MailPdf(javaMailSender);

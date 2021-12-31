@@ -20,8 +20,6 @@ public class InvoiceService {
     private final PdfService pdfService;
     private final SenderMailService senderMailService;
 
-    @Value("${output.excel.path}")
-    private String outputExcelPath;
     @Value("${output.pdf.path}")
     private String outputPdfPath;
 
