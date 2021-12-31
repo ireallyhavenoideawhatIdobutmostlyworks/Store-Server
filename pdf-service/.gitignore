@@ -38,5 +38,5 @@ build/
 !/HELP.md
 
 !/.mvn/
-!/docs/
-!/testFiles/
+!/docs/*
+!/testFiles/*
