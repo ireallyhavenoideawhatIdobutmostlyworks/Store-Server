@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 
 @PropertySource({
         "classpath:seller.properties",
-        "classpath:excel.properties"
+        "classpath:file.properties"
 })
 @Service
 @Log4j2

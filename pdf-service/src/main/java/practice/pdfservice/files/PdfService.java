@@ -8,7 +8,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import practice.pdfservice.rabbit.store.ConsumerStorePayload;
 
-@PropertySource("classpath:excel.properties")
+@PropertySource("classpath:file.properties")
 @Service
 @Log4j2
 public class PdfService {
