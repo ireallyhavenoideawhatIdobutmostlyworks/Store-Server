@@ -16,9 +16,8 @@
 
 	<groupId>practice</groupId>
 	<artifactId>store-service</artifactId>
-	<version>1</version>
 	<name>store-service</name>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 
 
     <properties>
@@ -94,14 +93,23 @@
 
 
     <build>
+        <finalName>store-service</finalName>
         <pluginManagement>
             <plugins>
                 <plugin>
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-maven-plugin</artifactId>
                     <configuration>
+                        <mainClass>practice.store.StoreApplication</mainClass>
                         <skip>false</skip>
                     </configuration>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>repackage</goal>
+                            </goals>
+                        </execution>
+                    </executions>
                 </plugin>
                 <plugin>
                     <groupId>org.codehaus.gmavenplus</groupId>

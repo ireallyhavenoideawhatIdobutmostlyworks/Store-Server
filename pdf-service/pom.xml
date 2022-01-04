@@ -16,9 +16,8 @@
 
     <groupId>practice</groupId>
     <artifactId>pdf-service</artifactId>
-    <version>1</version>
     <name>pdf-service</name>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
 
 
     <properties>
@@ -53,14 +52,23 @@
 
 
     <build>
+        <finalName>pdf-service</finalName>
         <pluginManagement>
             <plugins>
                 <plugin>
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-maven-plugin</artifactId>
                     <configuration>
+                        <mainClass>practice.pdfservice.PdfServiceApplication</mainClass>
                         <skip>false</skip>
                     </configuration>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>repackage</goal>
+                            </goals>
+                        </execution>
+                    </executions>
                 </plugin>
             </plugins>
         </pluginManagement>

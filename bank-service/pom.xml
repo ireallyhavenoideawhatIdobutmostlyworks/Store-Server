@@ -15,19 +15,27 @@
 
 	<groupId>practice</groupId>
 	<artifactId>bank-service</artifactId>
-	<version>1</version>
 	<name>bank-service</name>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 
 	<build>
+		<finalName>bank-service</finalName>
 		<pluginManagement>
 			<plugins>
 				<plugin>
 					<groupId>org.springframework.boot</groupId>
 					<artifactId>spring-boot-maven-plugin</artifactId>
 					<configuration>
+						<mainClass>practice.bank.BankApplication</mainClass>
 						<skip>false</skip>
 					</configuration>
+					<executions>
+						<execution>
+							<goals>
+								<goal>repackage</goal>
+							</goals>
+						</execution>
+					</executions>
 				</plugin>
 			</plugins>
 		</pluginManagement>

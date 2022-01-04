@@ -1,0 +1,92 @@
+version: '3.8'
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    restart: always
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+      - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+    networks:
+      - rabbitmq_net
+
+  mailhog:
+    image: mailhog/mailhog
+    container_name: mailhog
+    restart: always
+    ports:
+      - 1025:1025
+      - 8025:8025
+    networks:
+      - mailhog_net
+
+
+  store-service:
+    image: store-service
+    container_name: store-service
+    restart: always
+    ports:
+      - 8082:8082
+    networks:
+      - store-service_net
+    depends_on:
+      - rabbitmq
+      - mailhog
+
+  bank-service:
+    build: ./bank-service
+    image: bank-service
+    container_name: bank-service
+    restart: always
+    ports:
+      - 8083:8083
+    networks:
+      - bank-service_net
+    depends_on:
+      - rabbitmq
+      - mailhog
+
+  pdf-service:
+    build: ./pdf-service
+    image: pdf-service
+    container_name: pdf-service
+    restart: always
+    ports:
+      - 8081:8081
+    networks:
+      - pdf-service_net
+    depends_on:
+      - rabbitmq
+      - mailhog
+
+  mail-service:
+    build: ./mail-service
+    image: mail-service
+    container_name: mail-service
+    restart: always
+    ports:
+      - 8084:8084
+    networks:
+      - mail-service_net
+    depends_on:
+      - rabbitmq
+      - mailhog
+
+
+networks:
+  rabbitmq_net:
+    driver: bridge
+  mailhog_net:
+    driver: bridge
+  store-service_net:
+    driver: bridge
+  bank-service_net:
+    driver: bridge
+  pdf-service_net:
+    driver: bridge
+  mail-service_net:
+    driver: bridge

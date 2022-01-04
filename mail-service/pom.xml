@@ -15,9 +15,8 @@
 
 	<groupId>practice</groupId>
 	<artifactId>mail-service</artifactId>
-	<version>1</version>
 	<name>mail-service</name>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 
 	<properties>
 		<!-- VERSIONS FOR SOURCE DEPENDENCIES -->
@@ -58,14 +57,23 @@
 	</dependencies>
 
 	<build>
+		<finalName>mail-service</finalName>
 		<pluginManagement>
 			<plugins>
 				<plugin>
 					<groupId>org.springframework.boot</groupId>
 					<artifactId>spring-boot-maven-plugin</artifactId>
 					<configuration>
+						<mainClass>practice.mailservice.MailServiceApplication</mainClass>
 						<skip>false</skip>
 					</configuration>
+					<executions>
+						<execution>
+							<goals>
+								<goal>repackage</goal>
+							</goals>
+						</execution>
+					</executions>
 				</plugin>
 			</plugins>
 		</pluginManagement>
