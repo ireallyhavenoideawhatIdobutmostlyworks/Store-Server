@@ -39,4 +39,4 @@ build/
 
 !/.mvn/
 !/docs/*
-src/test/java/practice/mailservice/testfiles/*
+src/test/java/practice/mailservice/testFiles/*
