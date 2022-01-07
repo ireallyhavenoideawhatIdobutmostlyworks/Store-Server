@@ -19,8 +19,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.UUID;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("Tests for pdf service")
@@ -35,7 +33,7 @@ class PdfServiceTest {
     @BeforeEach
     void setUp() throws IOException {
         pdfService = new PdfService();
-        setValueToPrivateFieldsBelongToPdfServiceClass();
+        initializeServiceProperties();
         FileUtils.cleanDirectory(new File(pathToDirectory));
     }
 
@@ -45,7 +43,7 @@ class PdfServiceTest {
     void convertExcelToPdf_basedOnDataFromStore_succeed() throws IOException {
         // given
         String fileName = UUID.randomUUID().toString();
-        createTextExcel(outputExcelPath, fileName);
+        createEmptyExcel(outputExcelPath, fileName);
         ConsumerStorePayload consumerStorePayload = TestData.consumerStorePayload();
         consumerStorePayload.getOrderPdfDetails().setOrderUUID(fileName);
 
@@ -56,17 +54,17 @@ class PdfServiceTest {
 
         // then
         String expectedName = String.format("%s.pdf", fileName);
-        assertThat(outputPath, containsString(expectedName));
+        assertEquals(expectedName, new File(outputPath).getName());
     }
 
 
-    private void createTextExcel(String path, String excelName) throws IOException {
+    private void createEmptyExcel(String path, String excelName) throws IOException {
         Workbook invoiceAsExcel = new HSSFWorkbook();
         OutputStream os = new FileOutputStream(String.format(path, excelName));
         invoiceAsExcel.write(os);
     }
 
-    private void setValueToPrivateFieldsBelongToPdfServiceClass() {
+    private void initializeServiceProperties() {
         ReflectionTestUtils.setField(pdfService, "outputExcelPath", outputExcelPath);
         String outputPdfPath = pathToDirectory + "/%s.pdf";
         ReflectionTestUtils.setField(pdfService, "outputPdfPath", outputPdfPath);

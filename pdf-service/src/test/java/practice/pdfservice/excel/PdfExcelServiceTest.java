@@ -15,8 +15,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("Tests for pdf excel service")
@@ -31,7 +29,7 @@ class PdfExcelServiceTest {
     @BeforeEach
     void setUp() throws IOException {
         excelService = new ExcelService();
-        setValueToPrivateFieldsBelongToExcelServiceClass();
+        initializeServiceProperties();
         FileUtils.cleanDirectory(new File(pathToDirectory));
     }
 
@@ -51,11 +49,11 @@ class PdfExcelServiceTest {
 
         // then
         String expectedName = String.format("%s.xls", excelFileName);
-        assertThat(outputPath, containsString(expectedName));
+        assertEquals(expectedName, new File(outputPath).getName());
     }
 
 
-    private void setValueToPrivateFieldsBelongToExcelServiceClass() {
+    private void initializeServiceProperties() {
         ReflectionTestUtils.setField(excelService, "sellerName", "sellerName");
         ReflectionTestUtils.setField(excelService, "sellerNip", "sellerNip");
         ReflectionTestUtils.setField(excelService, "sellerCity", "sellerCity");
