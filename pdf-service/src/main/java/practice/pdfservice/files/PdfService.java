@@ -19,7 +19,7 @@ public class PdfService {
     private String outputPdfPath;
 
 
-    public void convertExcelToPdf(ConsumerStorePayload consumerStorePayload) {
+    public String convertExcelToPdf(ConsumerStorePayload consumerStorePayload) {
         String orderUUID = consumerStorePayload.getOrderPdfDetails().getOrderUUID();
         String excelPath = String.format(outputExcelPath, orderUUID);
         String pdfPath = String.format(outputPdfPath, orderUUID);
@@ -27,6 +27,8 @@ public class PdfService {
         Workbook workbook = new Workbook();
         workbook.loadFromFile(excelPath);
         workbook.saveToFile(pdfPath, FileFormat.PDF);
-        log.info("Convert excel file to pdf file for Order UUID: {}", orderUUID);
+        log.info("Convert excel file to pdf file for Order UUID: {}. Path: {}", orderUUID, pdfPath);
+
+        return pdfPath;
     }
 }

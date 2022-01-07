@@ -39,7 +39,7 @@ public class ExcelService {
     private String outputExcelPath;
 
 
-    public void createExcelFile(ConsumerStorePayload consumerStorePayload) {
+    public String createExcelFile(ConsumerStorePayload consumerStorePayload) {
         String orderUuid = consumerStorePayload.getOrderPdfDetails().getOrderUUID();
         String outputPath = String.format(outputExcelPath, orderUuid);
 
@@ -53,10 +53,12 @@ public class ExcelService {
             addProductHeader(sheet);
             addProductContent(sheet, consumerStorePayload);
             invoiceAsExcel.write(os);
-            log.info("Create excel file with Order UUID: {}", orderUuid);
+            log.info("Create excel file with Order UUID: {}. Path: {}", orderUuid, outputPath);
         } catch (IOException e) {
             log.error("{}, path: {}", e.getMessage(), outputPath);
         }
+
+        return outputPath;
     }
 
 

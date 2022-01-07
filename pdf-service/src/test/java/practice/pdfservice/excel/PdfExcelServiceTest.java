@@ -15,6 +15,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("Tests for pdf excel service")
@@ -24,13 +26,12 @@ class PdfExcelServiceTest {
     private ExcelService excelService;
 
     private final String pathToDirectory = "src/test/java/practice/pdfservice/testfiles";
-    private final String outputExcelPath = pathToDirectory + "/%s.xls";
 
 
     @BeforeEach
     void setUp() throws IOException {
         excelService = new ExcelService();
-        setValueForFields();
+        setValueToPrivateFieldsBelongToExcelServiceClass();
         FileUtils.cleanDirectory(new File(pathToDirectory));
     }
 
@@ -43,26 +44,25 @@ class PdfExcelServiceTest {
         ConsumerStorePayload consumerStorePayload = TestData.consumerStorePayload();
         consumerStorePayload.getOrderPdfDetails().setOrderUUID(excelFileName);
 
-        String outputPath = String.format(outputExcelPath, excelFileName);
-
 
         // when
-        excelService.createExcelFile(consumerStorePayload);
+        String outputPath = excelService.createExcelFile(consumerStorePayload);
 
 
         // then
         String expectedName = String.format("%s.xls", excelFileName);
-        assertEquals(expectedName, new File(outputPath).getName());
+        assertThat(outputPath, containsString(expectedName));
     }
 
 
-    private void setValueForFields() {
+    private void setValueToPrivateFieldsBelongToExcelServiceClass() {
         ReflectionTestUtils.setField(excelService, "sellerName", "sellerName");
         ReflectionTestUtils.setField(excelService, "sellerNip", "sellerNip");
         ReflectionTestUtils.setField(excelService, "sellerCity", "sellerCity");
         ReflectionTestUtils.setField(excelService, "sellerCityPostalCode", "sellerCityPostalCode");
         ReflectionTestUtils.setField(excelService, "sellerStreet", "sellerStreet");
         ReflectionTestUtils.setField(excelService, "sellerStreetNumber", "sellerStreetNumber");
+        String outputExcelPath = pathToDirectory + "/%s.xls";
         ReflectionTestUtils.setField(excelService, "outputExcelPath", outputExcelPath);
     }
 }

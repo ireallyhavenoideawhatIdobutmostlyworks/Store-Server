@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.UUID;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("Tests for pdf service")
@@ -28,13 +30,12 @@ class PdfServiceTest {
     private PdfService pdfService;
 
     private final String pathToDirectory = "src/test/java/practice/pdfservice/testfiles";
-    private final String outputPdfPath = pathToDirectory + "/%s.pdf";
     private final String outputExcelPath = pathToDirectory + "/%s.xls";
 
     @BeforeEach
     void setUp() throws IOException {
         pdfService = new PdfService();
-        setValueForFields();
+        setValueToPrivateFieldsBelongToPdfServiceClass();
         FileUtils.cleanDirectory(new File(pathToDirectory));
     }
 
@@ -50,13 +51,12 @@ class PdfServiceTest {
 
 
         // when
-        pdfService.convertExcelToPdf(consumerStorePayload);
+        String outputPath = pdfService.convertExcelToPdf(consumerStorePayload);
 
 
         // then
-        String pdfPath = String.format(outputPdfPath, fileName);
         String expectedName = String.format("%s.pdf", fileName);
-        assertEquals(expectedName, new File(pdfPath).getName());
+        assertThat(outputPath, containsString(expectedName));
     }
 
 
@@ -66,8 +66,9 @@ class PdfServiceTest {
         invoiceAsExcel.write(os);
     }
 
-    private void setValueForFields() {
+    private void setValueToPrivateFieldsBelongToPdfServiceClass() {
         ReflectionTestUtils.setField(pdfService, "outputExcelPath", outputExcelPath);
+        String outputPdfPath = pathToDirectory + "/%s.pdf";
         ReflectionTestUtils.setField(pdfService, "outputPdfPath", outputPdfPath);
     }
 }
