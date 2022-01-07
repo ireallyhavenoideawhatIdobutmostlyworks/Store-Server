@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 
 @PropertySource({
         "classpath:seller.properties",
-        "classpath:excel.properties"
+        "classpath:file.properties"
 })
 @Service
 @Log4j2
@@ -34,16 +34,12 @@ public class ExcelService {
     private String sellerStreet;
     @Value("${seller.street.number}")
     private String sellerStreetNumber;
-    @Value("${seller.mobile.number}")
-    private String sellerMobileNumber;
-    @Value("${seller.email}")
-    private String sellerEmail;
 
     @Value("${output.excel.path}")
     private String outputExcelPath;
 
 
-    public void createExcelFile(ConsumerStorePayload consumerStorePayload) {
+    public String createExcelFile(ConsumerStorePayload consumerStorePayload) {
         String orderUuid = consumerStorePayload.getOrderPdfDetails().getOrderUUID();
         String outputPath = String.format(outputExcelPath, orderUuid);
 
@@ -57,10 +53,12 @@ public class ExcelService {
             addProductHeader(sheet);
             addProductContent(sheet, consumerStorePayload);
             invoiceAsExcel.write(os);
-            log.info("Create excel file with Order UUID: {}", orderUuid);
+            log.info("Create excel file with Order UUID: {}. Path: {}", orderUuid, outputPath);
         } catch (IOException e) {
-            log.error("{}.{}", e.getMessage(), consumerStorePayload);
+            log.error("{}, path: {}", e.getMessage(), outputPath);
         }
+
+        return outputPath;
     }
 
 

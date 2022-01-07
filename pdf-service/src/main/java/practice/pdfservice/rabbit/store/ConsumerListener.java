@@ -10,15 +10,15 @@ import practice.pdfservice.invoice.InvoiceService;
 import java.io.IOException;
 
 @Service
-@Data
 @Log4j2
-public class ConsumerStoreService {
+@Data
+public class ConsumerListener {
 
     @Autowired
     private InvoiceService invoiceService;
 
 
-    @RabbitListener(queues = "${queue.from.store.to.pdf}")
+    @RabbitListener(id = "store", queues = "${queue.from.store.to.pdf}")
     public void receivedMessage(ConsumerStorePayload consumerStorePayload) throws IOException {
         log.info("Consume storePayload object from store-service. Payload: {}", consumerStorePayload);
         invoiceService.create(consumerStorePayload);
