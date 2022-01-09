@@ -38,4 +38,5 @@ build/
 !/HELP.md
 
 !/.mvn/
-!/src/main/resources/docs/*
+!/docs/*
+src/test/java/practice/mailservice/testFiles/*

@@ -4,6 +4,7 @@ import com.icegreen.greenmail.store.FolderException;
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
 import org.apache.commons.mail.util.MimeMessageParser;
+import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,6 +27,9 @@ import practice.mailservice.testdata.TestData;
 
 import javax.mail.Message;
 import javax.mail.internet.MimeMessage;
+import java.io.File;
+import java.io.IOException;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -62,6 +66,10 @@ class MailIntegrationTest {
     private final String senderEmail = "your@awesome.store";
     private static GreenMail greenMail;
 
+    private final String outputDir = "docs/";
+    private final String outputPdfPath = outputDir + "%s.pdf";
+    private String fileName;
+
     @BeforeAll
     public static void setGreenMail() {
         runRabbitMqContainer();
@@ -75,17 +83,20 @@ class MailIntegrationTest {
     }
 
     @BeforeEach
-    public void setup() {
+    public void setup() throws IOException {
         MockMvcBuilders
                 .webAppContextSetup(context)
                 .build();
+
+        FileUtils.cleanDirectory(new File(outputDir));
+        createTestFile();
     }
 
 
     @Test
     void sendEmail_basedOnDataFromBank_succeed() throws Exception {
         // given
-        ConsumerBankPayload consumerBankPayload = TestData.consumerBankPayload();
+        ConsumerBankPayload consumerBankPayload = TestData.consumerBankPayload(fileName);
 
 
         // when
@@ -125,7 +136,7 @@ class MailIntegrationTest {
     @Test
     void sendEmail_basedOnDataFromPdf_succeed() throws Exception {
         // given
-        ConsumerPdfPayload consumerPdfPayload = TestData.consumerPdfPayload("src/test/java/practice/mailservice/testfiles/%s.pdf", "inputTestFile");
+        ConsumerPdfPayload consumerPdfPayload = TestData.consumerPdfPayload(outputPdfPath, fileName);
 
 
         // when
@@ -233,5 +244,11 @@ class MailIntegrationTest {
     private static void runGreenMail() {
         greenMail = new GreenMail(new ServerSetup(1025, "localhost", "smtp"));
         greenMail.start();
+    }
+
+    private void createTestFile() throws IOException {
+        fileName = UUID.randomUUID().toString();
+        String filePath = String.format(outputPdfPath, fileName);
+        new File(filePath).createNewFile();
     }
 }

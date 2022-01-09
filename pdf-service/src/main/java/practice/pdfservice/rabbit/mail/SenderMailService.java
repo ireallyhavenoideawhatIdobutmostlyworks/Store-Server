@@ -28,7 +28,7 @@ public class SenderMailService {
         byte[] pdfAsBytes = convertPdfToByte(outputPdfPath);
         SenderMailPayload senderMailPayload = prepareSenderMailPayload(pdfAsBytes, orderUUID, customerMailAddress);
 
-        log.info("Send mailPayload object to mail-service. Payload: {}", senderMailPayload);
+        log.info("Send mailPayload object to mail-service. Email: {}, Order UUID: {}", senderMailPayload.getEmail(), senderMailPayload.getOrderUUID());
         rabbitTemplate.convertAndSend(queueFromPdfToEmail, senderMailPayload);
     }
 
