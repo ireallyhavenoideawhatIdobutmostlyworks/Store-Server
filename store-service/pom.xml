@@ -13,13 +13,11 @@
         <version>1</version>
 	</parent>
 
-
 	<groupId>practice</groupId>
 	<artifactId>store-service</artifactId>
 	<version>1</version>
 	<name>store-service</name>
 	<packaging>war</packaging>
-
 
     <properties>
         <!-- VERSIONS FOR SOURCE DEPENDENCIES -->

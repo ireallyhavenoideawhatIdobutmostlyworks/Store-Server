@@ -18,6 +18,7 @@
         <module>mail-service</module>
         <module>pdf-service</module>
         <module>store-service</module>
+        <module>storage-service</module>
     </modules>
 
     <groupId>org.example</groupId>
