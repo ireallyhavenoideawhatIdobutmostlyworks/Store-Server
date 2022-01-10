@@ -2,7 +2,6 @@ package practice.storage.product;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
@@ -52,124 +51,77 @@ public class ProductService {
     }
 
     public boolean save(ProductPayload productPayload) {
-        boolean isSavedSuccess = isProductNotWithdrawFromSale(productPayload.getAvailability()) && isProductUuidExist(productPayload.getProductUUID());
+        boolean isProductNotWithdrawFromSale = isProductNotWithdrawFromSale(productPayload.getAvailability());
+        boolean isProductUuidExist = isProductUuidExist(productPayload.getProductUUID());
+        boolean areDiscountAndPriceCorrect = areDiscountAndPriceCorrect(productPayload);
 
-        if (productPayload.isHasDiscount()) {
-            isSavedSuccess =
-                    isDiscountPercentageToLow(productPayload.getDiscountPercentage()) &&
-                            isFinalPriceCorrect(productPayload.getBasePrice(), productPayload.getDiscountPercentage(), productPayload.getFinalPrice()) &&
-                            isPriceReductionCorrect(productPayload.getBasePrice(), productPayload.getDiscountPercentage(), productPayload.getAmountPriceReduction());
-        } else {
-            isSavedSuccess =
-                    isDiscountPercentageEqualZero(productPayload.getDiscountPercentage()) &&
-                            isPriceReductionEqualZero(productPayload.getAmountPriceReduction()) &&
-                            areFinalPriceAndBasePriceEquals(productPayload.getFinalPrice(), productPayload.getBasePrice());
-        }
+        if (isProductNotWithdrawFromSale && isProductUuidExist && areDiscountAndPriceCorrect) {
+            Availability calculatedAvailability = calculateAvailabilityDependsOnProductAmounts(productPayload.getProductUUID(), productPayload.getAmount());
+            productPayload.setAvailability(calculatedAvailability);
 
+            ProductEntity productEntity = payloadsConverter.convertProduct(productPayload);
+            productRepository.save(productEntity);
 
-        if (isSavedSuccess) {
-            calculateAvailabilityDependsOnProductAmounts(productPayload);
-
-            ProductEntity existingProduct = payloadsConverter.convertProduct(productPayload);
-            productRepository.save(existingProduct);
-
-            log.info("Saved new product. Entity details: {}", existingProduct);
+            log.info("Saved new product. Details: {}", productEntity);
             return true;
         } else {
-            log.info("Can not save product. Incorrect data");
+            log.info("Can not save product. Incorrect data. Details: " +
+                    "productPayload: {}, " +
+                    "isProductNotWithdrawFromSale: {}, " +
+                    "isProductUuidExist: {}, " +
+                    "areDiscountAndPriceCorrect: {}",
+                    productPayload, isProductNotWithdrawFromSale, isProductUuidExist, areDiscountAndPriceCorrect);
             return false;
         }
     }
 
-    public void edit(ProductPayload productPayload, String uuid) {
-        areProductUuidsTheSame(productPayload.getProductUUID(), uuid);
 
+    public boolean areDiscountAndPriceCorrect(ProductPayload productPayload) {
         if (productPayload.isHasDiscount()) {
-            isDiscountValueValid(productPayload);
-
-            setPriceAndAmount(productPayload);
+            return isDiscountPercentageNotToLow(productPayload.getDiscountPercentage()) &&
+                    isFinalPriceCorrect(productPayload.getBasePrice(), productPayload.getDiscountPercentage(), productPayload.getFinalPrice()) &&
+                    isPriceReductionCorrect(productPayload.getBasePrice(), productPayload.getDiscountPercentage(), productPayload.getAmountPriceReduction());
         } else {
-            setNoDiscount(productPayload);
-        }
-
-        calculateAvailabilityDependsOnProductAmounts(productPayload);
-
-        ProductEntity existingProduct = payloadsConverter.convertProduct(productPayload);
-        existingProduct.setId(productRepository.findByProductUUID(uuid).getId());
-        productRepository.save(existingProduct);
-        log.info("Edited product. Entity details: {}", existingProduct);
-        // ToDo add new payload for edit or change existing.
-    }
-
-    public void changeAmountBoughtProduct(ProductEntity productEntity, OrderProductPayload orderProductPayload) {
-        productEntity.setAmount(productEntity.getAmount() - orderProductPayload.getAmount());
-        calculateAvailabilityDependsOnProductAmounts(productEntity);
-        productRepository.save(productEntity);
-        log.info("Changed amount bought product. Entity amount: {}, payload amount: {}", productEntity.getAmount(), orderProductPayload.getAmount());
-    }
-
-
-    private void isDiscountValueValid(ProductPayload productPayload) {
-        isDiscountPercentageToHigh(productPayload.getDiscountPercentage());
-        isDiscountPercentageToLow(productPayload.getDiscountPercentage());
-    }
-
-    private void setPriceAndAmount(ProductPayload productPayload) {
-        BigDecimal finalPrice = calculateFinalPrice.calculateFinalPrice(productPayload.getBasePrice(), productPayload.getDiscountPercentage());
-        productPayload.setFinalPrice(finalPrice);
-        productPayload.setAmountPriceReduction(productPayload.getBasePrice().subtract(finalPrice));
-    }
-
-    private void setNoDiscount(ProductPayload productPayload) {
-        productPayload.setDiscountPercentage(0);
-        productPayload.setAmountPriceReduction(BigDecimal.valueOf(0));
-        productPayload.setFinalPrice(productPayload.getBasePrice());
-    }
-
-    private boolean areProductUuidsTheSame(String uuidPayload, String uuidParameter) {
-        return uuidPayload.equals(uuidParameter);
-    }
-
-    // ToDo create service for calculate availability
-    private void calculateAvailabilityDependsOnProductAmounts(ProductPayload product) {
-        if (product.getAmount() == 0) {
-            product.setAvailability(Availability.NOT_AVAILABLE);
-            log.warn("Amount of product with UUID:{} is 0. Set availability to: {}", product.getProductUUID(), Availability.NOT_AVAILABLE);
-        } else if (product.getAmount() < 5) {
-            product.setAvailability(Availability.AWAITING_FROM_MANUFACTURE);
-            log.warn("Amount of product with UUID:{} is less than 5. Set availability to: {}", product.getProductUUID(), Availability.AWAITING_FROM_MANUFACTURE);
+            return isDiscountPercentageEqualZero(productPayload.getDiscountPercentage()) &&
+                    isPriceReductionEqualZero(productPayload.getAmountPriceReduction()) &&
+                    areFinalPriceAndBasePriceEquals(productPayload.getFinalPrice(), productPayload.getBasePrice());
         }
     }
 
-    // ToDo create service for calculate availability
-    private void calculateAvailabilityDependsOnProductAmounts(ProductEntity product) {
-        if (product.getAmount() == 0) {
-            product.setAvailability(Availability.NOT_AVAILABLE);
-            log.warn("Amount of product with UUID:{} is 0. Set availability to: {}", product.getProductUUID(), Availability.NOT_AVAILABLE);
-        } else if (product.getAmount() < 5) {
-            product.setAvailability(Availability.AWAITING_FROM_MANUFACTURE);
-            log.warn("Amount of product with UUID:{} is less than 5. Set availability to: {}", product.getProductUUID(), Availability.AWAITING_FROM_MANUFACTURE);
+
+    private Availability calculateAvailabilityDependsOnProductAmounts(String uuid, int amount) {
+        if (amount == 0) {
+            log.warn("Amount of product with UUID:{} is 0. Set availability to: {}", uuid, Availability.NOT_AVAILABLE);
+            return Availability.NOT_AVAILABLE;
+        } else if (amount < 5) {
+            log.warn("Amount of product with UUID:{} is less than 5. Set availability to: {}", uuid, Availability.AWAITING_FROM_MANUFACTURE);
+            return Availability.AWAITING_FROM_MANUFACTURE;
         }
+
+        log.info("Amount of product with UUID:{} is {}. Set availability to: {}", uuid, amount, Availability.AVAILABLE);
+        return Availability.AVAILABLE;
     }
+
+
 
     private boolean areFinalPriceAndBasePriceEquals(BigDecimal finalPrice, BigDecimal basePrice) {
         return finalPrice.compareTo(basePrice) == 0;
     }
 
     private boolean isDiscountPercentageEqualZero(int discountPercentage) {
-        return discountPercentage != 0;
+        return discountPercentage == 0;
     }
 
     private boolean isPriceReductionEqualZero(BigDecimal amountPriceReduction) {
         return amountPriceReduction.compareTo(BigDecimal.ZERO) == 0;
     }
 
-    private boolean isDiscountPercentageToHigh(int discountPercentage) {
-        return !(discountPercentage > discountPercentageMaxHigherValue);
+    private boolean isDiscountPercentageNotToHigh(int discountPercentage) {
+        return discountPercentage <= discountPercentageMaxHigherValue;
     }
 
-    private boolean isDiscountPercentageToLow(int discountPercentage) {
-        return !(discountPercentage < discountPercentageMaxLowerValue);
+    private boolean isDiscountPercentageNotToLow(int discountPercentage) {
+        return discountPercentage >= discountPercentageMaxLowerValue;
     }
 
     private boolean isFinalPriceCorrect(BigDecimal basePrice, int discountPercentage, BigDecimal finalPrice) {
@@ -190,6 +142,6 @@ public class ProductService {
     }
 
     private boolean isProductNotWithdrawFromSale(Availability availability) {
-        return !availability.equals(Availability.WITHDRAW_FROM_SALE);
+        return !(availability.equals(Availability.WITHDRAW_FROM_SALE));
     }
 }
