@@ -9,7 +9,6 @@ import java.math.BigDecimal;
 @Data
 public class ProductPayload {
 
-    private Long id;
     private String name;
     private String productUUID;
     private String description;
