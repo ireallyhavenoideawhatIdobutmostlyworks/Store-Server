@@ -22,7 +22,7 @@ public class ProductController {
 
     @ApiOperation(value = "This method is used to get the specific product by productUUID.")
     @RequestMapping(value = "/{productUUID}", method = RequestMethod.GET)
-    public ResponseEntity<ProductPayload> getById(@PathVariable("productUUID") String productUUID) {
+    public ResponseEntity<ProductPayload> getByProductUUID(@PathVariable("productUUID") String productUUID) {
         ProductPayload product = productService.getByUuid(productUUID);
         return new ResponseEntity<>(product, HttpStatus.OK);
     }

@@ -53,63 +53,67 @@ public class ProductService {
 
     public boolean save(ProductPayload productPayload) {
         boolean isProductNotWithdrawFromSale = isProductNotWithdrawFromSale(productPayload.getAvailability());
-        boolean isProductUuidExist = isProductUuidExist(productPayload.getProductUUID());
-        boolean areDiscountAndPriceCorrect = areDiscountAndPriceCorrect(productPayload);
-
-        if (isProductNotWithdrawFromSale && isProductUuidExist && areDiscountAndPriceCorrect) {
-            Availability calculatedAvailability = calculateAvailabilityDependsOnProductAmounts(productPayload.getProductUUID(), productPayload.getAmount());
-            productPayload.setAvailability(calculatedAvailability);
-
-            ProductEntity productEntity = payloadsConverter.convertProduct(productPayload);
-            productRepository.save(productEntity);
-
-            log.info("Saved new product. Details: {}", productEntity);
-            return true;
-        } else {
-            log.info("Can not save product. Incorrect data. Details: " +
-                            "productPayload: {}, " +
-                            "isProductNotWithdrawFromSale: {}, " +
-                            "isProductUuidExist: {}, " +
-                            "areDiscountAndPriceCorrect: {}",
-                    productPayload, isProductNotWithdrawFromSale, isProductUuidExist, areDiscountAndPriceCorrect);
+        if (!isProductNotWithdrawFromSale) {
+            log.info("Product with UUID: {} is withdraw from sale", productPayload.getProductUUID());
             return false;
         }
+
+        boolean isProductUuidExist = isProductUuidExist(productPayload.getProductUUID());
+        if (!isProductUuidExist) {
+            log.info("Product with UUID: {} is not exist", productPayload.getProductUUID());
+            return false;
+        }
+
+        boolean areDiscountAndPriceCorrect = areDiscountAndPriceCorrect(productPayload);
+        if (areDiscountAndPriceCorrect) {
+            log.info("Product with UUID: {} has incorrect discount and price", productPayload.getProductUUID());
+            return false;
+        }
+
+        Availability calculatedAvailability = calculateAvailabilityDependsOnProductAmounts(productPayload.getProductUUID(), productPayload.getAmount());
+        productPayload.setAvailability(calculatedAvailability);
+
+        ProductEntity productEntity = payloadsConverter.convertProduct(productPayload);
+        productRepository.save(productEntity);
+
+        log.info("Saved new product. Details: {}", productEntity);
+        return true;
     }
 
     public boolean edit(ProductPayload productPayload, String uuid) {
         boolean areProductUuidsTheSame = areProductUuidsTheSame(productPayload.getProductUUID(), uuid);
-        boolean isDiscountPercentageCorrect = true;
+        if (!areProductUuidsTheSame) {
+            log.info("Product UUID are not same: {} and {}", productPayload.getProductUUID(), uuid);
+            return false;
+        }
 
         if (productPayload.isHasDiscount()) {
-            isDiscountPercentageCorrect =
-                    isDiscountPercentageNotToHigh(productPayload.getDiscountPercentage()) &&
-                            isDiscountPercentageNotToLow(productPayload.getDiscountPercentage());
+            boolean isDiscountPercentageNotToHigh = isDiscountPercentageNotToHigh(productPayload.getDiscountPercentage());
+            if (!isDiscountPercentageNotToHigh) {
+                log.info("Product UUID discount percentage is to high: {}", productPayload.getDiscountPercentage());
+                return false;
+            }
+            boolean isDiscountPercentageNotToLow = isDiscountPercentageNotToLow(productPayload.getDiscountPercentage());
+            if (!isDiscountPercentageNotToLow) {
+                log.info("Product UUID discount percentage is to low: {}", productPayload.getDiscountPercentage());
+                return false;
+            }
 
             setPriceAndAmount(productPayload);
         } else {
             setNoDiscount(productPayload);
         }
 
+        Availability calculatedAvailability = calculateAvailabilityDependsOnProductAmounts(productPayload.getProductUUID(), productPayload.getAmount());
+        productPayload.setAvailability(calculatedAvailability);
 
-        if (areProductUuidsTheSame && isDiscountPercentageCorrect) {
-            Availability calculatedAvailability = calculateAvailabilityDependsOnProductAmounts(productPayload.getProductUUID(), productPayload.getAmount());
-            productPayload.setAvailability(calculatedAvailability);
+        ProductEntity existingProduct = payloadsConverter.convertProduct(productPayload);
+        long productID = productRepository.findByProductUUID(productPayload.getProductUUID()).getId();
+        existingProduct.setId(productID);
+        productRepository.save(existingProduct);
 
-            ProductEntity existingProduct = payloadsConverter.convertProduct(productPayload);
-            long productID = productRepository.findByProductUUID(productPayload.getProductUUID()).getId();
-            existingProduct.setId(productID);
-            productRepository.save(existingProduct);
-
-            log.info("Edited product. Entity details: {}", existingProduct);
-            return true;
-        } else {
-            log.info("Can not edit product. Incorrect data. Details: " +
-                            "productPayload: {}, " +
-                            "areProductUuidsTheSame: {}, " +
-                            "isDiscountPercentageCorrect: {}, ",
-                    productPayload, areProductUuidsTheSame, isDiscountPercentageCorrect);
-            return false;
-        }
+        log.info("Edited product. Entity details: {}", existingProduct);
+        return true;
     }
 
     public void changeAmountBoughtProduct(ProductEntity productEntity, OrderProductPayload orderProductPayload) {
