@@ -203,7 +203,7 @@ public class OrderService {
     private void checkIfAmountIsAvailable(int amountPayload, String uuid) {
         ProductEntity productEntity = productRepository
                 .findByProductUUID(uuid)
-                .orElseThrow((() -> new EntityNotFoundException("Element not found")));
+                .orElseThrow((() -> new EntityNotFoundException(String.format("Entity with UUID: %s not found", uuid))));
 
         if ((productEntity.getAmount() < amountPayload) || (productEntity.getAmount() == 0))
             throw new ProductAmountNotEnoughException();

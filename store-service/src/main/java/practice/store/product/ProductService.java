@@ -39,7 +39,7 @@ public class ProductService {
     public ProductPayload getByUuid(String uuid) {
         ProductEntity product = productRepository
                 .findByProductUUID(uuid)
-                .orElseThrow((() -> new EntityNotFoundException("Element not found")));
+                .orElseThrow((() -> new EntityNotFoundException(String.format("Entity with UUID: %s not found", uuid))));
 
         log.info("Returned product: {}", product);
         return entitiesConverter.convertProduct(product);
@@ -80,8 +80,8 @@ public class ProductService {
     public boolean edit(ProductPayload productPayload, String uuid) {
         ProductEntity productEntity = productRepository
                 .findByProductUUID(uuid)
-                .filter(product -> areProductUuidsTheSame(productPayload.getProductUUID(), uuid))
-                .orElseThrow((() -> new EntityNotFoundException("Element not found")));
+                .filter(product -> areProductUuidsSame(productPayload.getProductUUID(), uuid))
+                .orElseThrow((() -> new EntityNotFoundException(String.format("Entity with UUID: %s not found", uuid))));
 
         if (productPayload.isHasDiscount()) {
             if (!isDiscountPercentageCorrect(productPayload.getDiscountPercentage())) {
@@ -139,9 +139,9 @@ public class ProductService {
         productPayload.setFinalPrice(productPayload.getBasePrice());
     }
 
-    private boolean areProductUuidsTheSame(String uuidPayload, String uuidParameter) {
+    private boolean areProductUuidsSame(String uuidPayload, String uuidParameter) {
         boolean result = uuidPayload.equals(uuidParameter);
-        return isResultTrue(result, "areProductUuidsTheSame");
+        return isExpectedConditionTrue(result, String.format("Product UUIDs are not same. UUID from payload: %s and UUID from parameter: %s", uuidParameter, uuidParameter));
     }
 
     private Availability calculateAvailabilityDependsOnProductAmounts(String uuid, int amount) {
@@ -161,50 +161,50 @@ public class ProductService {
 
     private boolean areFinalPriceAndBasePriceEquals(BigDecimal finalPrice, BigDecimal basePrice) {
         boolean result = finalPrice.compareTo(basePrice) == 0;
-        return isResultTrue(result, "areFinalPriceAndBasePriceEquals");
+        return isExpectedConditionTrue(result, String.format("Final price: %.2f and base price: %.2f are not equal", finalPrice, basePrice));
     }
 
     private boolean isDiscountPercentageCorrect(int discountPercentage) {
         boolean result = (discountPercentage <= DISCOUNT_PERCENTAGE_MAX) && (discountPercentage >= DISCOUNT_PERCENTAGE_MIN);
-        return isResultTrue(result, "isDiscountPercentageNotToHigh");
+        return isExpectedConditionTrue(result, String.format("Discount percentage is incorrect. Is: %d", discountPercentage));
     }
 
     private boolean isDiscountPercentageEqualZero(int discountPercentage) {
         boolean result = discountPercentage == 0;
-        return isResultTrue(result, "isDiscountPercentageEqualZero");
+        return isExpectedConditionTrue(result, String.format("Discount percentage is not zero. Is: %d", discountPercentage));
     }
 
     private boolean isPriceReductionEqualZero(BigDecimal amountPriceReduction) {
         boolean result = amountPriceReduction.compareTo(BigDecimal.ZERO) == 0;
-        return isResultTrue(result, "isPriceReductionEqualZero");
+        return isExpectedConditionTrue(result, String.format("Price reduction is not zero. Is: %.2f", amountPriceReduction));
     }
 
     private boolean isFinalPriceCorrect(BigDecimal basePrice, int discountPercentage, BigDecimal finalPrice) {
         BigDecimal finalPriceCalculate = calculateFinalPrice.calculateFinalPrice(basePrice, discountPercentage);
         boolean result = finalPriceCalculate.compareTo(finalPrice) == 0;
-        return isResultTrue(result, "isFinalPriceCorrect");
+        return isExpectedConditionTrue(result, String.format("Final price is incorrect. Is: %.2f but should be: %.2f", finalPrice, finalPriceCalculate));
     }
 
     private boolean isPriceReductionCorrect(BigDecimal basePrice, int discountPercentage, BigDecimal amountPriceReduction) {
         BigDecimal finalPriceCalculate = calculateFinalPrice.calculateFinalPrice(basePrice, discountPercentage);
         BigDecimal amountPriceReductionCalculate = basePrice.subtract(finalPriceCalculate);
         boolean result = amountPriceReductionCalculate.compareTo(amountPriceReduction) == 0;
-        return isResultTrue(result, "isPriceReductionCorrect");
+        return isExpectedConditionTrue(result, String.format("Price reduction is incorrect. Is: %.2f but should be: %.2f", amountPriceReduction, amountPriceReductionCalculate));
     }
 
     private boolean isProductUuidExist(String uuid) {
         boolean result = productRepository.existsByProductUUID(uuid);
-        return isResultTrue(result, "isProductUuidExist");
+        return isExpectedConditionTrue(result, String.format("Product with UUID: %s is not exist", uuid));
     }
 
     private boolean isProductNotWithdrawFromSale(Availability availability) {
         boolean result = !(availability.equals(Availability.WITHDRAW_FROM_SALE));
-        return isResultTrue(result, "isProductNotWithdrawFromSale");
+        return isExpectedConditionTrue(result, "Product is withdraw from sale");
     }
 
-    private boolean isResultTrue(boolean result, String methodName) {
+    private boolean isExpectedConditionTrue(boolean result, String desc) {
         if (!result) {
-            log.error("{} result: false", methodName);
+            log.error("Result condition is false because: {}.", desc);
             return false;
         }
         return true;
