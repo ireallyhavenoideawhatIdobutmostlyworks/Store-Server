@@ -12,7 +12,6 @@ public abstract class TestDataProductPayload {
 
     public static ProductPayload Product(long id, String name, String productUUID, String description, BigDecimal basePrice, BigDecimal amountPriceReduction, BigDecimal finalPrice, int discountPercentage, boolean hasDiscount, int amountInStock, Categories categories, Availability availability, boolean isActive) {
         return ProductPayload.builder()
-                .id(id)
                 .name(name)
                 .productUUID(productUUID)
                 .description(description)
@@ -30,7 +29,6 @@ public abstract class TestDataProductPayload {
 
     public static ProductPayload ProductWithDiscount() {
         return ProductPayload.builder()
-                .id(1L)
                 .name("test name")
                 .productUUID(new GenerateRandomString().generateRandomUuid())
                 .description("test description")
@@ -48,7 +46,6 @@ public abstract class TestDataProductPayload {
 
     public static ProductPayload ProductWithDiscount(long id, String uuid) {
         return ProductPayload.builder()
-                .id(id)
                 .name("test name")
                 .productUUID(uuid)
                 .description("test description")
@@ -66,7 +63,6 @@ public abstract class TestDataProductPayload {
 
     public static ProductPayload ProductWithDiscount(long id, String name, String uuid) {
         return ProductPayload.builder()
-                .id(id)
                 .name(name)
                 .productUUID(uuid)
                 .description("test description")
@@ -84,7 +80,6 @@ public abstract class TestDataProductPayload {
 
     public static ProductPayload ProductWithoutDiscount() {
         return ProductPayload.builder()
-                .id(1L)
                 .name("test name")
                 .productUUID(new GenerateRandomString().generateRandomUuid())
                 .description("test description")
@@ -102,7 +97,6 @@ public abstract class TestDataProductPayload {
 
     public static ProductPayload ProductWithoutDiscount(long id, String name, String uuid) {
         return ProductPayload.builder()
-                .id(id)
                 .name(name)
                 .productUUID(uuid)
                 .description("test description")
@@ -120,7 +114,6 @@ public abstract class TestDataProductPayload {
 
     public static ProductPayload ProductWithoutDiscount(long id, String uuid) {
         return ProductPayload.builder()
-                .id(id)
                 .name("test name")
                 .productUUID(uuid)
                 .description("test description")
