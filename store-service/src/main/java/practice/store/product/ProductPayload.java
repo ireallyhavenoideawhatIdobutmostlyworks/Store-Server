@@ -13,7 +13,6 @@ public class ProductPayload {
     private String productUUID;
     private String description;
     private BigDecimal basePrice;
-    private BigDecimal amountPriceReduction;
     private BigDecimal finalPrice;
     private int discountPercentage;
     private boolean hasDiscount;

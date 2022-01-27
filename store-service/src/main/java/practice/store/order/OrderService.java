@@ -81,6 +81,7 @@ public class OrderService {
         orderPayload
                 .getOrderProductPayloads()
                 .forEach(orderProductPayload -> {
+                    // ToDo optional refactor
                     ProductEntity productEntity = productRepository.findByProductUUID(orderProductPayload.getProductUUID()).get();
 
                     productService.changeAmountBoughtProduct(productEntity, orderProductPayload);
@@ -143,7 +144,7 @@ public class OrderService {
         return orderPayload
                 .getOrderProductPayloads()
                 .stream()
-                .map(this::multiplyAmountFromOrderProductWithProductFinalPrice)
+                .map(this::calculateFinalPrice)
                 .reduce(BigDecimal.ZERO, BigDecimal::add)
                 .setScale(2, RoundingMode.CEILING);
     }
@@ -160,7 +161,8 @@ public class OrderService {
                 );
     }
 
-    private BigDecimal multiplyAmountFromOrderProductWithProductFinalPrice(OrderProductPayload orderProductPayload) {
+    private BigDecimal calculateFinalPrice(OrderProductPayload orderProductPayload) {
+        // ToDo refactor optional
         BigDecimal productFinalPrice = productRepository.findByProductUUID(orderProductPayload.getProductUUID()).get().getFinalPrice();
         BigDecimal productAmount = BigDecimal.valueOf(orderProductPayload.getAmount());
         return productFinalPrice.multiply(productAmount);

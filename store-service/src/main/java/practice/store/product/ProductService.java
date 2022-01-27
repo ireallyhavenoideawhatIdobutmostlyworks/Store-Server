@@ -60,7 +60,7 @@ public class ProductService {
         if (isProductUuidExist(productPayload.getProductUUID())) {
             return false;
         }
-        if (!isProductNotWithdrawFromSale(productPayload.getAvailability())) {
+        if (!isProductWithdrawFromSale(productPayload.getAvailability())) {
             return false;
         }
         if (!areDiscountAndPriceCorrect(productPayload)) {
@@ -78,8 +78,9 @@ public class ProductService {
     }
 
     public boolean edit(ProductPayload productPayload) {
-        ProductEntity productEntity = productRepository
+        long existProductEntityID = productRepository
                 .findByProductUUID(productPayload.getProductUUID())
+                .map(ProductEntity::getId)
                 .orElseThrow((() -> new EntityNotFoundException(String.format("Entity with UUID: %s not found", productPayload.getProductUUID()))));
 
         if (productPayload.isHasDiscount()) {
@@ -87,7 +88,7 @@ public class ProductService {
                 return false;
             }
 
-            setPriceAndAmount(productPayload);
+            setFinalPrice(productPayload);
         } else {
             setNoDiscount(productPayload);
         }
@@ -96,7 +97,7 @@ public class ProductService {
         productPayload.setAvailability(calculatedAvailability);
 
         ProductEntity existingProduct = payloadsConverter.convertProduct(productPayload);
-        existingProduct.setId(productEntity.getId());
+        existingProduct.setId(existProductEntityID);
         productRepository.save(existingProduct);
 
         log.info("Edited product. Entity details: {}", existingProduct);
@@ -116,25 +117,21 @@ public class ProductService {
 
     private boolean areDiscountAndPriceCorrect(ProductPayload productPayload) {
         if (productPayload.isHasDiscount()) {
-            return isDiscountPercentageInRangeCorrect(productPayload.getDiscountPercentage()) &&
-                    isFinalPriceCorrect(productPayload.getBasePrice(), productPayload.getDiscountPercentage(), productPayload.getFinalPrice()) &&
-                    isPriceReductionCorrect(productPayload.getBasePrice(), productPayload.getDiscountPercentage(), productPayload.getAmountPriceReduction());
+            return isDiscountPercentageInRangeCorrect(productPayload.getDiscountPercentage())
+                    && isFinalPriceCorrect(productPayload.getBasePrice(), productPayload.getDiscountPercentage(), productPayload.getFinalPrice());
         } else {
-            return isDiscountPercentageEqualZero(productPayload.getDiscountPercentage()) &&
-                    isPriceReductionEqualZero(productPayload.getAmountPriceReduction()) &&
-                    areFinalPriceAndBasePriceEquals(productPayload.getFinalPrice(), productPayload.getBasePrice());
+            return isDiscountPercentageInRange(productPayload.getDiscountPercentage())
+                    && areFinalPriceAndBasePriceEquals(productPayload.getFinalPrice(), productPayload.getBasePrice());
         }
     }
 
-    private void setPriceAndAmount(ProductPayload productPayload) {
+    private void setFinalPrice(ProductPayload productPayload) {
         BigDecimal finalPrice = calculateFinalPrice.calculateFinalPrice(productPayload.getBasePrice(), productPayload.getDiscountPercentage());
         productPayload.setFinalPrice(finalPrice);
-        productPayload.setAmountPriceReduction(productPayload.getBasePrice().subtract(finalPrice));
     }
 
     private void setNoDiscount(ProductPayload productPayload) {
         productPayload.setDiscountPercentage(0);
-        productPayload.setAmountPriceReduction(BigDecimal.valueOf(0));
         productPayload.setFinalPrice(productPayload.getBasePrice());
     }
 
@@ -163,14 +160,9 @@ public class ProductService {
         return logIfFalse(result, String.format("Discount percentage is incorrect. Is: %d", discountPercentage));
     }
 
-    private boolean isDiscountPercentageEqualZero(int discountPercentage) {
+    private boolean isDiscountPercentageInRange(int discountPercentage) {
         boolean result = discountPercentage == 0;
         return logIfFalse(result, String.format("Discount percentage is not zero. Is: %d", discountPercentage));
-    }
-
-    private boolean isPriceReductionEqualZero(BigDecimal amountPriceReduction) {
-        boolean result = amountPriceReduction.compareTo(BigDecimal.ZERO) == 0;
-        return logIfFalse(result, String.format("Price reduction is not zero. Is: %.2f", amountPriceReduction));
     }
 
     private boolean isFinalPriceCorrect(BigDecimal basePrice, int discountPercentage, BigDecimal finalPrice) {
@@ -179,19 +171,12 @@ public class ProductService {
         return logIfFalse(result, String.format("Final price is incorrect. Is: %.2f but should be: %.2f", finalPrice, finalPriceCalculate));
     }
 
-    private boolean isPriceReductionCorrect(BigDecimal basePrice, int discountPercentage, BigDecimal amountPriceReduction) {
-        BigDecimal finalPriceCalculate = calculateFinalPrice.calculateFinalPrice(basePrice, discountPercentage);
-        BigDecimal amountPriceReductionCalculate = basePrice.subtract(finalPriceCalculate);
-        boolean result = amountPriceReductionCalculate.compareTo(amountPriceReduction) == 0;
-        return logIfFalse(result, String.format("Price reduction is incorrect. Is: %.2f but should be: %.2f", amountPriceReduction, amountPriceReductionCalculate));
-    }
-
     private boolean isProductUuidExist(String uuid) {
         boolean result = productRepository.existsByProductUUID(uuid);
         return logIfFalse(result, String.format("Product with UUID: %s is not exist", uuid));
     }
 
-    private boolean isProductNotWithdrawFromSale(Availability availability) {
+    private boolean isProductWithdrawFromSale(Availability availability) {
         boolean result = !(availability.equals(Availability.WITHDRAW_FROM_SALE));
         return logIfFalse(result, "Product is withdraw from sale");
     }

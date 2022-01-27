@@ -42,10 +42,6 @@ public class ProductEntity {
     @Column
     private BigDecimal basePrice;
 
-    @NotNull(message = "'Amount of price reduction' parameter may not be null")  @JsonFormat(shape=JsonFormat.Shape.STRING)
-    @Column
-    private BigDecimal amountPriceReduction;
-
     @NotNull(message = "'Final price' parameter may not be null")
     @Column
     private BigDecimal finalPrice;
