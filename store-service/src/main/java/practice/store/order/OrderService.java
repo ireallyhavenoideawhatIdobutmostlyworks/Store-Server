@@ -29,6 +29,7 @@ import practice.store.utils.converter.PayloadsConverter;
 import practice.store.utils.numbers.CalculatePrice;
 import practice.store.utils.values.GenerateRandomString;
 
+import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
@@ -58,6 +59,11 @@ public class OrderService {
     private final SenderMailService senderMailService;
     private final SenderPdfService senderPdfService;
 
+    // ToDo refactor 'flow control by exceptions'
+    // ToDo refactor 'flow control by exceptions'
+    // ToDo refactor 'flow control by exceptions'
+    // ToDo refactor 'flow control by exceptions'
+    // ToDo refactor 'flow control by exceptions'
 
     public void save(OrderPayload orderPayload) throws JsonProcessingException {
         checkIfOrderHasProduct(orderPayload.getOrderProductPayloads());
@@ -75,7 +81,8 @@ public class OrderService {
         orderPayload
                 .getOrderProductPayloads()
                 .forEach(orderProductPayload -> {
-                    ProductEntity productEntity = productRepository.findByProductUUID(orderProductPayload.getProductUUID());
+                    // ToDo optional refactor
+                    ProductEntity productEntity = productRepository.findByProductUUID(orderProductPayload.getProductUUID()).get();
 
                     productService.changeAmountBoughtProduct(productEntity, orderProductPayload);
                     addOrderProductIntoDatabase(productEntity, orderProductPayload, orderEntity);
@@ -137,7 +144,7 @@ public class OrderService {
         return orderPayload
                 .getOrderProductPayloads()
                 .stream()
-                .map(this::multiplyAmountFromOrderProductWithProductFinalPrice)
+                .map(this::calculateFinalPrice)
                 .reduce(BigDecimal.ZERO, BigDecimal::add)
                 .setScale(2, RoundingMode.CEILING);
     }
@@ -154,8 +161,9 @@ public class OrderService {
                 );
     }
 
-    private BigDecimal multiplyAmountFromOrderProductWithProductFinalPrice(OrderProductPayload orderProductPayload) {
-        BigDecimal productFinalPrice = productRepository.findByProductUUID(orderProductPayload.getProductUUID()).getFinalPrice();
+    private BigDecimal calculateFinalPrice(OrderProductPayload orderProductPayload) {
+        // ToDo refactor optional
+        BigDecimal productFinalPrice = productRepository.findByProductUUID(orderProductPayload.getProductUUID()).get().getFinalPrice();
         BigDecimal productAmount = BigDecimal.valueOf(orderProductPayload.getAmount());
         return productFinalPrice.multiply(productAmount);
     }
@@ -195,7 +203,10 @@ public class OrderService {
     }
 
     private void checkIfAmountIsAvailable(int amountPayload, String uuid) {
-        ProductEntity productEntity = productRepository.findByProductUUID(uuid);
+        ProductEntity productEntity = productRepository
+                .findByProductUUID(uuid)
+                .orElseThrow((() -> new EntityNotFoundException(String.format("Entity with UUID: %s not found", uuid))));
+
         if ((productEntity.getAmount() < amountPayload) || (productEntity.getAmount() == 0))
             throw new ProductAmountNotEnoughException();
     }

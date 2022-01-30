@@ -85,7 +85,7 @@ class ProductServiceTest {
 
 
         // when
-        ProductPayload productPayloadReturnedFromService = productService.getById(id);
+        ProductPayload productPayloadReturnedFromService = productService.getByUuid(id);
 
 
         // then
@@ -108,7 +108,7 @@ class ProductServiceTest {
 
 
         // when
-        Throwable exception = catchThrowable(() -> productService.getById(idNotExist));
+        Throwable exception = catchThrowable(() -> productService.getByUuid(idNotExist));
 
 
         // then

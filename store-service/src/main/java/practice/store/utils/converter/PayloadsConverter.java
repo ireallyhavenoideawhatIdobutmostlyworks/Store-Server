@@ -38,7 +38,6 @@ public class PayloadsConverter {
 
     public ProductEntity convertProduct(ProductPayload productPayload) {
         return ProductEntity.builder()
-                .id(productPayload.getId())
                 .name(productPayload.getName())
                 .productUUID(productPayload.getProductUUID())
                 .description(productPayload.getDescription())

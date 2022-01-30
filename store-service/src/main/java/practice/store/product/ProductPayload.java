@@ -9,12 +9,10 @@ import java.math.BigDecimal;
 @Data
 public class ProductPayload {
 
-    private Long id;
     private String name;
     private String productUUID;
     private String description;
     private BigDecimal basePrice;
-    private BigDecimal amountPriceReduction;
     private BigDecimal finalPrice;
     private int discountPercentage;
     private boolean hasDiscount;
