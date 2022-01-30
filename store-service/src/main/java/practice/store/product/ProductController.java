@@ -48,7 +48,7 @@ public class ProductController {
     @RequestMapping(value = "/{productUUID}", method = RequestMethod.PUT)
     public ResponseEntity edit(@Valid @RequestBody ProductPayload productPayload, @PathVariable("productUUID") String uuid) {
         if (!productPayload.getProductUUID().equals(uuid)) {
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Incorrect UUID numbers.");
         }
 
         boolean isSuccess = productService.edit(productPayload);
