@@ -16,7 +16,5 @@ public class OrderPayload {
     private PaymentType paymentType;
     private BigDecimal orderBasePrice;
     private BigDecimal orderFinalPrice;
-    private boolean hasDiscount;
-    private int discountPercentage;
     private Set<OrderProductPayload> orderProductPayloads;
 }

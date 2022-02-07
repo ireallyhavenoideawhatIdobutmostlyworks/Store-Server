@@ -14,8 +14,6 @@ public abstract class TestDataOrderPayload {
                 .accountNumber("1111")
                 .orderBasePrice(BigDecimal.valueOf(100))
                 .orderFinalPrice(BigDecimal.valueOf(100))
-                .hasDiscount(false)
-                .discountPercentage(0)
                 .orderProductPayloads(TestDataOrderProductPayload.OrderProductSet(productUuidFirst, productUuidSecond, amount))
                 .build();
     }
@@ -27,8 +25,6 @@ public abstract class TestDataOrderPayload {
                 .accountNumber("1111")
                 .orderBasePrice(BigDecimal.valueOf(100))
                 .orderFinalPrice(BigDecimal.valueOf(90))
-                .hasDiscount(true)
-                .discountPercentage(10)
                 .orderProductPayloads(TestDataOrderProductPayload.OrderProductSet(productUuidFirst, productUuidSecond, 10))
                 .build();
     }
@@ -40,8 +36,6 @@ public abstract class TestDataOrderPayload {
                 .accountNumber("2222")
                 .orderBasePrice(BigDecimal.valueOf(5000))
                 .orderFinalPrice(BigDecimal.valueOf(5000))
-                .hasDiscount(false)
-                .discountPercentage(0)
                 .orderProductPayloads(TestDataOrderProductPayload.OrderProductSet(productUuidFirst, productUuidSecond, 5))
                 .build();
     }
@@ -53,8 +47,6 @@ public abstract class TestDataOrderPayload {
                 .accountNumber("1111")
                 .orderBasePrice(BigDecimal.valueOf(100))
                 .orderFinalPrice(BigDecimal.valueOf(100))
-                .hasDiscount(false)
-                .discountPercentage(0)
                 .orderProductPayloads(null)
                 .build();
     }
