@@ -14,7 +14,5 @@ public class OrderPayload {
     private String payloadUUID;
     private String accountNumber;
     private PaymentType paymentType;
-    private BigDecimal orderBasePrice;
-    private BigDecimal orderFinalPrice;
     private Set<OrderProductPayload> orderProductPayloads;
 }

@@ -57,9 +57,6 @@ public class OrderService {
         if (!checkIfOrderHasProduct(orderPayload.getOrderProductPayloads())) {
             return false;
         }
-        if (!areFinalPriceAndProductsPriceAreCorrect(orderPayload)) {
-            return false;
-        }
         if (!isAmountOfProductCorrect(orderPayload)) {
             return false;
         }
@@ -99,7 +96,6 @@ public class OrderService {
                 .isPaid(false)
                 .orderStatus(OrderStatus.ORDER_AWAITING)
                 .creationDateTime(LocalDateTime.now())
-                .isCancelled(false)
                 .build();
     }
 
@@ -168,14 +164,6 @@ public class OrderService {
                 .allMatch(product -> productRepository.existsByProductUUID(product.getProductUUID()));
 
         return logIfFalse(result, "Some of product UUID is not exist");
-    }
-
-    private boolean areFinalPriceAndProductsPriceAreCorrect(OrderPayload orderPayload) {
-        BigDecimal orderFinalPrice = orderPayload.getOrderFinalPrice().setScale(2, RoundingMode.CEILING);
-        BigDecimal allProductPriceMultiplyByAmount = allProductsPrice(orderPayload).setScale(2, RoundingMode.CEILING);
-
-        boolean result = !orderFinalPrice.equals(allProductPriceMultiplyByAmount);
-        return logIfFalse(result, "There is no products with discount but products price and order final price are not equal");
     }
 
     private boolean checkIfOrderHasProduct(Set<OrderProductPayload> orderProductPayloads) {

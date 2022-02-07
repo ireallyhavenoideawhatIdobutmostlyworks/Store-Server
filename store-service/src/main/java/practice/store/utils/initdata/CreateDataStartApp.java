@@ -253,11 +253,6 @@ public class CreateDataStartApp {
                 .paymentType(PaymentType.BANK_CARD)
                 .orderStatus(OrderStatus.ORDER_SENT)
                 .shipmentStatus(ShipmentStatus.SHIPMENT_IN_STORAGE)
-                .orderBasePrice(BigDecimal.valueOf(200D))
-                .orderFinalPrice(BigDecimal.valueOf(200D))
-                .hasDiscount(false)
-                .discountPercentage(0)
-                .isCancelled(false)
                 .creationDateTime(LocalDateTime.now())
                 .build();
         return orderFirst;
@@ -274,11 +269,6 @@ public class CreateDataStartApp {
                 .paymentType(PaymentType.BANK_TRANSFER)
                 .orderStatus(OrderStatus.ORDER_RETURNED)
                 .shipmentStatus(ShipmentStatus.SHIPMENT_RETURNED_TO_SENDER)
-                .orderBasePrice(BigDecimal.valueOf(300D))
-                .orderFinalPrice(BigDecimal.valueOf(300D))
-                .hasDiscount(false)
-                .discountPercentage(0)
-                .isCancelled(false)
                 .creationDateTime(LocalDateTime.now())
                 .build();
         return orderSecond;

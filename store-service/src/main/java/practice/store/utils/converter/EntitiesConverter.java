@@ -50,8 +50,6 @@ public class EntitiesConverter {
                 .payloadUUID(orderEntity.getPayloadUUID())
                 .accountNumber(orderEntity.getAccountNumber())
                 .paymentType(orderEntity.getPaymentType())
-                .orderBasePrice(orderEntity.getOrderBasePrice())
-                .orderFinalPrice(orderEntity.getOrderFinalPrice())
                 .orderProductPayloads(convertProductsList(orderEntity.getOrderProduct()))
                 .build();
     }

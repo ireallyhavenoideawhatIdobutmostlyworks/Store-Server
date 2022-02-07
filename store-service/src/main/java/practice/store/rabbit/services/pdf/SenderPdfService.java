@@ -66,7 +66,6 @@ public class SenderPdfService {
                 .builder()
                 .orderUUID(order.getOrderUUID())
                 .paymentUUID(order.getPaymentUUID())
-                .orderPrice(order.getOrderFinalPrice())
                 .accountNumber(order.getAccountNumber())
                 .build();
     }

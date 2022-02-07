@@ -64,8 +64,6 @@ public class PayloadsConverter {
                 .accountNumber(orderPayload.getAccountNumber())
                 .paymentType(orderPayload.getPaymentType())
                 .orderProduct(convertProductsList(orderPayload.getOrderProductPayloads()))
-                .orderBasePrice(orderPayload.getOrderBasePrice())
-                .orderFinalPrice(orderPayload.getOrderFinalPrice())
                 .build();
     }
 

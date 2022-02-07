@@ -57,26 +57,6 @@ public class OrderEntity {
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
-    @NotNull(message = "'Order base price' parameter may not be null")
-    @Column
-    private BigDecimal orderBasePrice;
-
-    @NotNull(message = "'Order final price' parameter may not be null")
-    @Column
-    private BigDecimal orderFinalPrice;
-
-    @NotNull(message = "'Has discount' parameter may not be null")
-    @Column
-    private boolean hasDiscount;
-
-    @NotNull(message = "'Discount percentage' parameter may not be null")
-    @Column
-    private int discountPercentage;
-
-    @NotNull(message = "'Is cancelled' parameter may not be null")
-    @Column
-    private boolean isCancelled;
-
     @Column
     private LocalDateTime creationDateTime;
 
