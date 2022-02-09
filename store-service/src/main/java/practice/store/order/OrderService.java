@@ -26,7 +26,6 @@ import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @RequiredArgsConstructor
 @Transactional
@@ -54,7 +53,7 @@ public class OrderService {
         if (!isProductUuidExist(orderPayload)) {
             return false;
         }
-        if (!checkIfOrderHasProduct(orderPayload.getOrderProductPayloads())) {
+        if (!hasOrderProducts(orderPayload)) {
             return false;
         }
         if (!isAmountOfProductCorrect(orderPayload)) {
@@ -166,8 +165,8 @@ public class OrderService {
         return logIfFalse(result, "Some of product UUID is not exist");
     }
 
-    private boolean checkIfOrderHasProduct(Set<OrderProductPayload> orderProductPayloads) {
-        boolean result = !orderProductPayloads.isEmpty();
+    private boolean hasOrderProducts(OrderPayload orderPayload) {
+        boolean result = !orderPayload.getOrderProductPayloads().isEmpty();
         return logIfFalse(result, "Order is without products");
     }
 
