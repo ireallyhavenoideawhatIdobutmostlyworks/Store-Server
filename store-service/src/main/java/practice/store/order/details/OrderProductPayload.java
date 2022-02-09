@@ -1,12 +1,12 @@
 package practice.store.order.details;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 
 @Builder
-@Data
-public class OrderProductPayload {
+@Getter
+public final class OrderProductPayload {
 
-    private int amount;
-    private String productUUID;
+    private final int amount;
+    private final String productUUID;
 }

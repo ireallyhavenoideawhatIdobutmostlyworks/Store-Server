@@ -1,18 +1,17 @@
 package practice.store.order;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import practice.store.order.details.OrderProductPayload;
 
-import java.math.BigDecimal;
 import java.util.Set;
 
 @Builder
-@Data
-public class OrderPayload {
+@Getter
+public final class OrderPayload {
 
-    private String payloadUUID;
-    private String accountNumber;
-    private PaymentType paymentType;
-    private Set<OrderProductPayload> orderProductPayloads;
+    private final String payloadUUID;
+    private final String accountNumber;
+    private final PaymentType paymentType;
+    private final Set<OrderProductPayload> orderProductPayloads;
 }

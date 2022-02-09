@@ -6,16 +6,16 @@ import lombok.ToString;
 
 @ToString
 @Builder
-public class CustomerPdfDetails {
+public final class CustomerPdfDetails {
 
     @JsonProperty
-    private String username;
+    private final String username;
     @JsonProperty
-    private String email;
+    private final String email;
     @JsonProperty
-    private String postalCode;
+    private final String postalCode;
     @JsonProperty
-    private String street;
+    private final String street;
     @JsonProperty
-    private String city;
+    private final String city;
 }

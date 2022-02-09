@@ -8,14 +8,14 @@ import java.math.BigDecimal;
 
 @ToString
 @Builder
-public class ProductPdfDetails {
+public final class ProductPdfDetails {
 
     @JsonProperty
-    private String name;
+    private final String name;
     @JsonProperty
-    private String productUUID;
+    private final String productUUID;
     @JsonProperty
-    private String description;
+    private final String description;
     @JsonProperty
-    private BigDecimal finalPrice;
+    private final BigDecimal finalPrice;
 }

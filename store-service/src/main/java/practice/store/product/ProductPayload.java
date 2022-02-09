@@ -1,23 +1,23 @@
 package practice.store.product;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 
 import java.math.BigDecimal;
 
 @Builder
-@Data
-public class ProductPayload {
+@Getter
+public final class ProductPayload {
 
-    private String name;
-    private String productUUID;
-    private String description;
-    private BigDecimal basePrice;
-    private BigDecimal finalPrice;
-    private int discountPercentage;
-    private boolean hasDiscount;
-    private int amount;
-    private Categories categories;
-    private Availability availability;
-    private boolean isActive;
+    private final String name;
+    private final String productUUID;
+    private final String description;
+    private final BigDecimal basePrice;
+    private final BigDecimal finalPrice;
+    private final int discountPercentage;
+    private final boolean hasDiscount;
+    private final int amount;
+    private final Categories categories;
+    private final Availability availability;
+    private final boolean isActive;
 }

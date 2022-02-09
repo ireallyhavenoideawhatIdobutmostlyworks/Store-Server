@@ -9,6 +9,7 @@ import practice.store.order.OrderEntity;
 import practice.store.order.OrderPayload;
 import practice.store.order.details.OrderProductEntity;
 import practice.store.order.details.OrderProductPayload;
+import practice.store.product.Availability;
 import practice.store.product.ProductEntity;
 import practice.store.product.ProductPayload;
 
@@ -22,9 +23,9 @@ public class PayloadsConverter {
     private final PasswordEncoder passwordEncoder;
 
 
-    public CustomerEntity convertCustomer(CustomerPayload customerPayload) {
+    public CustomerEntity convertCustomer(CustomerPayload customerPayload, Long id) {
         return CustomerEntity.builder()
-                .id(customerPayload.getId())
+                .id(id)
                 .username(customerPayload.getUsername())
                 .password(passwordEncoder.encode(customerPayload.getPassword()))
                 .email(customerPayload.getEmail())
@@ -36,7 +37,7 @@ public class PayloadsConverter {
                 .build();
     }
 
-    public ProductEntity convertProduct(ProductPayload productPayload) {
+    public ProductEntity convertProduct(ProductPayload productPayload, Availability calculatedAvailability) {
         return ProductEntity.builder()
                 .name(productPayload.getName())
                 .productUUID(productPayload.getProductUUID())
@@ -47,7 +48,24 @@ public class PayloadsConverter {
                 .hasDiscount(productPayload.isHasDiscount())
                 .amount(productPayload.getAmount())
                 .categories(productPayload.getCategories())
-                .availability(productPayload.getAvailability())
+                .availability(calculatedAvailability)
+                .isActive(productPayload.isActive())
+                .build();
+    }
+
+    public ProductEntity convertProduct(ProductPayload productPayload, Availability calculatedAvailability, long id) {
+        return ProductEntity.builder()
+                .id(id)
+                .name(productPayload.getName())
+                .productUUID(productPayload.getProductUUID())
+                .description(productPayload.getDescription())
+                .basePrice(productPayload.getBasePrice())
+                .finalPrice(productPayload.getFinalPrice())
+                .discountPercentage(productPayload.getDiscountPercentage())
+                .hasDiscount(productPayload.isHasDiscount())
+                .amount(productPayload.getAmount())
+                .categories(productPayload.getCategories())
+                .availability(calculatedAvailability)
                 .isActive(productPayload.isActive())
                 .build();
     }

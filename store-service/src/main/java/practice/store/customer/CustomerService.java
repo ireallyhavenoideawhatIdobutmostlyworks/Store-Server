@@ -43,20 +43,18 @@ public class CustomerService {
     public void save(CustomerPayload customerPayload) {
         checkIfCustomerExistByEmail(customerPayload.getEmail());
 
-        customerPayload.setId(null);
-
-        CustomerEntity customerEntity = payloadsConverter.convertCustomer(customerPayload);
+        CustomerEntity customerEntity = payloadsConverter.convertCustomer(customerPayload, null);
         customerRepository.save(customerEntity);
+
         log.info("Saved new customer. Entity details: {}", customerEntity);
     }
 
     public void edit(CustomerPayload customerPayload, long id) {
         checkIfCustomerExistByEmailAndId(customerPayload.getEmail(), id);
 
-        customerPayload.setId(id);
-
-        CustomerEntity existingCustomer = payloadsConverter.convertCustomer(customerPayload);
+        CustomerEntity existingCustomer = payloadsConverter.convertCustomer(customerPayload, id);
         customerRepository.save(existingCustomer);
+
         log.info("Edited customer. Entity details: {}", existingCustomer);
         // ToDo add new payload for edit or change existing.
     }
@@ -66,6 +64,7 @@ public class CustomerService {
         existingCustomer.setActive(false);
 
         customerRepository.save(existingCustomer);
+
         log.info("Marked customer as inactive. Entity details: {}", existingCustomer);
     }
 

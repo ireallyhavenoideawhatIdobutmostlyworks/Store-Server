@@ -2,15 +2,11 @@ package practice.store.jwt.payload;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @AllArgsConstructor
-@NoArgsConstructor
 @Getter
-@Setter
-public class JwtLoginRequestPayload {
+public final class JwtLoginRequestPayload {
 
-    private String email;
-    private String password;
+    private final String email;
+    private final String password;
 }

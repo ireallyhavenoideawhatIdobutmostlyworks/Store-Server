@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Getter
-public class JwtLogoutResponsePayload {
+public final class JwtLogoutResponsePayload {
 
     private final String description;
     private final LocalDateTime timestamp;

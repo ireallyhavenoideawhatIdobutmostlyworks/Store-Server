@@ -1,30 +1,24 @@
 package practice.store.rabbit.services.bank;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import practice.store.order.PaymentType;
 
 import java.math.BigDecimal;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Builder
-@Data
-public class ConsumerBankPayload {
+public final class ConsumerBankPayload {
 
     @JsonProperty
-    private String orderUUID;
+    private final String orderUUID;
     @JsonProperty
-    private String paymentUUID;
+    private final String paymentUUID;
     @JsonProperty
-    private BigDecimal orderPrice;
+    private final BigDecimal orderPrice;
     @JsonProperty
-    private String accountNumber;
+    private final String accountNumber;
     @JsonProperty
-    private PaymentType paymentType;
+    private final PaymentType paymentType;
     @JsonProperty
-    private Boolean isPaymentSuccess;
+    private final Boolean isPaymentSuccess;
 }
