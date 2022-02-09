@@ -31,7 +31,6 @@ public class SenderMailService {
         return SenderMailPayload.builder()
                 .orderUUID(order.getOrderUUID())
                 .paymentUUID(order.getPaymentUUID())
-                .orderPrice(order.getOrderFinalPrice())
                 .accountNumber(order.getAccountNumber())
                 .email(order.getCustomer().getEmail())
                 .build();

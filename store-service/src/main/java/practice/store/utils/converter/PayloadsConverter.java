@@ -43,7 +43,6 @@ public class PayloadsConverter {
                 .description(productPayload.getDescription())
                 .basePrice(productPayload.getBasePrice())
                 .finalPrice(productPayload.getFinalPrice())
-                .amountPriceReduction(productPayload.getAmountPriceReduction())
                 .discountPercentage(productPayload.getDiscountPercentage())
                 .hasDiscount(productPayload.isHasDiscount())
                 .amount(productPayload.getAmount())
@@ -65,10 +64,6 @@ public class PayloadsConverter {
                 .accountNumber(orderPayload.getAccountNumber())
                 .paymentType(orderPayload.getPaymentType())
                 .orderProduct(convertProductsList(orderPayload.getOrderProductPayloads()))
-                .orderBasePrice(orderPayload.getOrderBasePrice())
-                .orderFinalPrice(orderPayload.getOrderFinalPrice())
-                .hasDiscount(orderPayload.isHasDiscount())
-                .discountPercentage(orderPayload.getDiscountPercentage())
                 .build();
     }
 

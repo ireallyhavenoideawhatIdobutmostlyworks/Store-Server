@@ -36,7 +36,6 @@ public class EntitiesConverter {
                 .description(productEntity.getDescription())
                 .basePrice(productEntity.getBasePrice())
                 .finalPrice(productEntity.getFinalPrice())
-                .amountPriceReduction(productEntity.getAmountPriceReduction())
                 .discountPercentage(productEntity.getDiscountPercentage())
                 .hasDiscount(productEntity.isHasDiscount())
                 .amount(productEntity.getAmount())
@@ -51,10 +50,6 @@ public class EntitiesConverter {
                 .payloadUUID(orderEntity.getPayloadUUID())
                 .accountNumber(orderEntity.getAccountNumber())
                 .paymentType(orderEntity.getPaymentType())
-                .orderBasePrice(orderEntity.getOrderBasePrice())
-                .orderFinalPrice(orderEntity.getOrderFinalPrice())
-                .hasDiscount(orderEntity.isHasDiscount())
-                .discountPercentage(orderEntity.getDiscountPercentage())
                 .orderProductPayloads(convertProductsList(orderEntity.getOrderProduct()))
                 .build();
     }

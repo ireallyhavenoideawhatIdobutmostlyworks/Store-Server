@@ -26,7 +26,10 @@ public class OrderController {
     @ApiOperation(value = "This method is used to save the order.")
     @RequestMapping(value = "", method = RequestMethod.POST)
     public ResponseEntity save(@Valid @RequestBody OrderPayload orderPayload) throws JsonProcessingException {
-        orderService.save(orderPayload);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        boolean isSuccess = orderService.save(orderPayload);
+        if (isSuccess) {
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        } else
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 }
