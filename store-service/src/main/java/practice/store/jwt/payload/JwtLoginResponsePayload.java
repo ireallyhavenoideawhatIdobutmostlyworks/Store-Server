@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @ToString
 @Builder
 @Getter
-public class JwtLoginResponsePayload {
+public final class JwtLoginResponsePayload {
 
     private final String jwtToken;
     private final Long minutesTokenValid;

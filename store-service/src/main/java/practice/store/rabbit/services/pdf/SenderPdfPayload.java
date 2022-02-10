@@ -11,12 +11,12 @@ import java.util.List;
 
 @ToString
 @Builder
-public class SenderPdfPayload {
+public final class SenderPdfPayload {
 
     @JsonProperty
-    private CustomerPdfDetails customerPdfDetails;
+    private final CustomerPdfDetails customerPdfDetails;
     @JsonProperty
-    private OrderPdfDetails orderPdfDetails;
+    private final OrderPdfDetails orderPdfDetails;
     @JsonProperty
-    private List<ProductPdfDetails> productPdfDetailsList;
+    private final List<ProductPdfDetails> productPdfDetailsList;
 }

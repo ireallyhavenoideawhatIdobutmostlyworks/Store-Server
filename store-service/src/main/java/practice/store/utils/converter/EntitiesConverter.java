@@ -18,7 +18,6 @@ public class EntitiesConverter {
 
     public CustomerPayload convertCustomer(CustomerEntity customerEntity) {
         return CustomerPayload.builder()
-                .id(customerEntity.getId())
                 .username(customerEntity.getUsername())
                 .email(customerEntity.getEmail())
                 .isActive(customerEntity.isActive())

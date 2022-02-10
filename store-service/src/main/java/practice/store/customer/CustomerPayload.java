@@ -1,19 +1,18 @@
 package practice.store.customer;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 
 @Builder
-@Data
-public class CustomerPayload {
+@Getter
+public final class CustomerPayload {
 
-    private Long id;
-    private String username;
-    private String password;
-    private String email;
-    private boolean isActive;
-    private boolean isCompany;
-    private String postalCode;
-    private String street;
-    private String city;
+    private final String username;
+    private final String password;
+    private final String email;
+    private final boolean isActive;
+    private final boolean isCompany;
+    private final String postalCode;
+    private final String street;
+    private final String city;
 }
