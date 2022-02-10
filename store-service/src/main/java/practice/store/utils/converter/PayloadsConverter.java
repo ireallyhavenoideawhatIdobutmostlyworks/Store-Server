@@ -1,6 +1,7 @@
 package practice.store.utils.converter;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import practice.store.customer.CustomerEntity;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Component
+@Log4j2
 public class PayloadsConverter {
 
     private final PasswordEncoder passwordEncoder;
