@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import practice.store.customer.CustomerEntity;
 import practice.store.customer.CustomerRepository;
-import practice.store.exceptions.customer.CustomerIsNotActiveException;
 import practice.store.order.details.OrderProductEntity;
 import practice.store.order.details.OrderProductPayload;
 import practice.store.order.details.OrderProductRepository;
@@ -19,6 +18,7 @@ import practice.store.rabbit.services.mail.SenderMailService;
 import practice.store.rabbit.services.pdf.SenderPdfService;
 import practice.store.utils.converter.PayloadsConverter;
 import practice.store.utils.values.GenerateRandomString;
+import practice.store.validator.OrderValidator;
 
 import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
@@ -42,6 +42,8 @@ public class OrderService {
 
     private final GenerateRandomString generateRandomString;
 
+    private final OrderValidator orderValidator;
+
     private final ProductService productService;
     private final SenderMailService senderMailService;
     private final SenderPdfService senderPdfService;
@@ -50,13 +52,13 @@ public class OrderService {
     public boolean save(OrderPayload orderPayload) throws JsonProcessingException {
         CustomerEntity customerEntity = actualLoggedActiveCustomer();
 
-        if (!isProductUuidExist(orderPayload)) {
+        if (!orderValidator.isProductUuidExist(orderPayload)) {
             return false;
         }
-        if (!hasOrderProducts(orderPayload)) {
+        if (!orderValidator.hasOrderProducts(orderPayload)) {
             return false;
         }
-        if (!isAmountOfProductCorrect(orderPayload)) {
+        if (!orderValidator.isAmountOfProductCorrect(orderPayload)) {
             return false;
         }
 
@@ -121,8 +123,6 @@ public class OrderService {
                                 .getName()
                 );
 
-        checkIfCustomerIsActive(actualLoggedCustomer);
-
         log.info("Returned actual logged customer. Entity details: {}", actualLoggedCustomer);
         return actualLoggedCustomer;
     }
@@ -142,54 +142,9 @@ public class OrderService {
         return productFinalPrice.multiply(productAmount);
     }
 
-    private void checkIfCustomerIsActive(CustomerEntity actualLoggedCustomer) {
-        if (!actualLoggedCustomer.isActive())
-            throw new CustomerIsNotActiveException(actualLoggedCustomer.getEmail());
-    }
-
-    private boolean isAmountOfProductCorrect(OrderPayload orderPayload) {
-        boolean result = orderPayload
-                .getOrderProductPayloads()
-                .stream()
-                .allMatch(productDetails -> isProductAmountCorrect(productDetails.getAmount(), productDetails.getProductUUID()));
-
-        return logIfFalse(result, "Amount of product is incorrect");
-    }
-
-    private boolean isProductUuidExist(OrderPayload orderPayload) {
-        boolean result = orderPayload
-                .getOrderProductPayloads()
-                .stream()
-                .allMatch(product -> productRepository.existsByProductUUID(product.getProductUUID()));
-
-        return logIfFalse(result, "Some of product UUID is not exist");
-    }
-
-    private boolean hasOrderProducts(OrderPayload orderPayload) {
-        boolean result = !orderPayload.getOrderProductPayloads().isEmpty();
-        return logIfFalse(result, "Order is without products");
-    }
-
     private ProductEntity findByProductUUID(String uuid) {
         return productRepository
                 .findByProductUUID(uuid)
                 .orElseThrow((() -> new EntityNotFoundException(String.format("Entity with UUID: %s not found", uuid))));
-    }
-
-    private boolean isProductAmountCorrect(int amountPayload, String uuid) {
-        ProductEntity productEntity = findByProductUUID(uuid);
-
-        log.info(String.format("Amount details: \n-entityProductUUID: %s \n-entityProductAmount: %d \n-payloadProductAmount: %d",
-                productEntity.getProductUUID(), productEntity.getAmount(), amountPayload));
-
-        return (productEntity.getAmount() >= amountPayload) && (productEntity.getAmount() > 0) && (amountPayload > 0);
-    }
-
-    private boolean logIfFalse(boolean result, String desc) {
-        if (!result) {
-            log.error("Result condition is false because: {}.", desc);
-            return false;
-        }
-        return true;
     }
 }
