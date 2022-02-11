@@ -4,8 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import practice.store.customer.CustomerEntity;
-import practice.store.exceptions.customer.CustomerIsNotActiveException;
 import practice.store.order.OrderPayload;
 import practice.store.product.ProductEntity;
 import practice.store.product.ProductRepository;
@@ -16,15 +14,11 @@ import javax.persistence.EntityNotFoundException;
 @Transactional
 @Component
 @Log4j2
-public class OrderValidator extends BaseValidator {
+public class OrderValidator {
 
     private final ProductRepository productRepository;
+    private final LogHelper logHelper;
 
-
-    public void checkIfCustomerIsActive(CustomerEntity actualLoggedCustomer) {
-        if (!actualLoggedCustomer.isActive())
-            throw new CustomerIsNotActiveException(actualLoggedCustomer.getEmail());
-    }
 
     public boolean isAmountOfProductCorrect(OrderPayload orderPayload) {
         boolean result = orderPayload
@@ -32,7 +26,7 @@ public class OrderValidator extends BaseValidator {
                 .stream()
                 .allMatch(productDetails -> isProductAmountCorrect(productDetails.getAmount(), productDetails.getProductUUID()));
 
-        return logIfFalse(result, "Amount of product is incorrect");
+        return logHelper.logIfFalse(result, "Amount of product is incorrect");
     }
 
     public boolean isProductUuidExist(OrderPayload orderPayload) {
@@ -41,15 +35,16 @@ public class OrderValidator extends BaseValidator {
                 .stream()
                 .allMatch(product -> productRepository.existsByProductUUID(product.getProductUUID()));
 
-        return logIfFalse(result, "Some of product UUID is not exist");
+        return logHelper.logIfFalse(result, "Some of product UUID is not exist");
     }
 
     public boolean hasOrderProducts(OrderPayload orderPayload) {
         boolean result = !orderPayload.getOrderProductPayloads().isEmpty();
-        return logIfFalse(result, "Order is without products");
+        return logHelper.logIfFalse(result, "Order is without products");
     }
 
-    public boolean isProductAmountCorrect(int amountPayload, String uuid) {
+
+    private boolean isProductAmountCorrect(int amountPayload, String uuid) {
         ProductEntity productEntity = productRepository
                 .findByProductUUID(uuid)
                 .orElseThrow((() -> new EntityNotFoundException(String.format("Entity with UUID: %s not found", uuid))));
@@ -58,15 +53,5 @@ public class OrderValidator extends BaseValidator {
                 productEntity.getProductUUID(), productEntity.getAmount(), amountPayload));
 
         return (productEntity.getAmount() >= amountPayload) && (productEntity.getAmount() > 0) && (amountPayload > 0);
-    }
-
-
-    @Override
-    boolean logIfFalse(boolean result, String desc) {
-        if (!result) {
-            log.error("Result condition is false because: {}.", desc);
-            return false;
-        }
-        return true;
     }
 }

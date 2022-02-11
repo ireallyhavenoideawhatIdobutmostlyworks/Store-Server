@@ -123,8 +123,6 @@ public class OrderService {
                                 .getName()
                 );
 
-        orderValidator.checkIfCustomerIsActive(actualLoggedCustomer);
-
         log.info("Returned actual logged customer. Entity details: {}", actualLoggedCustomer);
         return actualLoggedCustomer;
     }
