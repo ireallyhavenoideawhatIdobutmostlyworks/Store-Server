@@ -3,7 +3,6 @@ package practice.store.utils.initdata;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import practice.store.customer.CustomerEntity;
@@ -12,8 +11,6 @@ import practice.store.order.OrderEntity;
 import practice.store.order.OrderRepository;
 import practice.store.order.details.OrderProductRepository;
 import practice.store.product.ProductRepository;
-
-import java.text.ParseException;
 
 @RequiredArgsConstructor
 @Transactional
@@ -29,7 +26,7 @@ public class SaveDataToDatabase implements ApplicationRunner {
 
 
     @Override
-    public void run(ApplicationArguments args) throws ParseException {
+    public void run(ApplicationArguments args) {
         createDataStartApp.createCustomers();
         createDataStartApp.createProducts();
         createDataStartApp.createOrders();
