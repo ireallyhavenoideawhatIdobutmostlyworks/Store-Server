@@ -17,8 +17,6 @@ import practice.store.product.ProductEntity;
 import practice.store.utils.numbers.CalculatePrice;
 
 import java.math.BigDecimal;
-
-import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -67,7 +65,7 @@ public class CreateDataStartApp {
         products = new HashSet<>(Arrays.asList(productFirst, productSecond, productThird));
     }
 
-    public void createOrders() throws ParseException {
+    public void createOrders() {
         orderFirst = createOrderFirst();
         orderSecond = createOrderSecond();
         orders = new HashSet<>(Arrays.asList(orderFirst, orderSecond));
