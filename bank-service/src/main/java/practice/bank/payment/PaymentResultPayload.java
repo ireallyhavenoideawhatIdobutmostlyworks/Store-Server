@@ -1,18 +1,18 @@
 package practice.bank.payment;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 
 import java.math.BigDecimal;
 
 @Builder
-@Data
-public class PaymentResultPayload {
+@Getter
+public final class PaymentResultPayload {
 
-    private String orderUUID;
-    private BigDecimal orderPrice;
-    private String accountNumber;
-    private PaymentType paymentType;
-    private String email;
-    private Boolean isPaymentSuccess; // TODO checkbox on fronted for simulate behavior
+    private final String orderUUID;
+    private final BigDecimal orderPrice;
+    private final String accountNumber;
+    private final PaymentType paymentType;
+    private final String email;
+    private final Boolean isPaymentSuccess; // TODO checkbox on fronted for simulate behavior
 }

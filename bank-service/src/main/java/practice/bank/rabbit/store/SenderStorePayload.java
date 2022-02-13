@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 @EqualsAndHashCode
 @ToString
 @Builder
-public class SenderStorePayload implements Serializable {
+public final class SenderStorePayload implements Serializable {
 
     @JsonProperty
     private String orderUUID;

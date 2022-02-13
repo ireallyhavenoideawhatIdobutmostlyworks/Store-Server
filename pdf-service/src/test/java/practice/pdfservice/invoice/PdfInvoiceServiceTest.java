@@ -44,7 +44,7 @@ class PdfInvoiceServiceTest {
     @Test
     void create_basedOnDataFromStore_succeed() throws IOException {
         // given
-        ConsumerStorePayload consumerStorePayload = TestData.consumerStorePayload();
+        ConsumerStorePayload consumerStorePayload = TestData.consumerStorePayload("Order uuid");
         String orderUUID = consumerStorePayload.getOrderPdfDetails().getOrderUUID();
         String customerMailAddress = consumerStorePayload.getCustomerPdfDetails().getEmail();
         String pdfPath = String.format(outputPdfPath, orderUUID);

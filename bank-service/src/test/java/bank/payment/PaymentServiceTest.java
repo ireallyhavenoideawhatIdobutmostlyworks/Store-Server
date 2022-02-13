@@ -60,16 +60,13 @@ class PaymentServiceTest {
 
         ReflectionTestUtils.setField(senderStoreService, "queueFromBankToStore", queueNameStore);
         ReflectionTestUtils.setField(senderMailService, "queueFromBankToEmail", queueNameEmail);
-
-        paymentResultPayload = TestData.paymentResultPayload();
     }
 
     @DisplayName("Processing payment with success")
     @Test
     void processingPayment_Succeed() {
         // given
-        paymentResultPayload.setAccountNumber(validIban);
-        paymentResultPayload.setIsPaymentSuccess(true);
+        paymentResultPayload = TestData.paymentResultPayload(validIban, true);
         PaymentEntity paymentEntity = TestData.preparePaymentEntity(paymentResultPayload, simpleUuid, true);
 
 
@@ -96,8 +93,7 @@ class PaymentServiceTest {
     @Test
     void processingPayment_Failed_IfIbanIsInvalid() {
         // given
-        paymentResultPayload.setAccountNumber("Invalid IBAN");
-        paymentResultPayload.setIsPaymentSuccess(true);
+        paymentResultPayload = TestData.paymentResultPayload("invalid iban", true);
         PaymentEntity paymentEntity = TestData.preparePaymentEntity(paymentResultPayload, simpleUuid, false);
 
 
@@ -125,8 +121,7 @@ class PaymentServiceTest {
     @Test
     void processingPayment_Failed_IfIsSuccessFieldIsFalse() {
         // given
-        paymentResultPayload.setAccountNumber(validIban);
-        paymentResultPayload.setIsPaymentSuccess(false);
+        paymentResultPayload = TestData.paymentResultPayload(validIban, false);
         PaymentEntity paymentEntity = TestData.preparePaymentEntity(paymentResultPayload, simpleUuid, false);
 
 

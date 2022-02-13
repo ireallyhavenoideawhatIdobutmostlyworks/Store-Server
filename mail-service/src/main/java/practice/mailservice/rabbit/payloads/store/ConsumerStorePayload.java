@@ -1,18 +1,16 @@
 package practice.mailservice.rabbit.payloads.store;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import practice.mailservice.rabbit.payloads.ConsumerPayload;
 
 import java.math.BigDecimal;
 
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
 @Builder
-@Data
-public class ConsumerStorePayload implements ConsumerPayload {
+@Getter
+public final class ConsumerStorePayload implements ConsumerPayload {
 
     private String orderUUID;
     private String paymentUUID;

@@ -44,8 +44,7 @@ class PdfServiceTest {
         // given
         String fileName = UUID.randomUUID().toString();
         createEmptyExcel(outputExcelPath, fileName);
-        ConsumerStorePayload consumerStorePayload = TestData.consumerStorePayload();
-        consumerStorePayload.getOrderPdfDetails().setOrderUUID(fileName);
+        ConsumerStorePayload consumerStorePayload = TestData.consumerStorePayload(fileName);
 
 
         // when
