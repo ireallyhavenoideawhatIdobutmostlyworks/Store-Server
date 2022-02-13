@@ -40,3 +40,4 @@ build/
 !/.mvn/
 !/src/main/java/practice/pdfservice/createdPhysicalFile/*
 src/test/java/practice/mailservice/testFiles/*
+!/src/test/java/practice/pdfservice/testfiles/
