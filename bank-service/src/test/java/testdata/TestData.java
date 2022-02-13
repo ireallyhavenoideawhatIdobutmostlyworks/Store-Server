@@ -13,14 +13,14 @@ import java.time.LocalDateTime;
 
 public abstract class TestData {
 
-    public static PaymentResultPayload paymentResultPayload() {
+    public static PaymentResultPayload paymentResultPayload(String accountNumber, boolean isPaymentSuccess) {
         return PaymentResultPayload.builder()
                 .orderUUID(new GenerateRandomString().generateRandomUuid())
                 .orderPrice(BigDecimal.valueOf(999).setScale(2, RoundingMode.CEILING))
-                .accountNumber("accountNumber")
+                .accountNumber(accountNumber)
                 .paymentType(PaymentType.BLIK)
                 .email("some@testpayload.email")
-                .isPaymentSuccess(true)
+                .isPaymentSuccess(isPaymentSuccess)
                 .build();
     }
 

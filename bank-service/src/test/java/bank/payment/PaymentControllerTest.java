@@ -2,6 +2,7 @@ package bank.payment;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -50,12 +51,9 @@ class PaymentControllerTest {
     private PaymentResultPayload paymentResultPayload;
 
 
-    static {
-        final GenericContainer rabbitMq = new GenericContainer("rabbitmq:3-management").withExposedPorts(5672);
-        rabbitMq.start();
-
-        System.setProperty("spring.rabbitmq.host", rabbitMq.getContainerIpAddress());
-        System.setProperty("spring.rabbitmq.port", rabbitMq.getMappedPort(5672).toString());
+    @BeforeAll
+    public static void setRabbitMqContainer() {
+        runRabbitMqContainer();
     }
 
     @BeforeEach
@@ -63,15 +61,12 @@ class PaymentControllerTest {
         mvc = MockMvcBuilders
                 .webAppContextSetup(context)
                 .build();
-
-        paymentResultPayload = TestData.paymentResultPayload();
     }
 
     @Test
     void processingPayment_Succeed() throws Exception {
         // given
-        paymentResultPayload.setAccountNumber(validIban);
-        paymentResultPayload.setIsPaymentSuccess(true);
+        paymentResultPayload = TestData.paymentResultPayload(validIban, true);
 
 
         // when
@@ -102,8 +97,7 @@ class PaymentControllerTest {
     @Test
     void processingPayment_Failed_IfIsSuccessFieldIsFalse() throws Exception {
         // given
-        paymentResultPayload.setAccountNumber(validIban);
-        paymentResultPayload.setIsPaymentSuccess(false);
+        paymentResultPayload = TestData.paymentResultPayload(validIban, false);
 
 
         // when
@@ -134,8 +128,7 @@ class PaymentControllerTest {
     @Test
     void processingPayment_Failed_IfIbanIsInvalid() throws Exception {
         // given
-        paymentResultPayload.setAccountNumber("invalid IBAN");
-        paymentResultPayload.setIsPaymentSuccess(true);
+        paymentResultPayload = TestData.paymentResultPayload("invalid iban", true);
 
 
         // when
@@ -182,6 +175,14 @@ class PaymentControllerTest {
     private SenderMailPayload queueMailBody() throws JsonProcessingException {
         String queueBody = new String(Objects.requireNonNull(rabbitTemplate.receive("queue.from.bank.to.email")).getBody(), StandardCharsets.UTF_8);
         return new ObjectMapper().readValue(queueBody, SenderMailPayload.class);
+    }
+
+    private static void runRabbitMqContainer() {
+        final GenericContainer rabbitMq = new GenericContainer("rabbitmq:3-management").withExposedPorts(5672);
+        rabbitMq.start();
+
+        System.setProperty("spring.rabbitmq.host", rabbitMq.getContainerIpAddress());
+        System.setProperty("spring.rabbitmq.port", rabbitMq.getMappedPort(5672).toString());
     }
 }
 

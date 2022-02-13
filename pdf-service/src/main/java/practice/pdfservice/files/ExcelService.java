@@ -9,10 +9,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import practice.pdfservice.rabbit.store.ConsumerStorePayload;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.time.LocalDateTime;
 
 @PropertySource({
@@ -41,6 +38,8 @@ public class ExcelService {
 
 
     public String createExcelFile(ConsumerStorePayload consumerStorePayload) {
+        createDirIfNotExist();
+
         String orderUuid = consumerStorePayload.getOrderPdfDetails().getOrderUUID();
         String outputPath = String.format(outputExcelPath, orderUuid);
 
@@ -139,5 +138,11 @@ public class ExcelService {
                 .getRow(rowPosition)
                 .getCell(cellPosition)
                 .setCellValue(content);
+    }
+
+    private void createDirIfNotExist() {
+        File directory =  new File(outputExcelPath);
+        if (!directory.exists())
+            directory.mkdirs();
     }
 }

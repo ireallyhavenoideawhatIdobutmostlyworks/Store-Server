@@ -1,16 +1,14 @@
 package practice.mailservice.rabbit.payloads.pdf;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import practice.mailservice.rabbit.payloads.ConsumerPayload;
 
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
 @Builder
-@Data
-public class ConsumerPdfPayload implements ConsumerPayload {
+@Getter
+public final class ConsumerPdfPayload implements ConsumerPayload {
 
     private String orderUUID;
     private byte[] fileData;

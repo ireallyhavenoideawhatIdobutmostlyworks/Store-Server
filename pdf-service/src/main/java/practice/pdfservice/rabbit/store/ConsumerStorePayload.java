@@ -1,9 +1,6 @@
 package practice.pdfservice.rabbit.store;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import practice.pdfservice.rabbit.store.detaills.CustomerPdfDetails;
 import practice.pdfservice.rabbit.store.detaills.OrderPdfDetails;
 import practice.pdfservice.rabbit.store.detaills.ProductPdfDetails;
@@ -12,8 +9,9 @@ import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
 @Builder
-@Data
+@Getter
 public class ConsumerStorePayload {
 
     private CustomerPdfDetails customerPdfDetails;

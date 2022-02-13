@@ -29,10 +29,10 @@ public abstract class TestData {
                 .build();
     }
 
-    public static OrderPdfDetails orderPdfDetails() {
+    public static OrderPdfDetails orderPdfDetails(String orderUUID) {
         return OrderPdfDetails
                 .builder()
-                .orderUUID("orderUuid")
+                .orderUUID(orderUUID)
                 .paymentUUID("paymentUuid")
                 .orderPrice(BigDecimal.valueOf(100).setScale(2, RoundingMode.CEILING))
                 .accountNumber("account number")
@@ -49,11 +49,11 @@ public abstract class TestData {
                 .build();
     }
 
-    public static ConsumerStorePayload consumerStorePayload() {
+    public static ConsumerStorePayload consumerStorePayload(String orderUUID) {
         return ConsumerStorePayload
                 .builder()
                 .customerPdfDetails(customerPdfDetails())
-                .orderPdfDetails(orderPdfDetails())
+                .orderPdfDetails(orderPdfDetails(orderUUID))
                 .productPdfDetailsList(new ArrayList<>(Arrays.asList(productPdfDetails(), productPdfDetails(), productPdfDetails())))
                 .build();
     }

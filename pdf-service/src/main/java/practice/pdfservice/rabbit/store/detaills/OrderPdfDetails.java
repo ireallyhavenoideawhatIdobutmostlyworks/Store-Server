@@ -1,16 +1,14 @@
 package practice.pdfservice.rabbit.store.detaills;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 
-@Builder
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
+@Builder
+@Getter
 public class OrderPdfDetails {
 
     private String orderUUID;

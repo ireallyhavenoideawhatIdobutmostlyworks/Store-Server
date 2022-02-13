@@ -39,8 +39,7 @@ class PdfExcelServiceTest {
     void createExcelFile_basedOnDataFromStore_succeed() {
         // given
         String excelFileName = UUID.randomUUID().toString();
-        ConsumerStorePayload consumerStorePayload = TestData.consumerStorePayload();
-        consumerStorePayload.getOrderPdfDetails().setOrderUUID(excelFileName);
+        ConsumerStorePayload consumerStorePayload = TestData.consumerStorePayload(excelFileName);
 
 
         // when

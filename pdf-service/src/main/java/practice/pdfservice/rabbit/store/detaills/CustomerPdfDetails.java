@@ -1,14 +1,12 @@
 package practice.pdfservice.rabbit.store.detaills;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Builder
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
+@Builder
+@Getter
 public class CustomerPdfDetails {
 
     private String username;

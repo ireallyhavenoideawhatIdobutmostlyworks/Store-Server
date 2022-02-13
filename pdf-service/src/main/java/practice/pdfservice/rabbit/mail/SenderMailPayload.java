@@ -1,14 +1,12 @@
 package practice.pdfservice.rabbit.mail;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
 @Builder
-@Data
+@Getter
 public class SenderMailPayload {
 
     private String orderUUID;

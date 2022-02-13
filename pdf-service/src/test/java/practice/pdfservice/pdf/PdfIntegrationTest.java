@@ -74,8 +74,7 @@ public class PdfIntegrationTest {
     void receiveOrderDetails_createInvoiceAndSendToEmailModule_succeeded() throws Exception {
         // given
         String fileName = UUID.randomUUID().toString();
-        ConsumerStorePayload consumerStorePayload = TestData.consumerStorePayload();
-        consumerStorePayload.getOrderPdfDetails().setOrderUUID(fileName);
+        ConsumerStorePayload consumerStorePayload = TestData.consumerStorePayload(fileName);
 
 
         // when
