@@ -33,6 +33,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             "/swagger-ui.html",
             "/swagger-ui.html#/**",
             "/webjars/**",
+            "/actuator/**",
 
             // -- Login endpoint
             "/api/auth/login",

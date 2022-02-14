@@ -2,6 +2,7 @@ package practice.pdfservice.pdf;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.Ignore;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,6 +13,7 @@ import org.springframework.amqp.rabbit.test.RabbitListenerTestHarness;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.testcontainers.containers.GenericContainer;
@@ -23,6 +25,7 @@ import practice.pdfservice.testData.TestData;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -31,7 +34,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-
+@PropertySource({"classpath:file.properties"})
 @RabbitListenerTest(capture = true)
 @SpringBootTest
 public class PdfIntegrationTest {
@@ -49,7 +52,8 @@ public class PdfIntegrationTest {
     @Value("${routing.key.from.store.to.pdf}")
     private String routingKeyFromStoreToPdf;
 
-    private final String directoryPath = "docs";
+    @Value("${docs.folder.path}")
+    private String docsFolderPath;
 
 
     @BeforeAll
@@ -66,11 +70,11 @@ public class PdfIntegrationTest {
 
     @AfterEach
     void clear() throws IOException {
-        FileUtils.cleanDirectory(new File(directoryPath));
+        FileUtils.cleanDirectory(new File(docsFolderPath));
     }
 
 
-    @Test
+    @Test @Ignore
     void receiveOrderDetails_createInvoiceAndSendToEmailModule_succeeded() throws Exception {
         // given
         String fileName = UUID.randomUUID().toString();
@@ -105,8 +109,8 @@ public class PdfIntegrationTest {
     }
 
     private String persistPdfInvoice(byte[] invoiceAsByte, String orderUuid) throws IOException {
-        FileUtils.cleanDirectory(new File(directoryPath));
-        File file = new File(String.format("%s/%s.pdf", directoryPath, orderUuid));
+        FileUtils.cleanDirectory(new File(docsFolderPath));
+        File file = new File(String.format("%s/%s.pdf", docsFolderPath, orderUuid));
         FileUtils.writeByteArrayToFile(file, invoiceAsByte);
         return file.getName().replace(".pdf", "");
     }
