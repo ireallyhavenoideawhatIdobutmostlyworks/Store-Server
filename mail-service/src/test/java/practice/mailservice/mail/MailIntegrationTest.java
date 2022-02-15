@@ -4,7 +4,6 @@ import com.icegreen.greenmail.store.FolderException;
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
 import org.apache.commons.mail.util.MimeMessageParser;
-import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.junit.jupiter.api.*;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.test.RabbitListenerTest;
@@ -88,7 +87,6 @@ class MailIntegrationTest {
                 .webAppContextSetup(context)
                 .build();
 
-        FileUtils.cleanDirectory(new File(outputDir));
         createTestFile();
     }
 
