@@ -25,7 +25,7 @@
         <!-- VERSIONS FOR SOURCE DEPENDENCIES -->
         <org.apache.poi.version>5.0.0</org.apache.poi.version>
         <aspose-cells.version>20.7</aspose-cells.version>
-        <e-iceblue.version>2.2.0</e-iceblue.version>
+        <e-iceblue.version>3.9.1</e-iceblue.version>
     </properties>
 
     <dependencies>
