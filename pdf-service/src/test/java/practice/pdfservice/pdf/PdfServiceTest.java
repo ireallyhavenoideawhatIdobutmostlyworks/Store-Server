@@ -5,6 +5,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -23,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("Tests for pdf service")
 @ExtendWith(MockitoExtension.class)
+@Tag("Unit_Test")
 class PdfServiceTest {
 
     private PdfService pdfService;

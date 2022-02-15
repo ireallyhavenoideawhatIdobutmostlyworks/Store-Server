@@ -2,6 +2,7 @@ package practice.pdfservice.invoice;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -20,6 +21,7 @@ import static org.mockito.Mockito.verify;
 
 @DisplayName("Tests for pdf invoice service")
 @ExtendWith(MockitoExtension.class)
+@Tag("Unit_Test")
 class PdfInvoiceServiceTest {
 
     @Mock

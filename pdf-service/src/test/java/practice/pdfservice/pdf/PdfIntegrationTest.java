@@ -2,11 +2,7 @@ package practice.pdfservice.pdf;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Ignore;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.test.RabbitListenerTest;
 import org.springframework.amqp.rabbit.test.RabbitListenerTestHarness;
@@ -25,7 +21,6 @@ import practice.pdfservice.testData.TestData;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -36,6 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @PropertySource({"classpath:file.properties"})
 @RabbitListenerTest(capture = true)
+@Tag("Integration_Test")
 @SpringBootTest
 public class PdfIntegrationTest {
 
@@ -74,7 +70,8 @@ public class PdfIntegrationTest {
     }
 
 
-    @Test @Ignore
+    @Test
+    @Disabled
     void receiveOrderDetails_createInvoiceAndSendToEmailModule_succeeded() throws Exception {
         // given
         String fileName = UUID.randomUUID().toString();

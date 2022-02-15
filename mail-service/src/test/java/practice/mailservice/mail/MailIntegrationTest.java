@@ -5,10 +5,7 @@ import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
 import org.apache.commons.mail.util.MimeMessageParser;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.test.RabbitListenerTest;
 import org.springframework.amqp.rabbit.test.RabbitListenerTestHarness;
@@ -17,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import org.testcontainers.containers.GenericContainer;
 import practice.mailservice.config.RabbitMqConfigTest;
@@ -38,6 +36,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest(classes = RabbitMqConfigTest.class)
 @PropertySource("classpath:rabbitMail.properties")
 @RabbitListenerTest(capture = true)
+@Tag("Integration_Test")
+@Transactional
 class MailIntegrationTest {
 
     @Autowired
