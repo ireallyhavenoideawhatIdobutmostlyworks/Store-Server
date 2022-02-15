@@ -38,5 +38,4 @@ build/
 !/HELP.md
 
 !/.mvn/
-!/src/test/java/practice/pdfservice/testfiles/*
 !/src/main/java/docs/*
