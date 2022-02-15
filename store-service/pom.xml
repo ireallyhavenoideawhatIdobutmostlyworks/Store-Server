@@ -140,7 +140,15 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>${maven-surefire-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>test</goal>
+                            </goals>
+                        </execution>
+                    </executions>
                     <configuration>
+                        <groups>Unit_Test, Integration_Test</groups>
                         <includes>
                             <include>**/*Test*.*</include>
                             <include>**/*Spec*.*</include>
