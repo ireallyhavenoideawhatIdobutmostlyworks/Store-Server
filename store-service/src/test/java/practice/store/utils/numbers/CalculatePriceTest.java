@@ -2,6 +2,7 @@ package practice.store.utils.numbers;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -10,6 +11,7 @@ import java.math.RoundingMode;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @DisplayName("Calculate product price")
+@Tag("Unit_Test")
 class CalculatePriceTest {
 
     private CalculatePrice calculatePrice;

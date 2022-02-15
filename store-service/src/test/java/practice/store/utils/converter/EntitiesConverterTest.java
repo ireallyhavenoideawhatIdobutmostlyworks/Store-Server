@@ -2,6 +2,7 @@ package practice.store.utils.converter;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -19,8 +20,9 @@ import java.math.BigDecimal;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-@ExtendWith(MockitoExtension.class)
 @DisplayName("Test converter object from entity to payload")
+@ExtendWith(MockitoExtension.class)
+@Tag("Unit_Test")
 class EntitiesConverterTest {
 
     private EntitiesConverter entitiesConverter;

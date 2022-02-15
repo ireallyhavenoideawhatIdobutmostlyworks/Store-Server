@@ -3,6 +3,7 @@ package practice.store.utils.numbers;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import practice.store.exceptions.common.ListIsEmptyException;
 
@@ -10,6 +11,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
 
 @DisplayName("Test generate random number")
+@Tag("Unit_Test")
 class GenerateRandomNumberTest {
 
     private GenerateRandomNumber generateRandomNumber;
