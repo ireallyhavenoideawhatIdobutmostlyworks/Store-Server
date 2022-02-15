@@ -246,7 +246,7 @@ class MailIntegrationTest {
 
     private void createTestFile() throws IOException {
         fileName = UUID.randomUUID().toString();
-        String filePath = String.format(outputPdfPath, fileName);
-        new File(filePath).createNewFile();
+     //   String filePath = String.format(outputPdfPath, fileName);
+     //   new File(filePath).createNewFile();
     }
 }
