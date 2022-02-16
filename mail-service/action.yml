@@ -1,5 +1,5 @@
-name: store-service-action
-description: "Store Service Action"
+name: mail-service-action
+description: "Mail Service Action"
 runs:
   using: "composite"
   steps:
@@ -7,7 +7,7 @@ runs:
     - run: |
         pwd
         ls
-        cd store-service
+        cd mail-service
         pwd
         mvn clean package test
       shell: bash

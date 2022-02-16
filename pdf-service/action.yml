@@ -1,5 +1,5 @@
-name: store-service-action
-description: "Store Service Action"
+name: pdf-service-action
+description: "Pdf Service Action"
 runs:
   using: "composite"
   steps:
@@ -7,7 +7,7 @@ runs:
     - run: |
         pwd
         ls
-        cd store-service
+        cd pdf-service
         pwd
         mvn clean package test
       shell: bash
