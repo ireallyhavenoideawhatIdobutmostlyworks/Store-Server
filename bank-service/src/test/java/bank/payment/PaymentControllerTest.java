@@ -33,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = BankApplication.class)
-@Tag("Integration_Test")
+@Tag("Bank_Service_Integration_Test")
 @Transactional
 class PaymentControllerTest {
 

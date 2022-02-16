@@ -24,7 +24,7 @@ import static org.mockito.Mockito.*;
 
 @DisplayName("Tests for payment service")
 @ExtendWith(MockitoExtension.class)
-@Tag("Unit_Test")
+@Tag("Bank_Service_Unit_Test")
 class PaymentServiceTest {
 
     @Mock

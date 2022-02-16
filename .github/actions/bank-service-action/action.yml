@@ -3,7 +3,8 @@ description: "Bank Service Action"
 runs:
   using: "composite"
   steps:
-    - run: mvn clean test -Dgroups="Unit_Test"
+    - uses: actions/checkout@v2
+    - run: mvn clean test -Dgroups="Bank_Service_Unit_Test"
       shell: bash
 
 
