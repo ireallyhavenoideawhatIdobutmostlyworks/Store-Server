@@ -25,4 +25,6 @@ jobs:
       - uses: actions/checkout@v2
       - uses: ./bank-service
       - uses: ./store-service
+      - uses: ./pdf-service
+      - uses: ./mail-service
 
