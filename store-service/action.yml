@@ -1,0 +1,23 @@
+name: store-service-action
+description: "Store Service Action"
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v2
+    - run: mvn clean test
+      shell: bash
+
+
+
+#    - run: mvn clean test -Dgroups="Bank_Service_Unit_Test"
+#runs:
+#  run_unit_tests:
+#    steps:
+#      - name: Run unit test
+#        run: mvn clean test -Dgroups="Unit_Test"
+#      - name: Publish Test Report
+#        uses: mikepenz/action-junit-report@v2
+#        if: always()
+#        with:
+#          report_paths: '**/target/surefire-reports/TEST-*.xml'
+
