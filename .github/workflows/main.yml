@@ -24,4 +24,6 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
       - uses: actions/checkout@v2
       - uses: ./bank-service
+          - working-directory: bank-service
       - uses: ./store-service
+          - working-directory: store-service
