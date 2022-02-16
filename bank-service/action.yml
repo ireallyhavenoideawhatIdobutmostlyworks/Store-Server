@@ -4,6 +4,7 @@ runs:
   using: "composite"
   steps:
     - uses: actions/checkout@v2
+      working-directory: .\bank-service\
     - run: mvn clean test -Dgroups="Bank_Service_Unit_Test"
       shell: bash
 
