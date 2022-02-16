@@ -41,7 +41,7 @@ public abstract class TestData {
         return ConsumerPdfPayload.builder()
                 .orderUUID(testFileName)
                 .email("pdf@test.email")
-                .fileData(convertPdfToByte(createPdfFile(outputPdfPath, testFileName).getPath()))
+                .fileData(convertPdfToByte(new File("docs/testfile.pdf").getPath()))
                 .build();
     }
 
@@ -52,8 +52,9 @@ public abstract class TestData {
     }
 
     private static File createPdfFile(String outputPdfPath, String testFileName) throws IOException {
-        File file = new File(String.format(outputPdfPath, testFileName));
-        file.createNewFile();
+     //   File file = new File(String.format(outputPdfPath, testFileName));
+   //     file.createNewFile();
+        File file = new File("docs/testfile.pdf");
         return file;
     }
 }

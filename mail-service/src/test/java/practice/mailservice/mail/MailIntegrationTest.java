@@ -67,7 +67,7 @@ class MailIntegrationTest {
 
     private final String outputDir = "docs/";
     private final String outputPdfPath = outputDir + "%s.pdf";
-    private String fileName;
+    private final String fileName = "testfile";
 
     @BeforeAll
     public static void setGreenMail() {
@@ -87,7 +87,7 @@ class MailIntegrationTest {
                 .webAppContextSetup(context)
                 .build();
 
-        createTestFile();
+       // createTestFile();
     }
 
 
@@ -245,8 +245,9 @@ class MailIntegrationTest {
     }
 
     private void createTestFile() throws IOException {
-        fileName = UUID.randomUUID().toString();
-     //   String filePath = String.format(outputPdfPath, fileName);
-     //   new File(filePath).createNewFile();
+    //    fileName = "testfile";
+//        fileName = UUID.randomUUID().toString();
+//        String filePath = String.format(outputPdfPath, fileName);
+//        new File(filePath).createNewFile();
     }
 }
