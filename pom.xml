@@ -247,7 +247,7 @@
                         </execution>
                     </executions>
                     <configuration>
-                        <groups>Unit_Test, Integration_Test</groups>
+                        <groups>Bank_Service_Unit_Test, Bank_Service_Integration_Test</groups>
                         <includes>
                             <include>**/*Test*.*</include>
                             <include>**/*Spec*.*</include>
