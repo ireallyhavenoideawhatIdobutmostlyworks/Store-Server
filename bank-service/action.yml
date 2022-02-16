@@ -7,7 +7,9 @@ runs:
 #    - run: mvn clean compile test
 #      shell: bash
     - run: |
+        ls
         cd bank-service
+        pwd
         mvn clean package test
       shell: bash
 
