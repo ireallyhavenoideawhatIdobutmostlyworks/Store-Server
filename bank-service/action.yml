@@ -4,7 +4,9 @@ runs:
   using: "composite"
   steps:
     - uses: actions/checkout@v2
-    - run: mvn clean test
+    - run: |
+      cd bank-service
+      mvn clean compile test
       shell: bash
 
 
