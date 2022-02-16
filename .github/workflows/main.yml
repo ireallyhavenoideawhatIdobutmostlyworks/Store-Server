@@ -7,7 +7,7 @@ on:
     branches: [ develop ]
 
 jobs:
-  reusable_workflow_job:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the repository
