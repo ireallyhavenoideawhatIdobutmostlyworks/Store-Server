@@ -4,15 +4,12 @@ runs:
   using: "composite"
   steps:
     - uses: actions/checkout@v2
-    - run: |
-        ls
-        cd bank-service
-        pwd
-      shell: bash
-    - run: mvn clean test -Dgroups="Bank_Service_Unit_Test"
+    - run: mvn clean test
       shell: bash
 
 
+
+#    - run: mvn clean test -Dgroups="Bank_Service_Unit_Test"
 #runs:
 #  run_unit_tests:
 #    steps:
