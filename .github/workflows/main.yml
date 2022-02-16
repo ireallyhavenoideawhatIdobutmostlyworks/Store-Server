@@ -23,7 +23,9 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
       - uses: actions/checkout@v2
-      - uses: ./.github/bank-service-action
+      - uses: ./.github/actions/bank-service-action
+#      - uses: ./.github/bank-service-action@develop
+
 
 
 
