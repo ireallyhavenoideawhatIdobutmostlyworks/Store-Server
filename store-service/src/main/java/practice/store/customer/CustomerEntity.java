@@ -29,7 +29,7 @@ public class CustomerEntity {
     private String password;
 
     @NotNull(message = "'Email' parameter may not be null.")
-    @Column
+    @Column(unique = true)
     @Email
     private String email;
 

@@ -4,6 +4,7 @@ import practice.store.customer.CustomerEntity;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 public abstract class TestDataCustomerEntity {
 
@@ -11,11 +12,14 @@ public abstract class TestDataCustomerEntity {
         return CustomerEntity
                 .builder()
                 .id(1L)
-                .username("name")
-                .password("password")
+                .username("Name")
+                .password("Password")
                 .email(email)
                 .isActive(true)
                 .isCompany(true)
+                .postalCode("Postal Code")
+                .street("Street")
+                .city("City")
                 .build();
     }
 
@@ -27,6 +31,9 @@ public abstract class TestDataCustomerEntity {
                 .email(email)
                 .isActive(isActive)
                 .isCompany(isCompany)
+                .postalCode("Postal Code")
+                .street("Street")
+                .city("City")
                 .build();
     }
 
@@ -39,6 +46,9 @@ public abstract class TestDataCustomerEntity {
                 .email(email)
                 .isActive(isActive)
                 .isCompany(isCompany)
+                .postalCode("Postal Code")
+                .street("Street")
+                .city("City")
                 .build();
     }
 
@@ -48,9 +58,12 @@ public abstract class TestDataCustomerEntity {
                 .id(1L)
                 .username("test name1")
                 .password("test password1")
-                .email("test@email.test1")
+                .email("test1@email1.test1"  + UUID.randomUUID())
                 .isActive(true)
                 .isCompany(true)
+                .postalCode("Postal Code")
+                .street("Street")
+                .city("City")
                 .build();
 
         CustomerEntity existingCustomerEntitySecond = CustomerEntity
@@ -58,9 +71,12 @@ public abstract class TestDataCustomerEntity {
                 .id(2L)
                 .username("test name2")
                 .password("test password2")
-                .email("test@email.test2")
+                .email("test2@email2.test2"  + UUID.randomUUID())
                 .isActive(true)
                 .isCompany(true)
+                .postalCode("Postal Code")
+                .street("Street")
+                .city("City")
                 .build();
 
 
@@ -69,9 +85,12 @@ public abstract class TestDataCustomerEntity {
                 .id(3L)
                 .username("test name3")
                 .password("test password3")
-                .email("test@email.test3")
+                .email("test3@email3.test3"  + UUID.randomUUID())
                 .isActive(true)
                 .isCompany(true)
+                .postalCode("Postal Code")
+                .street("Street")
+                .city("City")
                 .build();
 
         return Arrays.asList(existingCustomerEntityFirst, existingCustomerEntitySecond, existingCustomerEntityThird);
