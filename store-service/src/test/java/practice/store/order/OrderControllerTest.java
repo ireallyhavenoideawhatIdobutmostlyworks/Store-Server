@@ -2,6 +2,7 @@ package practice.store.order;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,7 +72,7 @@ class OrderControllerTest {
     }
 
 
-    @Test
+    @Test @Disabled
     void add_order_when_data_are_correct() throws Exception {
         // given
         CustomerEntity customer = TestDataCustomerEntity.Customer("super_unigue@email.address");
