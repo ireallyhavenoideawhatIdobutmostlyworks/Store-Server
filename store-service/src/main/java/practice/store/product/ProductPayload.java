@@ -1,10 +1,12 @@
 package practice.store.product;
 
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 
 import java.math.BigDecimal;
-
+@ToString
 @Builder
 @Getter
 public final class ProductPayload {
@@ -15,9 +17,9 @@ public final class ProductPayload {
     private final BigDecimal basePrice;
     private final BigDecimal finalPrice;
     private final int discountPercentage;
-    private final boolean hasDiscount;
+    private final Boolean hasDiscount;
     private final int amount;
     private final Categories categories;
     private final Availability availability;
-    private final boolean isActive;
+    private final Boolean isActive;
 }

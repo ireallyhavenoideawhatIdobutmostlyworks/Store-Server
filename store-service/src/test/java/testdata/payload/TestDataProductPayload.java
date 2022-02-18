@@ -10,7 +10,7 @@ import java.math.RoundingMode;
 
 public abstract class TestDataProductPayload {
 
-    public static ProductPayload Product(long id, String name, String productUUID, String description, BigDecimal basePrice, BigDecimal amountPriceReduction, BigDecimal finalPrice, int discountPercentage, boolean hasDiscount, int amountInStock, Categories categories, Availability availability, boolean isActive) {
+    public static ProductPayload Product(String name, String productUUID, String description, BigDecimal basePrice, BigDecimal amountPriceReduction, BigDecimal finalPrice, int discountPercentage, boolean hasDiscount, int amountInStock, Categories categories, Availability availability, boolean isActive) {
         return ProductPayload.builder()
                 .name(name)
                 .productUUID(productUUID)
@@ -42,9 +42,9 @@ public abstract class TestDataProductPayload {
                 .build();
     }
 
-    public static ProductPayload ProductWithDiscount(long id, String uuid) {
+    public static ProductPayload ProductWithDiscount(String name, String uuid) {
         return ProductPayload.builder()
-                .name("test name")
+                .name(name)
                 .productUUID(uuid)
                 .description("test description")
                 .basePrice(setBigDecimalWithScale(100))
@@ -58,9 +58,89 @@ public abstract class TestDataProductPayload {
                 .build();
     }
 
-    public static ProductPayload ProductWithDiscount(long id, String name, String uuid) {
+    public static ProductPayload ProductWithDiscount(int discountPercentage) {
         return ProductPayload.builder()
-                .name(name)
+                .name("test name")
+                .productUUID(new GenerateRandomString().generateRandomUuid())
+                .description("test description")
+                .basePrice(setBigDecimalWithScale(100))
+                .finalPrice(setBigDecimalWithScale(90))
+                .discountPercentage(discountPercentage)
+                .hasDiscount(true)
+                .amount(5)
+                .categories(Categories.PHONES)
+                .availability(Availability.AVAILABLE)
+                .isActive(true)
+                .build();
+    }
+
+    public static ProductPayload ProductWithDiscount(BigDecimal finalPrice) {
+        return ProductPayload.builder()
+                .name("test name")
+                .productUUID(new GenerateRandomString().generateRandomUuid())
+                .description("test description")
+                .basePrice(finalPrice)
+                .finalPrice(finalPrice)
+                .discountPercentage(0)
+                .hasDiscount(true)
+                .amount(5)
+                .categories(Categories.PHONES)
+                .availability(Availability.AVAILABLE)
+                .isActive(true)
+                .build();
+    }
+
+    public static ProductPayload ProductWithDiscount(BigDecimal basePrice, BigDecimal finalPrice) {
+        return ProductPayload.builder()
+                .name("test name")
+                .productUUID(new GenerateRandomString().generateRandomUuid())
+                .description("test description")
+                .basePrice(basePrice)
+                .finalPrice(finalPrice)
+                .discountPercentage(0)
+                .hasDiscount(true)
+                .amount(5)
+                .categories(Categories.PHONES)
+                .availability(Availability.AVAILABLE)
+                .isActive(true)
+                .build();
+    }
+
+    public static ProductPayload ProductWithDiscount(Availability availability) {
+        return ProductPayload.builder()
+                .name("test name")
+                .productUUID(new GenerateRandomString().generateRandomUuid())
+                .description("test description")
+                .basePrice(setBigDecimalWithScale(100))
+                .finalPrice(setBigDecimalWithScale(90))
+                .discountPercentage(10)
+                .hasDiscount(true)
+                .amount(5)
+                .categories(Categories.PHONES)
+                .availability(availability)
+                .isActive(true)
+                .build();
+    }
+
+    public static ProductPayload ProductWithDiscount(String uuid, int amount) {
+        return ProductPayload.builder()
+                .name("test name")
+                .productUUID(uuid)
+                .description("test description")
+                .basePrice(setBigDecimalWithScale(100))
+                .finalPrice(setBigDecimalWithScale(90))
+                .discountPercentage(10)
+                .hasDiscount(true)
+                .amount(amount)
+                .categories(Categories.PHONES)
+                .availability(Availability.AVAILABLE)
+                .isActive(true)
+                .build();
+    }
+
+    public static ProductPayload ProductWithDiscount(String uuid) {
+        return ProductPayload.builder()
+                .name("product name")
                 .productUUID(uuid)
                 .description("test description")
                 .basePrice(setBigDecimalWithScale(100))
@@ -90,9 +170,9 @@ public abstract class TestDataProductPayload {
                 .build();
     }
 
-    public static ProductPayload ProductWithoutDiscount(long id, String name, String uuid) {
+    public static ProductPayload ProductWithoutDiscount(String uuid) {
         return ProductPayload.builder()
-                .name(name)
+                .name("name")
                 .productUUID(uuid)
                 .description("test description")
                 .basePrice(setBigDecimalWithScale(100))
@@ -106,9 +186,9 @@ public abstract class TestDataProductPayload {
                 .build();
     }
 
-    public static ProductPayload ProductWithoutDiscount(long id, String uuid) {
+    public static ProductPayload ProductWithoutDiscount(String name, String uuid) {
         return ProductPayload.builder()
-                .name("test name")
+                .name(name)
                 .productUUID(uuid)
                 .description("test description")
                 .basePrice(setBigDecimalWithScale(100))

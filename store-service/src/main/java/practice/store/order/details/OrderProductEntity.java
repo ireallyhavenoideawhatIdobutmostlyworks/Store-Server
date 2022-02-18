@@ -1,6 +1,9 @@
 package practice.store.order.details;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import practice.store.order.OrderEntity;
 import practice.store.product.ProductEntity;
 

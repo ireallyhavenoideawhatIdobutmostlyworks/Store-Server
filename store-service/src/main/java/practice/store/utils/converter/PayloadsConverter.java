@@ -47,11 +47,11 @@ public class PayloadsConverter {
                 .basePrice(productPayload.getBasePrice())
                 .finalPrice(productPayload.getFinalPrice())
                 .discountPercentage(productPayload.getDiscountPercentage())
-                .hasDiscount(productPayload.isHasDiscount())
+                .hasDiscount(productPayload.getHasDiscount())
                 .amount(productPayload.getAmount())
                 .categories(productPayload.getCategories())
                 .availability(calculatedAvailability)
-                .isActive(productPayload.isActive())
+                .isActive(productPayload.getIsActive())
                 .build();
     }
 
@@ -64,11 +64,11 @@ public class PayloadsConverter {
                 .basePrice(productPayload.getBasePrice())
                 .finalPrice(productPayload.getFinalPrice())
                 .discountPercentage(productPayload.getDiscountPercentage())
-                .hasDiscount(productPayload.isHasDiscount())
+                .hasDiscount(productPayload.getHasDiscount())
                 .amount(productPayload.getAmount())
                 .categories(productPayload.getCategories())
                 .availability(calculatedAvailability)
-                .isActive(productPayload.isActive())
+                .isActive(productPayload.getIsActive())
                 .build();
     }
 

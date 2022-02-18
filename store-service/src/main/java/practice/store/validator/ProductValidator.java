@@ -46,7 +46,7 @@ public class ProductValidator {
     }
 
     public boolean areDiscountAndPriceCorrect(ProductPayload productPayload) {
-        if (productPayload.isHasDiscount()) {
+        if (productPayload.getHasDiscount()) {
             return isDiscountPercentageInRangeCorrect(productPayload.getDiscountPercentage())
                     && isFinalPriceCorrect(productPayload.getBasePrice(), productPayload.getDiscountPercentage(), productPayload.getFinalPrice());
         } else {

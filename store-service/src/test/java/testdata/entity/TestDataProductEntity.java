@@ -31,7 +31,6 @@ public abstract class TestDataProductEntity {
 
     public static ProductEntity Product(int amount) {
         return ProductEntity.builder()
-                .id(1L)
                 .name("test name")
                 .productUUID(new GenerateRandomString().generateRandomUuid())
                 .description("test description")
@@ -43,6 +42,7 @@ public abstract class TestDataProductEntity {
                 .categories(Categories.PHONES)
                 .availability(Availability.AVAILABLE)
                 .isActive(true)
+                .orderProduct(null)
                 .build();
     }
 
@@ -50,6 +50,23 @@ public abstract class TestDataProductEntity {
         return ProductEntity.builder()
                 .id(1L)
                 .name("test name")
+                .productUUID(uuid)
+                .description("test description")
+                .basePrice(setBigDecimalWithScale(100))
+                .finalPrice(setBigDecimalWithScale(90))
+                .discountPercentage(10)
+                .hasDiscount(true)
+                .amount(5)
+                .categories(Categories.PHONES)
+                .availability(Availability.AVAILABLE)
+                .isActive(true)
+                .build();
+    }
+
+    public static ProductEntity Product(String name, String uuid) {
+        return ProductEntity.builder()
+                .id(1L)
+                .name(name)
                 .productUUID(uuid)
                 .description("test description")
                 .basePrice(setBigDecimalWithScale(100))
